@@ -46,6 +46,9 @@ public class User {
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
+    @Column(name = "role" ,nullable = false)
+    private String role;
+
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Haruni haruni;
 
