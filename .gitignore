@@ -1,3 +1,4 @@
+# Build and Deploy
 HELP.md
 .gradle
 build/
@@ -5,7 +6,7 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
-### STS ###
+# IDE - Eclipse/STS
 .apt_generated
 .classpath
 .factorypath
@@ -17,7 +18,7 @@ bin/
 !**/src/main/**/bin/
 !**/src/test/**/bin/
 
-### IntelliJ IDEA ###
+# IDE - IntelliJ IDEA
 .idea
 *.iws
 *.iml
@@ -26,12 +27,19 @@ out/
 !**/src/main/**/out/
 !**/src/test/**/out/
 
-### NetBeans ###
+# IDE - NetBeans
 /nbproject/private/
 /nbbuild/
 /dist/
 /nbdist/
 /.nb-gradle/
 
-### VS Code ###
+# IDE - VS Code
 .vscode/
+
+# OS Files
+.DS_Store
+*DS_Store
+
+# Application Properties
+src/main/resources/application.yml
