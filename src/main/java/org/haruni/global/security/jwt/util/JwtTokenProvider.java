@@ -4,19 +4,26 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+import org.haruni.domain.user.dto.res.TokenResponseDto;
 import org.haruni.domain.user.entity.UserDetailsImpl;
 import org.haruni.domain.user.service.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.stream.Collectors;
 
+@Slf4j
 @Component
 public class JwtTokenProvider {
-
-    // TODO CustomJwtException 만들어서 적용하기
 
     @Value("${jwt.access-token.expired-time}")
     private Long accessTokenExpiredTime;
@@ -31,6 +38,37 @@ public class JwtTokenProvider {
     public JwtTokenProvider(@Value("${jwt.secret}") String secret, UserDetailsServiceImpl userDetailsService){
         this.key = Keys.hmacShaKeyFor(secret.getBytes());
         this.userDetailsService = userDetailsService;
+    }
+
+    public TokenResponseDto generateToken(Authentication authentication){
+        log.info("[JwtTokenProvider - generateToken()] : In");
+
+        String authorities = authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining());
+
+        Date now = new Date();
+
+        String accessToken = Jwts.builder()
+                .setSubject(authentication.getName()) // email
+                .claim("auth", authorities)
+                .setIssuedAt(now)
+                .setExpiration(new Date((now.getTime() + accessTokenExpiredTime)))
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
+
+        String refreshToken = Jwts.builder()
+                .setIssuedAt(now)
+                .setExpiration(new Date((now.getTime() + refreshTokenExpiredTime)))
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
+
+        log.info("[JwtTokenProvider - generateToken()] : Out");
+
+        return TokenResponseDto.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .build();
     }
 
     public String getTokenFromRequest(HttpServletRequest req){
@@ -62,8 +100,23 @@ public class JwtTokenProvider {
     }
 
     public Authentication getAuthentication(String accessToken){
+
+        Claims claims = getClaims(accessToken);
+
+        Collection<? extends GrantedAuthority> authorities = Arrays.stream(claims.get("auth").toString().split(","))
+                .map(SimpleGrantedAuthority::new)
+                .toList();
+
         UserDetailsImpl userDetails = userDetailsService.loadUserByUsername(getEmailFromToken(accessToken));
-        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
+        return new UsernamePasswordAuthenticationToken(userDetails, "", authorities);
+    }
+
+    public Claims getClaims(String accessToken){
+        return Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(accessToken)
+                .getBody();
     }
 
     public String getEmailFromToken(String accessToken){

@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.haruni.domain.chatroom.entity.Chatroom;
+import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
 
@@ -27,6 +28,7 @@ public class Chat {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
+    @CreatedDate
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 }

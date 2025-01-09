@@ -1,9 +1,7 @@
 package org.haruni.domain.haruni.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.haruni.domain.background.entity.Background;
 import org.haruni.domain.item.entity.Item;
 import org.haruni.domain.user.entity.User;
@@ -13,6 +11,7 @@ import java.util.List;
 
 @Entity
 @Getter
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "haruni")
 public class Haruni {
@@ -41,4 +40,15 @@ public class Haruni {
 
     @OneToOne(mappedBy = "haruni", cascade = CascadeType.ALL)
     private Background background;
+
+    @Builder
+    protected Haruni(String name, MBTI mbti, String prompt){
+        this.name = name;
+        this.mbti = mbti;
+        this.prompt = prompt;
+    }
+
+    public void matchUser(User user) {
+        this.user = user;
+    }
 }

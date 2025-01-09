@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.haruni.domain.chat.entity.Chat;
 import org.haruni.domain.user.entity.User;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -24,9 +26,11 @@ public class Chatroom {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @CreatedDate
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
+    @UpdateTimestamp
     @Column(name = "last_active", nullable = false)
     private LocalDateTime lastActive;
 
