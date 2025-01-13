@@ -1,5 +1,9 @@
-package org.haruni.global.security.config;
+package org.haruni.global.config;
 
+import lombok.RequiredArgsConstructor;
+import org.haruni.domain.oauth.exception.handler.OAuth2AuthenticationFailureHandler;
+import org.haruni.domain.oauth.exception.handler.OAuth2AuthenticationSuccessHandler;
+import org.haruni.domain.oauth.repository.HttpCookieOAuth2AuthorizationRequestRepository;
 import org.haruni.global.exception.handler.CustomAccessDeniedHandler;
 import org.haruni.global.exception.handler.CustomAuthenticationEntryPoint;
 import org.springframework.context.annotation.Bean;
@@ -19,7 +23,13 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
+
+    private final OAuth2UserServiceImpl oAuth2UserService;
+    private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
+    private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
+    private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
@@ -39,6 +49,12 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                // CONCEPT : OAuth 세부 설정 (쿠키 설정, 사용자 정보 처리, 성공/실패 시 핸들러 등록)
+                .oauth2Login(configure ->
+                        configure.authorizationEndpoint(config -> config.authorizationRequestRepository(httpCookieOAuth2AuthorizationRequestRepository))
+                                .userInfoEndpoint(config -> config.userService(oAuth2UserService))
+                                .successHandler(oAuth2AuthenticationSuccessHandler)
+                                .failureHandler(oAuth2AuthenticationFailureHandler))
                 .exceptionHandling(exceptionHandling -> exceptionHandling
                         .accessDeniedHandler(new CustomAccessDeniedHandler())
                         .authenticationEntryPoint(new CustomAuthenticationEntryPoint())
