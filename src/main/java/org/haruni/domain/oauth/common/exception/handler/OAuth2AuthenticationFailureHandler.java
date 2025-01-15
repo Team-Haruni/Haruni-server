@@ -1,12 +1,13 @@
-package org.haruni.domain.oauth.exception.handler;
+package org.haruni.domain.oauth.common.exception.handler;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.haruni.domain.oauth.repository.HttpCookieOAuth2AuthorizationRequestRepository;
-import org.haruni.domain.oauth.utils.CookieUtils;
+import org.haruni.domain.oauth.common.utils.CookieUtils;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
@@ -16,6 +17,7 @@ import java.io.IOException;
 
 import static org.haruni.domain.oauth.repository.HttpCookieOAuth2AuthorizationRequestRepository.REDIRECT_URI_PARAM;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class OAuth2AuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {
@@ -32,6 +34,8 @@ public class OAuth2AuthenticationFailureHandler extends SimpleUrlAuthenticationF
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
                                         AuthenticationException exception) throws IOException, ServletException{
 
+        log.info("[Oauth2AuthenticationFailureHandler - onAuthenticationFailure()] - In");
+
         String targetUrl = CookieUtils.getCookie(request, REDIRECT_URI_PARAM)
                 .map(Cookie::getValue)
                 .orElse("/");
@@ -43,6 +47,8 @@ public class OAuth2AuthenticationFailureHandler extends SimpleUrlAuthenticationF
         httpCookieOAuth2AuthorizationRequestRepository.removeAuthorizationRequestCookies(request, response);
 
         getRedirectStrategy().sendRedirect(request, response, targetUrl);
+
+        log.info("[Oauth2AuthenticationFailureHandler - onAuthenticationFailure()] - Out");
     }
 
 }

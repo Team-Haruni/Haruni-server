@@ -1,4 +1,4 @@
-package org.haruni.domain.oauth.utils;
+package org.haruni.domain.oauth.common.utils;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;

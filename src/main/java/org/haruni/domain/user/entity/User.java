@@ -5,6 +5,7 @@ import lombok.*;
 import org.haruni.domain.chatroom.entity.Chatroom;
 import org.haruni.domain.diary.entity.Diary;
 import org.haruni.domain.haruni.entity.Haruni;
+import org.haruni.domain.oauth.common.utils.OAuth2Provider;
 import org.haruni.domain.user.dto.req.SignUpRequestDto;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.CreatedDate;
@@ -42,6 +43,10 @@ public class User {
     @Column(name = "haruni_name", length = 50)
     private String haruniName;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "user_type")
+    private OAuth2Provider userType;
+
     @CreatedDate
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
@@ -66,6 +71,7 @@ public class User {
     protected User(SignUpRequestDto req, String encodedPassword, Haruni haruni){
         this.email = req.getEmail();
         this.password = encodedPassword;
+        this.userType = OAuth2Provider.fromOAuth2Provider(req.getUserType());
         this.nickname = req.getNickname();
         this.alarmActive = req.getAlarmActive();
         this.alarmActiveTime = req.getAlarmActiveTime();

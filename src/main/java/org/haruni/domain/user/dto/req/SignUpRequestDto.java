@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.haruni.domain.common.enums.Enum;
 import org.haruni.domain.haruni.entity.MBTI;
+import org.haruni.domain.oauth.common.utils.OAuth2Provider;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalTime;
@@ -28,6 +29,9 @@ public class SignUpRequestDto {
     @Pattern(regexp = "^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()\\-_=+\\\\|\\[{\\]};:'\",<.>/?])(?=.*[a-z]).{8,15}$")
     private String password;
 
+    @Schema(description = "사용자 유형", example = "NORMAL/GOOGLE/KAKAO/NAVER")
+    @Enum(target = OAuth2Provider.class, message = "유저 타입이 옳바르지 않습니다.")
+    private String userType;
 
     @Schema(description = "닉네임", example = "준소이")
     @NotBlank(message = "사용자 닉네임이 비어있습니다.")
