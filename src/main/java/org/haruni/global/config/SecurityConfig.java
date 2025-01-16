@@ -50,7 +50,7 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                // CONCEPT : OAuth 세부 설정 (쿠키 설정, 사용자 정보 처리, 성공/실패 시 핸들러 등록)
+                // CONCEPT : OAuth 세부 설정 및 관련 필터 활성화 (쿠키 설정, 사용자 정보 처리, 성공/실패 시 핸들러 등록)
                 .oauth2Login(configure ->
                         configure.authorizationEndpoint(config -> config.authorizationRequestRepository(httpCookieOAuth2AuthorizationRequestRepository))
                                 .userInfoEndpoint(config -> config.userService(customOAuth2UserService))

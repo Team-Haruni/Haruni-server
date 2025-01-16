@@ -15,7 +15,6 @@ public class HttpCookieOAuth2AuthorizationRequestRepository implements Authoriza
 
     // CONCEPT : OAuth 인증 과정에서 사용되는 정보를 쿠키로 관리할 때, 사용되는 메소드 유틸
 
-
     // CONCEPT : 쿠키의 Key 값 선언
     public static final String OAUTH2_AUTHORIZATION_REQUEST = "oauth2_authorization_request";
     public static final String REDIRECT_URI_PARAM = "redirect_uri";

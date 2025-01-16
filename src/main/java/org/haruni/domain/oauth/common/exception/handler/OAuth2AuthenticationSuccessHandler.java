@@ -12,7 +12,6 @@ import org.haruni.domain.oauth.common.utils.OAuth2UserUnlinkManager;
 import org.haruni.domain.oauth.repository.HttpCookieOAuth2AuthorizationRequestRepository;
 import org.haruni.domain.oauth.service.CustomOAuth2UserService;
 import org.haruni.domain.user.dto.res.TokenResponseDto;
-import org.haruni.global.security.jwt.util.JwtTokenProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -31,7 +30,6 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
     //CONCEPT : OAuth 인증 성공시 동작하는 핸들러
 
-    private final JwtTokenProvider jwtTokenProvider;
     private final CustomOAuth2UserService oAuth2UserService;
 
     private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
