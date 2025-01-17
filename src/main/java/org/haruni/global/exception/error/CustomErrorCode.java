@@ -16,6 +16,9 @@ public enum CustomErrorCode implements ErrorCode {
     // OAuth 2.0
     OAUTH_NAVER_UNLINK_FAILED(HttpStatus.BAD_REQUEST, 400, "네이버 소셜 계정 연동 해지에 실패하였습니다."),
 
+    // FCM
+    FCM_INITIALIZE_FAILED(HttpStatus.FAILED_DEPENDENCY, 424, "FCM 연결 실패"),
+
     // User
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, 404, "유저가 존재하지 않습니다."),
 

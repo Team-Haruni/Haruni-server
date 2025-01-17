@@ -25,17 +25,17 @@ import java.util.stream.Collectors;
 @Component
 public class JwtTokenProvider {
 
-    @Value("${jwt.access-token.expired-time}")
+    @Value("${spring.security.jwt.access-token.expired-time}")
     private Long accessTokenExpiredTime;
 
-    @Value("${jwt.refresh-token.expired-time}")
+    @Value("${spring.security.jwt.refresh-token.expired-time}")
     private Long refreshTokenExpiredTime;
 
     private final Key key;
 
     private final UserDetailsServiceImpl userDetailsService;
 
-    public JwtTokenProvider(@Value("${jwt.secret}") String secret, UserDetailsServiceImpl userDetailsService){
+    public JwtTokenProvider(@Value("${spring.security.jwt.secret}") String secret, UserDetailsServiceImpl userDetailsService){
         this.key = Keys.hmacShaKeyFor(secret.getBytes());
         this.userDetailsService = userDetailsService;
     }
