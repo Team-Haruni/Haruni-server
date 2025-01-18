@@ -1,16 +1,16 @@
 package org.haruni.domain.user.dto.req;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.haruni.domain.common.enums.Enum;
 import org.haruni.domain.haruni.entity.MBTI;
 import org.haruni.domain.oauth.common.utils.OAuth2Provider;
-import org.springframework.format.annotation.DateTimeFormat;
-
-import java.time.LocalTime;
 
 @Schema(description = "회원가입(일반) Request")
 @Getter
@@ -43,8 +43,8 @@ public class SignUpRequestDto {
     private Boolean alarmActive;
 
     @Schema(description = "알람 전송 시간", example = "11:23")
-    @DateTimeFormat(pattern = "HH:mm")
-    private LocalTime alarmActiveTime;
+    @NotBlank(message = "알람 전송 시간이 비어있습니다.")
+    private String alarmActiveTime;
 
     @Schema(description = "하루니 이름", example = "인절미 빙수")
     @NotBlank(message = "하루니 이름이 비어있습니다.")

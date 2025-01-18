@@ -11,7 +11,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,7 +37,7 @@ public class User {
     private Boolean alarmActive;
 
     @Column(name = "alarm_active_time")
-    private LocalTime alarmActiveTime;
+    private String alarmActiveTime;
 
     @Column(name = "haruni_name", length = 50)
     private String haruniName;
@@ -46,6 +45,9 @@ public class User {
     @Enumerated(EnumType.STRING)
     @Column(name = "user_type")
     private OAuth2Provider userType;
+
+    @Column(name = "fcm_token", nullable = false)
+    private String fcmToken;
 
     @CreatedDate
     @Column(name = "created_at", nullable = false)
