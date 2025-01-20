@@ -2,12 +2,7 @@ package org.haruni.domain.haruni.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.haruni.domain.background.entity.Background;
-import org.haruni.domain.item.entity.Item;
 import org.haruni.domain.user.entity.User;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter
@@ -26,6 +21,9 @@ public class Haruni {
     @Column(nullable = false, length = 50)
     private String name;
 
+    @Column(nullable = false)
+    private String haruniImgUrl = "https://";
+
     @Enumerated(EnumType.STRING)
     private MBTI mbti;
 
@@ -34,12 +32,6 @@ public class Haruni {
 
     @Column(nullable = false)
     private Double level = 1.0;
-
-    @OneToMany(mappedBy = "haruni", cascade = CascadeType.ALL)
-    private List<Item> items = new ArrayList<>();
-
-    @OneToOne(mappedBy = "haruni", cascade = CascadeType.ALL)
-    private Background background;
 
     @Builder
     protected Haruni(String name, MBTI mbti, String prompt){

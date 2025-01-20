@@ -34,4 +34,5 @@ public class AuthController {
     public ResponseEntity<ResponseDto<TokenResponseDto>> login(@Valid@RequestBody LoginRequestDto req){
         return ResponseEntity.status(HttpStatus.OK).body(ResponseDto.of(authService.login(req), "로그인 처리 완료"));
     }
+    
 }

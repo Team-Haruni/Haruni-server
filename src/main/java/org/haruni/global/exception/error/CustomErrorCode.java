@@ -13,6 +13,9 @@ public enum CustomErrorCode implements ErrorCode {
     // Auth
     USER_EMAIL_DUPLICATED(HttpStatus.BAD_REQUEST, 400, "중복되는 이메일입니다."),
 
+    // Haruni
+    HARUNI_NOT_FOUND(HttpStatus.NOT_FOUND, 404, "하루니 조회에 실패하였습니다"),
+
     // OAuth 2.0
     OAUTH_NAVER_UNLINK_FAILED(HttpStatus.BAD_REQUEST, 400, "네이버 소셜 계정 연동 해지에 실패하였습니다."),
 

@@ -2,9 +2,11 @@ package org.haruni.domain.user.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.haruni.domain.background.entity.Background;
 import org.haruni.domain.chatroom.entity.Chatroom;
 import org.haruni.domain.diary.entity.Diary;
 import org.haruni.domain.haruni.entity.Haruni;
+import org.haruni.domain.item.entity.Item;
 import org.haruni.domain.oauth.common.utils.OAuth2Provider;
 import org.haruni.domain.user.dto.req.SignUpRequestDto;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -62,6 +64,12 @@ public class User {
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Haruni haruni;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Item> items = new ArrayList<>();
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Background background;
 
     @OneToMany(mappedBy = "user")
     private List<Diary> diaries = new ArrayList<>();

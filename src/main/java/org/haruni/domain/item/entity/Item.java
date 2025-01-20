@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.haruni.domain.haruni.entity.Haruni;
+import org.haruni.domain.user.entity.User;
 
 @Entity
 @Getter
@@ -16,11 +16,11 @@ public class Item {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "haruni_id", nullable = false)
-    private Haruni haruni;
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @Column(nullable = false, length = 100)
-    private String name;
+    private String s3ImgUrl;
 
     @Column(name = "active_level")
     private Double activeLevel = 1.0;
