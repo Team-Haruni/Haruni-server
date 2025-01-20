@@ -1,6 +1,6 @@
 package org.haruni.domain.alarm.entity;
 
-import jakarta.persistence.Id;
+import org.springframework.data.annotation.Id;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
