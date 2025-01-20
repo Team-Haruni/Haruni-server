@@ -2,8 +2,10 @@ package org.haruni.domain.item.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.haruni.domain.item.dto.req.ItemRequestDto;
 import org.haruni.domain.user.entity.User;
 
 @Entity
@@ -20,10 +22,10 @@ public class Item {
     private User user;
 
     @Column(nullable = false, length = 100)
-    private String s3ImgUrl;
+    private String itemImgUrl;
 
-    @Column(name = "active_level")
-    private Double activeLevel = 1.0;
+    @Column(name = "active_level", nullable = false)
+    private Double activeLevel;
 
     private Boolean selected = false;
 
@@ -32,4 +34,14 @@ public class Item {
 
     @Column(name = "y_position")
     private Double yPosition;
+
+    @Builder
+    protected Item(User user, ItemRequestDto request){
+        this.user = user;
+        this.itemImgUrl = request.getItemImgUrl();
+        this.activeLevel = request.getActiveLevel();
+        this.xPosition = request.getXPosition();
+        this.yPosition = request.getYPosition();
+        this.selected = true;
+    }
 }

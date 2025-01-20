@@ -9,6 +9,7 @@ import org.haruni.domain.user.entity.User;
 import org.haruni.global.exception.entity.RestApiException;
 import org.haruni.global.exception.error.CustomErrorCode;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -20,6 +21,8 @@ public class HaruniService {
 
     private final HaruniRepository haruniRepository;
 
+
+    @Transactional(readOnly = true)
     public MainPageResponseDto getHaruni(User user){
         log.info("[HaruniService - getHaruni()] - In");
 
