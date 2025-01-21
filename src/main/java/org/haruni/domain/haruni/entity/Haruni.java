@@ -43,4 +43,5 @@ public class Haruni {
     public void matchUser(User user) {
         this.user = user;
     }
+    public void updatePrompt(String prompt){ this.prompt = prompt; }
 }

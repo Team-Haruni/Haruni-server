@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.haruni.domain.haruni.dto.res.MainPageResponseDto;
 import org.haruni.domain.haruni.entity.Haruni;
 import org.haruni.domain.haruni.repository.HaruniRepository;
+import org.haruni.domain.haruni.dto.req.PromptUpdateRequestDto;
 import org.haruni.domain.user.entity.User;
 import org.haruni.global.exception.entity.RestApiException;
 import org.haruni.global.exception.error.CustomErrorCode;
@@ -44,6 +45,16 @@ public class HaruniService {
                 .backgroundImgUrl(user.getBackground().getBackgroundImgUrl())
                 .selectedItems(user.getItems())
                 .build();
+    }
+
+    @Transactional
+    public String updatePrompt(User user, PromptUpdateRequestDto request){
+        Haruni haruni = haruniRepository.findById(user.getHaruni().getId())
+                .orElseThrow(() -> new RestApiException(CustomErrorCode.HARUNI_NOT_FOUND));
+
+        haruni.updatePrompt(request.getPrompt());
+
+        return request.getPrompt();
     }
 
     private String getGreetingMessage(LocalDateTime now, String nickname){

@@ -89,4 +89,8 @@ public class User {
         this.role = "ROLE_USER";
         this.haruni = haruni;
     }
+
+    public void updateEmail(String email) { this.email = email; }
+    public void updateAlarmActiveTime(String alarmActiveTime) { this.alarmActiveTime = alarmActiveTime; }
+
 }

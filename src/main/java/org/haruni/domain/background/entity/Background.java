@@ -27,6 +27,4 @@ public class Background {
 
     @Column(name = "active_level")
     private Double activeLevel = 1.0;
-
-    private Boolean selected = false;
 }

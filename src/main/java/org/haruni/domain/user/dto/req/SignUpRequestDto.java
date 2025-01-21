@@ -24,7 +24,6 @@ public class SignUpRequestDto {
     private String email;
 
     @Schema(description = "비밀번호", example = "Korean22!")
-    @NotBlank(message = "사용자 비밀번호가 비어있습니다.")
     @Size(max = 100, message = "사용자 비밀번호의 길이가 너무 깁니다.")
     @Pattern(regexp = "^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()\\-_=+\\\\|\\[{\\]};:'\",<.>/?])(?=.*[a-z]).{8,15}$")
     private String password;
@@ -42,7 +41,7 @@ public class SignUpRequestDto {
     @NotNull(message = "알람 허용 여부가 비어있습니다.")
     private Boolean alarmActive;
 
-    @Schema(description = "알람 전송 시간", example = "11:23")
+    @Schema(description = "알람 전송 시간", example = "11:10")
     @NotBlank(message = "알람 전송 시간이 비어있습니다.")
     private String alarmActiveTime;
 

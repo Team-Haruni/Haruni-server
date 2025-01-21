@@ -53,4 +53,12 @@ public class AlarmService {
             }
         });
     }
+
+    public void updateAlarmSchedule(String fcmToken, String alarmActiveTime){
+        alarmRepository.deleteByFcmToken(fcmToken);
+
+        Alarm alarm = new Alarm(fcmToken, alarmActiveTime);
+
+        alarmRepository.save(alarm);
+    }
 }
