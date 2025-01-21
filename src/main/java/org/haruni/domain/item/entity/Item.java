@@ -27,8 +27,6 @@ public class Item {
     @Column(name = "active_level", nullable = false)
     private Double activeLevel;
 
-    private Boolean selected = false;
-
     @Column(name = "x_position")
     private Double xPosition;
 
@@ -42,6 +40,5 @@ public class Item {
         this.activeLevel = request.getActiveLevel();
         this.xPosition = request.getXPosition();
         this.yPosition = request.getYPosition();
-        this.selected = true;
     }
 }

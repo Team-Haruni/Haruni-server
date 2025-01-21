@@ -21,7 +21,6 @@ public class HaruniService {
 
     private final HaruniRepository haruniRepository;
 
-
     @Transactional(readOnly = true)
     public MainPageResponseDto getHaruni(User user){
         log.info("[HaruniService - getHaruni()] - In");

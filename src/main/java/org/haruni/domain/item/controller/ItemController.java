@@ -29,10 +29,9 @@ public class ItemController {
     }
 
     @PostMapping
-    public ResponseEntity<ResponseDto<Boolean>> updateSelectedItem(@AuthenticationPrincipal User user,
-                                                                   @Valid@RequestBody ItemSaveRequestDto request){
+    public ResponseEntity<ResponseDto<Boolean>> saveItems(@AuthenticationPrincipal User user,
+                                                          @Valid@RequestBody ItemSaveRequestDto request){
         return ResponseEntity.status(HttpStatus.CREATED).body(ResponseDto.of(itemService.saveItems(user, request), "아이탬 저장 완료"));
     }
-
 
 }
