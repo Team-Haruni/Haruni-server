@@ -48,7 +48,6 @@ public class GlobalExceptionHandler {
         ErrorCode errorCode = CustomErrorCode.INTERNAL_SERVER_ERROR;
 
         log.error("Error occurred with : {}", e.getMessage());
-        log.error("Error stackTrace : {}", (Object) e.getStackTrace());
 
         return handleExceptionInternal(errorCode);
     }

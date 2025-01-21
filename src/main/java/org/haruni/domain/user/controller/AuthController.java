@@ -5,7 +5,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.haruni.domain.common.dto.res.ResponseDto;
-import org.haruni.domain.oauth.service.CustomOAuth2UserService;
+import org.haruni.domain.oauth.service.OAuth2UserService;
 import org.haruni.domain.user.dto.req.LoginRequestDto;
 import org.haruni.domain.oauth.dto.req.OAuthLoginRequestDto;
 import org.haruni.domain.user.dto.req.SignUpRequestDto;
@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final AuthService authService;
-    private final CustomOAuth2UserService customOAuth2UserService;
+    private final OAuth2UserService oAuth2UserService;
 
     @PostMapping("/sign-up")
     public ResponseEntity<ResponseDto<String>> signUp(@Valid@RequestBody SignUpRequestDto request){
@@ -40,7 +40,7 @@ public class AuthController {
 
     @PostMapping("/oauth/login")
     public ResponseEntity<?> oauthLogin(@Valid@RequestBody OAuthLoginRequestDto request){
-        return ResponseEntity.status(HttpStatus.OK).body(customOAuth2UserService.oauth2LoginProcess(request));
+        return ResponseEntity.status(HttpStatus.OK).body(oAuth2UserService.oauth2LoginProcess(request));
     }
     
 }

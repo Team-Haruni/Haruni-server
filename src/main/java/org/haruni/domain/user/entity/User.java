@@ -29,7 +29,7 @@ public class User {
     @Column(nullable = false, unique = true, length = 50)
     private String email;
 
-    @Column(nullable = false, length = 100)
+    @Column(nullable = true, length = 100)
     private String password;
 
     @Column(nullable = false, length = 50)
@@ -45,8 +45,8 @@ public class User {
     private String haruniName;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "user_type")
-    private OAuth2Provider userType;
+    @Column(name = "provider_id")
+    private OAuth2Provider providerId;
 
     @Column(name = "fcm_token", nullable = false)
     private String fcmToken;
@@ -81,7 +81,7 @@ public class User {
     protected User(SignUpRequestDto req, String encodedPassword, Haruni haruni){
         this.email = req.getEmail();
         this.password = encodedPassword;
-        this.userType = OAuth2Provider.fromOAuth2Provider(req.getUserType());
+        this.providerId = OAuth2Provider.fromOAuth2Provider(req.getProviderId());
         this.nickname = req.getNickname();
         this.alarmActive = req.getAlarmActive();
         this.alarmActiveTime = req.getAlarmActiveTime();

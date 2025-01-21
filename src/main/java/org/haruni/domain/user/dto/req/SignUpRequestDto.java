@@ -31,7 +31,7 @@ public class SignUpRequestDto {
 
     @Schema(description = "사용자 유형", example = "NORMAL/GOOGLE/KAKAO/NAVER")
     @Enum(target = OAuth2Provider.class, message = "유저 타입이 옳바르지 않습니다.")
-    private String userType;
+    private String providerId;
 
     @Schema(description = "닉네임", example = "준소이")
     @NotBlank(message = "사용자 닉네임이 비어있습니다.")
