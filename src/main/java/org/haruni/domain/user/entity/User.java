@@ -85,6 +85,7 @@ public class User {
         this.nickname = req.getNickname();
         this.alarmActive = req.getAlarmActive();
         this.alarmActiveTime = req.getAlarmActiveTime();
+        this.fcmToken = req.getFcmToken();
         this.haruniName = req.getHaruniName();
         this.role = "ROLE_USER";
         this.haruni = haruni;

@@ -2,6 +2,7 @@ package org.haruni.domain.user.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.haruni.domain.alarm.service.AlarmService;
 import org.haruni.domain.haruni.entity.Haruni;
 import org.haruni.domain.haruni.entity.MBTI;
 import org.haruni.domain.haruni.repository.HaruniRepository;
@@ -33,6 +34,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final HaruniService haruniService;
+    private final AlarmService alarmService;
 
     @Transactional
     public String signUp(SignUpRequestDto req){
@@ -49,6 +51,7 @@ public class AuthService {
                 .build();
 
         userRepository.save(user);
+        alarmService.updateAlarmSchedule(user.getFcmToken(), user.getAlarmActiveTime());
 
         log.info("[AuthService - signUp()] : User saved");
 

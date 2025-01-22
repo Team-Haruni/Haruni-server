@@ -9,11 +9,13 @@ import org.haruni.domain.alarm.dto.req.AlarmDto;
 import org.haruni.domain.alarm.entity.Alarm;
 import org.haruni.domain.alarm.repository.AlarmRepository;
 import org.haruni.domain.user.repository.UserRepository;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @Service
@@ -54,11 +56,17 @@ public class AlarmService {
         });
     }
 
+    @Async
     public void updateAlarmSchedule(String fcmToken, String alarmActiveTime){
-        alarmRepository.deleteByFcmToken(fcmToken);
+        CompletableFuture.supplyAsync(() ->{
+            Alarm alarm = new Alarm(fcmToken, alarmActiveTime);
 
-        Alarm alarm = new Alarm(fcmToken, alarmActiveTime);
+            alarmRepository.save(alarm);
 
-        alarmRepository.save(alarm);
+            return true;
+        }).exceptionally(throwable -> {
+            log.error("[AlarmService - updateAlarmSchedule()] - updateAlarmSchedule Failed with {}", throwable.getMessage());
+            return false;
+        });
     }
 }

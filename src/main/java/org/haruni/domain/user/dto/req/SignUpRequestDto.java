@@ -45,6 +45,10 @@ public class SignUpRequestDto {
     @NotBlank(message = "알람 전송 시간이 비어있습니다.")
     private String alarmActiveTime;
 
+    @Schema(description = "FCM 토큰", example = "asdjfhqiuefhadsfbgqweyugfgfjgkn")
+    @NotBlank(message = "FCM 토큰이 비어있습니다.")
+    private String fcmToken;
+
     @Schema(description = "하루니 이름", example = "인절미 빙수")
     @NotBlank(message = "하루니 이름이 비어있습니다.")
     @Size(max = 50, message = "하루니 이름의 길이가 너무 깁니다.")
