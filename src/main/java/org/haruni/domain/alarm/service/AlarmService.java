@@ -24,14 +24,22 @@ public class AlarmService {
 
     private final UserRepository userRepository;
     private final AlarmRepository alarmRepository;
+
     private final FirebaseMessaging firebaseMessaging;
 
     public void scheduleAlarm(){
+        log.info("[AlarmService - scheduleAlarm() - 알람 스케줄링 시작]");
+
         List<Alarm> reservedAlarm = userRepository.findAlarmByAlarmActive();
         alarmRepository.saveAll(reservedAlarm);
+
+        log.info("[AlarmService - scheduleAlarm() - {}개의 알림 저장 완료]", reservedAlarm.size());
+        log.info("[AlarmService - scheduleAlarm() - 알람 스케줄링 종료]");
     }
 
     public void sendAlarm(){
+        log.info("[AlarmService - sendAlarm() - 알람 전송 시작]");
+
         String now = LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm"));
         List<AlarmDto> alarms = alarmRepository.findAllBySendingTime(now).stream()
                 .map(AlarmDto::from)
@@ -49,11 +57,14 @@ public class AlarmService {
 
             try{
                 String response = firebaseMessaging.send(message);
-                log.info("Alarm send Succeed : {}", response);
+                log.info("[AlarmService - sendAlarm() - 알람 전송 성공 {}", alarmDto.getFcmToken());
             }catch (FirebaseMessagingException e){
-                log.error("Alarm send Failed: {}", e.getMessage());
+                log.error("[AlarmService - sendAlarm() - 알람 전송 실패 {}", alarmDto.getFcmToken());
+                log.error("[AlarmService - sendAlarm() - Alarm send Failed with {}", e.getMessage());
             }
         });
+
+        log.info("[AlarmService - sendAlarm() - 알람 전송 종료]");
     }
 
     @Async

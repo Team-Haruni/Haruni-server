@@ -27,14 +27,16 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class AuthService {
 
+    private final HaruniService haruniService;
+    private final AlarmService alarmService;
+
     private final UserRepository userRepository;
     private final HaruniRepository haruniRepository;
 
     private final JwtTokenProvider jwtTokenProvider;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
-    private final HaruniService haruniService;
-    private final AlarmService alarmService;
+
 
     @Transactional
     public String signUp(SignUpRequestDto req){

@@ -9,6 +9,7 @@ import org.haruni.domain.chat.entity.ChatType;
 import org.haruni.domain.chat.repository.ChatRepository;
 import org.haruni.domain.chatroom.entity.Chatroom;
 import org.haruni.domain.chatroom.repository.ChatroomRepository;
+import org.haruni.domain.chatroom.service.ChatroomService;
 import org.haruni.domain.user.entity.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,16 +26,17 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ChatService {
 
+    private final ChatroomService chatroomService;
+
     private final ChatRepository chatRepository;
     private final ChatroomRepository chatroomRepository;
 
-    @Transactional
     public void saveUserChat(User user, ChatRequestDto request){
 
         String formatDate = getNow();
 
         Chatroom chatroom = chatroomRepository.findByUserAndCreatedAt(user, formatDate)
-                .orElseGet(() -> createChatroom(user, formatDate));
+                .orElseGet(() -> chatroomService.createChatroom(user, formatDate));
 
         Chat chat = Chat.builder()
                 .senderName(user.getNickname())
@@ -48,12 +50,11 @@ public class ChatService {
         chatroom.getChats().add(chat);
     }
 
-    @Transactional
     public Chat saveHaruniChat(User user, String haruniName, String haruniResponse){
         String formatDate = getNow();
 
         Chatroom chatroom = chatroomRepository.findByUserAndCreatedAt(user, formatDate)
-                .orElseGet(() -> createChatroom(user, formatDate));
+                .orElseGet(() -> chatroomService.createChatroom(user, formatDate));
 
         Chat chat = Chat.builder()
                 .senderName(haruniName)
@@ -71,17 +72,17 @@ public class ChatService {
 
     @Transactional(readOnly = true)
     public List<ChatResponseDto> getChats(User user, String request){
-        log.info("[ChatService - getChats()] - In");
+        log.info("[ChatService - getChats()] - 채팅 조회 시작");
 
         Chatroom chatroom = chatroomRepository.findByUserAndCreatedAt(user, request)
                 .orElse(null);
 
         if(chatroom == null){
-            log.warn("[ChatService - getChats()] - Chatroom Activate yet");
+            log.warn("[ChatService - getChats()] - 채팅 내역이 존재하지 않습니다");
             return Collections.emptyList();
         }
 
-        log.info("[ChatService - getChats()] - Out");
+        log.info("[ChatService - getChats()] - 채팅 조회 종료");
 
         return chatroom.getChats().stream()
                 .map(ChatResponseDto::from)
@@ -96,14 +97,5 @@ public class ChatService {
     private String getCurrentTime() {
         LocalTime now = LocalTime.now(ZoneId.of("Asia/Seoul"));
         return now.format(DateTimeFormatter.ofPattern("HH:mm"));
-    }
-
-    private Chatroom createChatroom(User user, String createdAt){
-        Chatroom chatroom = Chatroom.builder()
-                .user(user)
-                .createdAt(createdAt)
-                .build();
-
-        return chatroomRepository.save(chatroom);
     }
 }

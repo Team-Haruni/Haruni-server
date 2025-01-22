@@ -10,6 +10,7 @@ import java.util.List;
 public interface AlarmRepository extends CrudRepository<Alarm, String> {
 
     void deleteAllBySendingTime(String sendingTime);
+
     List<Alarm> findAllBySendingTime(String sendingTime);
 
     List<Alarm> findByFcmToken(String fcmToken);

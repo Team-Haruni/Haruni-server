@@ -14,10 +14,12 @@ import org.haruni.domain.chat.entity.Chat;
 @NoArgsConstructor
 public class ChatResponseDto {
 
+    // CONCEPT : 클라이언트에게 반환할 채팅 양식
+
     @Schema(description = "송신자 닉네임", example = "하룬이")
     private String senderName;
 
-    @Schema(description = "채팅 내용", example="그렇군요. 정말 굉장한 하루네요!")
+    @Schema(description = "채팅 내용", example= "그렇군요. 정말 굉장한 하루네요!")
     private String content;
 
     @Schema(description = "답변 시간", example = "11:34")

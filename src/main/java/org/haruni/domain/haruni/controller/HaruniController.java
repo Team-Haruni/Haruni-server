@@ -35,13 +35,13 @@ public class HaruniController {
 
     @PatchMapping("/prompt")
     public ResponseEntity<ResponseDto<String>> updateUserPrompt(@AuthenticationPrincipal User user,
-                                                                @Valid @RequestBody PromptUpdateRequestDto request){
+                                                                @Valid@RequestBody PromptUpdateRequestDto request){
         return ResponseEntity.status(HttpStatus.OK).body(ResponseDto.of(haruniService.updatePrompt(user, request), "유저 프롬프트 수정 완료"));
     }
 
     @PostMapping("/chat")
     public ResponseEntity<ResponseDto<ChatResponseDto>> sendChatToHaruni(@AuthenticationPrincipal User user,
-                                                                       @Valid@RequestBody ChatRequestDto request){
+                                                                         @Valid@RequestBody ChatRequestDto request){
         return ResponseEntity.status(HttpStatus.OK).body(ResponseDto.of(haruniService.sendChatToHaruni(user, request), "채팅 송수신 처리 완료"));
     }
 

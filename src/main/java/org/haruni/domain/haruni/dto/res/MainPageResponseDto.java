@@ -34,5 +34,4 @@ public class MainPageResponseDto {
 
     @Schema(description = "아이탬 리스트")
     private List<Item> selectedItems;
-
 }
