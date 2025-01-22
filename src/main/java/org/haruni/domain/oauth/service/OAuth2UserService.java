@@ -1,6 +1,5 @@
 package org.haruni.domain.oauth.service;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.haruni.domain.oauth.common.entity.OAuth2UserDetailsImpl;
 import org.haruni.domain.oauth.common.entity.OAuth2UserInfo;
@@ -12,6 +11,7 @@ import org.haruni.domain.user.repository.UserRepository;
 import org.haruni.global.exception.entity.RestApiException;
 import org.haruni.global.exception.error.CustomErrorCode;
 import org.haruni.global.security.jwt.util.JwtTokenProvider;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -27,12 +27,17 @@ import java.util.Map;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class OAuth2UserService {
 
     private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
-    private final RestTemplate restTemplate;
+    private final RestTemplate oauthTemplate;
+
+    public OAuth2UserService(UserRepository userRepository, JwtTokenProvider jwtTokenProvider, @Qualifier("oauthTemplate") RestTemplate oauthTemplate) {
+        this.userRepository = userRepository;
+        this.jwtTokenProvider = jwtTokenProvider;
+        this.oauthTemplate = oauthTemplate;
+    }
 
     public OAuth2ResponseDto<?> oauth2LoginProcess(OAuthLoginRequestDto request) {
         log.info("[OAuth2UserService - oauth2LoginProcess()] : In");
@@ -47,9 +52,10 @@ public class OAuth2UserService {
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
 
         log.info("[OAuth2UserService - oauth2LoginProcess()] : HttpRequest sending process started");
+
         ResponseEntity<Map<String, Object>> response;
         try {
-            response = restTemplate.exchange(
+            response = oauthTemplate.exchange(
                     endpoint,
                     HttpMethod.GET,
                     httpEntity,

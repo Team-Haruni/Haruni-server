@@ -2,12 +2,10 @@ package org.haruni.domain.chat.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.haruni.domain.chatroom.entity.Chatroom;
-import org.springframework.data.annotation.CreatedDate;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -28,7 +26,14 @@ public class Chat {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
-    @CreatedDate
     @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt;
+    private String createdAt;
+
+    @Builder
+    public Chat(Chatroom chatroom, ChatType type, String content, String createdAt){
+        this.chatroom = chatroom;
+        this.type = type;
+        this.content = content;
+        this.createdAt = createdAt;
+    }
 }

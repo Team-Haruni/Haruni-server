@@ -2,14 +2,12 @@ package org.haruni.domain.chatroom.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.haruni.domain.chat.entity.Chat;
 import org.haruni.domain.user.entity.User;
-import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.data.annotation.CreatedDate;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,14 +24,15 @@ public class Chatroom {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @CreatedDate
     @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt;
-
-    @UpdateTimestamp
-    @Column(name = "last_active", nullable = false)
-    private LocalDateTime lastActive;
+    private String createdAt;
 
     @OneToMany(mappedBy = "chatroom", cascade = CascadeType.ALL)
     private List<Chat> chats = new ArrayList<>();
+
+    @Builder
+    public Chatroom(User user, String createdAt){
+        this.user = user;
+        this.createdAt = createdAt;
+    }
 }
