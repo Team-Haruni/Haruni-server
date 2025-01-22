@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.haruni.domain.haruni.entity.Haruni;
 import org.haruni.domain.haruni.entity.MBTI;
 import org.haruni.domain.haruni.repository.HaruniRepository;
+import org.haruni.domain.haruni.service.HaruniService;
 import org.haruni.domain.user.dto.req.LoginRequestDto;
 import org.haruni.domain.user.dto.req.SignUpRequestDto;
 import org.haruni.domain.user.dto.res.TokenResponseDto;
@@ -31,6 +32,7 @@ public class AuthService {
     private final JwtTokenProvider jwtTokenProvider;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
+    private final HaruniService haruniService;
 
     @Transactional
     public String signUp(SignUpRequestDto req){
@@ -58,6 +60,8 @@ public class AuthService {
 
         haruni.matchUser(user);
         haruniRepository.save(haruni);
+
+        haruniService.createHaruniInstance(haruni.getId());
 
         log.info("[AuthService - signUp()] : Haruni saved");
         log.info("[AuthService - signUp()] : Out");

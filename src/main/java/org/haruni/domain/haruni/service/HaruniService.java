@@ -24,6 +24,7 @@ import org.springframework.web.client.RestTemplate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @Service
@@ -42,29 +43,32 @@ public class HaruniService {
     }
 
     @Async
-    @Transactional(readOnly = true)
     public void createHaruniInstance(Long haruniId){
-        Haruni haruni = haruniRepository.findById(haruniId)
-                .orElseThrow(() -> new RestApiException(CustomErrorCode.HARUNI_NOT_FOUND));
+        CompletableFuture.supplyAsync(() -> {
+            try {
+                Haruni haruni = haruniRepository.findById(haruniId)
+                        .orElseThrow(() -> new RestApiException(CustomErrorCode.HARUNI_NOT_FOUND));
 
-        HaruniInstanceCreateRequestDto requestBody = HaruniInstanceCreateRequestDto
-                .builder()
-                .userId(haruni.getUser().getId())
-                .haruniId(haruniId)
-                .prompt(haruni.getPrompt())
-                .build();
+                HaruniInstanceCreateRequestDto requestBody = HaruniInstanceCreateRequestDto
+                        .builder()
+                        .userId(haruni.getUser().getId())
+                        .haruniId(haruniId)
+                        .prompt(haruni.getPrompt())
+                        .build();
 
-        try{
-            modelServerTemplate.postForObject(
-                    "/chat",
-                    requestBody,
-                    String.class
-            );
-            log.info("[HaruniService - createHaruniInstance()] - Create Haruni Instance Succeed");
-        }catch (HttpClientErrorException e){
-            log.error("[HaruniService - createHaruniInstance()] - Create Haruni Instance Failed by [{}] - {}", e.getStatusText(), e.getMessage());
-            throw new RestApiException(CustomErrorCode.POST_MESSAGE_TO_MODEL_SERVER_FAILED);
-        }
+                modelServerTemplate.postForObject("/chat", requestBody, String.class);
+
+                log.info("[HaruniService - createHaruniInstance()] - Create Haruni Instance Succeed");
+
+                return true;
+            } catch (HttpClientErrorException e) {
+                log.error("[HaruniService - createHaruniInstance()] - Create Haruni Instance Failed by [{}] - {}", e.getStatusText(), e.getMessage());
+                return false;
+            }
+        }).exceptionally(throwable -> {
+            log.error("[HaruniService - createHaruniInstance()] - Create Haruni Instance Failed with {}", throwable.getMessage());
+            return false;
+        });
     }
 
     @Transactional(readOnly = true)
