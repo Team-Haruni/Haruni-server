@@ -16,9 +16,8 @@ public class Chat {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "chatroom_id", nullable = false)
-    private Chatroom chatroom;
+    @Column(nullable = false)
+    private String senderName;
 
     @Enumerated(EnumType.STRING)
     private ChatType type;
@@ -29,8 +28,13 @@ public class Chat {
     @Column(name = "created_at", nullable = false)
     private String createdAt;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "chatroom_id", nullable = false)
+    private Chatroom chatroom;
+
     @Builder
-    public Chat(Chatroom chatroom, ChatType type, String content, String createdAt){
+    public Chat(String senderName, Chatroom chatroom, ChatType type, String content, String createdAt){
+        this.senderName = senderName;
         this.chatroom = chatroom;
         this.type = type;
         this.content = content;

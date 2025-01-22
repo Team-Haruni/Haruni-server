@@ -1,4 +1,4 @@
-package org.haruni.domain.haruni.dto.req;
+package org.haruni.domain.chat.dto.req;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;

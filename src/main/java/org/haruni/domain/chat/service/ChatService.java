@@ -1,12 +1,14 @@
 package org.haruni.domain.chat.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.haruni.domain.chat.dto.req.ChatRequestDto;
+import org.haruni.domain.chat.dto.res.ChatResponseDto;
 import org.haruni.domain.chat.entity.Chat;
 import org.haruni.domain.chat.entity.ChatType;
 import org.haruni.domain.chat.repository.ChatRepository;
 import org.haruni.domain.chatroom.entity.Chatroom;
 import org.haruni.domain.chatroom.repository.ChatroomRepository;
-import org.haruni.domain.haruni.dto.req.ChatRequestDto;
 import org.haruni.domain.user.entity.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,7 +17,10 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
+import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ChatService {
@@ -32,6 +37,7 @@ public class ChatService {
                 .orElseGet(() -> createChatroom(user, formatDate));
 
         Chat chat = Chat.builder()
+                .senderName(user.getNickname())
                 .chatroom(chatroom)
                 .type(ChatType.USER)
                 .content(request.getContent())
@@ -43,13 +49,14 @@ public class ChatService {
     }
 
     @Transactional
-    public Chat saveHaruniChat(User user, String haruniResponse){
+    public Chat saveHaruniChat(User user, String haruniName, String haruniResponse){
         String formatDate = getNow();
 
         Chatroom chatroom = chatroomRepository.findByUserAndCreatedAt(user, formatDate)
                 .orElseGet(() -> createChatroom(user, formatDate));
 
         Chat chat = Chat.builder()
+                .senderName(haruniName)
                 .chatroom(chatroom)
                 .type(ChatType.HARUNI)
                 .content(haruniResponse)
@@ -60,6 +67,25 @@ public class ChatService {
         chatroom.getChats().add(chat);
 
         return chat;
+    }
+
+    @Transactional(readOnly = true)
+    public List<ChatResponseDto> getChats(User user, String request){
+        log.info("[ChatService - getChats()] - In");
+
+        Chatroom chatroom = chatroomRepository.findByUserAndCreatedAt(user, request)
+                .orElse(null);
+
+        if(chatroom == null){
+            log.warn("[ChatService - getChats()] - Chatroom Activate yet");
+            return Collections.emptyList();
+        }
+
+        log.info("[ChatService - getChats()] - Out");
+
+        return chatroom.getChats().stream()
+                .map(ChatResponseDto::from)
+                .toList();
     }
 
     private String getNow() {
@@ -80,6 +106,4 @@ public class ChatService {
 
         return chatroomRepository.save(chatroom);
     }
-
-
 }
