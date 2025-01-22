@@ -1,11 +1,11 @@
 package org.haruni.domain.haruni.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.haruni.domain.chat.dto.req.ChatHistoryRequestDto;
 import org.haruni.domain.chat.dto.req.ChatRequestBodyDto;
 import org.haruni.domain.chat.dto.req.ChatRequestDto;
 import org.haruni.domain.chat.dto.res.ChatResponseDto;
 import org.haruni.domain.chat.service.ChatService;
+import org.haruni.domain.haruni.dto.req.HaruniInstanceCreateRequestDto;
 import org.haruni.domain.haruni.dto.req.PromptUpdateRequestDto;
 import org.haruni.domain.haruni.dto.res.MainPageResponseDto;
 import org.haruni.domain.haruni.entity.Haruni;
@@ -15,6 +15,7 @@ import org.haruni.domain.user.repository.UserRepository;
 import org.haruni.global.exception.entity.RestApiException;
 import org.haruni.global.exception.error.CustomErrorCode;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
@@ -38,6 +39,32 @@ public class HaruniService {
         this.chatService = chatService;
         this.userRepository = userRepository;
         this.modelServerTemplate = modelServerTemplate;
+    }
+
+    @Async
+    @Transactional(readOnly = true)
+    public void createHaruniInstance(Long haruniId){
+        Haruni haruni = haruniRepository.findById(haruniId)
+                .orElseThrow(() -> new RestApiException(CustomErrorCode.HARUNI_NOT_FOUND));
+
+        HaruniInstanceCreateRequestDto requestBody = HaruniInstanceCreateRequestDto
+                .builder()
+                .userId(haruni.getUser().getId())
+                .haruniId(haruniId)
+                .prompt(haruni.getPrompt())
+                .build();
+
+        try{
+            modelServerTemplate.postForObject(
+                    "/chat",
+                    requestBody,
+                    String.class
+            );
+            log.info("[HaruniService - createHaruniInstance()] - Create Haruni Instance Succeed");
+        }catch (HttpClientErrorException e){
+            log.error("[HaruniService - createHaruniInstance()] - Create Haruni Instance Failed by [{}] - {}", e.getStatusText(), e.getMessage());
+            throw new RestApiException(CustomErrorCode.POST_MESSAGE_TO_MODEL_SERVER_FAILED);
+        }
     }
 
     @Transactional(readOnly = true)
