@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.haruni.domain.alarm.dto.req.AlarmDto;
 import org.haruni.domain.alarm.entity.Alarm;
 import org.haruni.domain.alarm.repository.AlarmRepository;
+import org.haruni.domain.user.entity.User;
 import org.haruni.domain.user.repository.UserRepository;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -37,7 +38,7 @@ public class AlarmService {
         log.info("[AlarmService - scheduleAlarm() - 알람 스케줄링 종료]");
     }
 
-    public void sendAlarm(){
+    public void sendScheduledAlarm(){
         log.info("[AlarmService - sendAlarm() - 알람 전송 시작]");
 
         String now = LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm"));
@@ -68,16 +69,34 @@ public class AlarmService {
     }
 
     @Async
+    public void sendDayDiaryAlarm(User user){
+        Message message = Message.builder()
+                .setToken(user.getFcmToken())
+                .putData("content", "하루 일기가 생성되었습니다! 확인해보세요!")
+                .build();
+        try{
+            String response = firebaseMessaging.send(message);
+
+            log.info("[AlarmService - sendDayDiaryAlarm() - 알람 전송 성공 {}", user.getFcmToken());
+
+            CompletableFuture.completedFuture(true);
+        } catch (FirebaseMessagingException e){
+            log.error("[AlarmService - sendDayDiaryAlarm() - 알람 전송 실패 {}", user.getFcmToken());
+            log.error("[AlarmService - sendDayDiaryAlarm() - Alarm send Failed with {}", e.getMessage());
+
+            CompletableFuture.completedFuture(false);
+        }
+    }
+
+    @Async
     public void updateAlarmSchedule(String fcmToken, String alarmActiveTime){
-        CompletableFuture.supplyAsync(() ->{
+        try {
             Alarm alarm = new Alarm(fcmToken, alarmActiveTime);
-
             alarmRepository.save(alarm);
-
-            return true;
-        }).exceptionally(throwable -> {
-            log.error("[AlarmService - updateAlarmSchedule()] - updateAlarmSchedule Failed with {}", throwable.getMessage());
-            return false;
-        });
+            CompletableFuture.completedFuture(true);
+        } catch (Exception e) {
+            log.error("[AlarmService - updateAlarmSchedule()] - updateAlarmSchedule Failed with {}", e.getMessage());
+            CompletableFuture.completedFuture(false);
+        }
     }
 }

@@ -43,35 +43,38 @@ public class HaruniService {
     }
 
     @Async
-    public void createHaruniInstance(Long haruniId){
+    public void createHaruniInstance(Long haruniId) {
         log.info("[HaruniService - createHaruniInstance()] - 하루니 인스턴스 생성 시작");
-        CompletableFuture.supplyAsync(() -> {
-            try {
-                Haruni haruni = haruniRepository.findById(haruniId)
-                        .orElseThrow(() -> new RestApiException(CustomErrorCode.HARUNI_NOT_FOUND));
 
-                HaruniInstanceCreateRequestDto requestBody = HaruniInstanceCreateRequestDto
-                        .builder()
-                        .userId(haruni.getUser().getId())
-                        .haruniId(haruniId)
-                        .prompt(haruni.getPrompt())
-                        .build();
+        try {
+            Haruni haruni = haruniRepository.findById(haruniId)
+                    .orElseThrow(() -> new RestApiException(CustomErrorCode.HARUNI_NOT_FOUND));
 
-                modelServerTemplate.postForObject("/chat", requestBody, String.class);
+            HaruniInstanceCreateRequestDto requestBody = HaruniInstanceCreateRequestDto
+                    .builder()
+                    .userId(haruni.getUser().getId())
+                    .haruniId(haruniId)
+                    .prompt(haruni.getPrompt())
+                    .build();
 
-                // TODO : 하루니 인스턴스가 제대로 생성이 되었는지 확인할 수 있는 로직 추가
+            modelServerTemplate.postForObject("/chat", requestBody, String.class);
 
-                log.info("[HaruniService - createHaruniInstance()] - 하루니 인스턴스 생성 완료");
+            // TODO : 하루니 인스턴스가 제대로 생성이 되었는지 확인할 수 있는 로직 추가
 
-                return true;
-            } catch (HttpClientErrorException e) {
-                log.error("[HaruniService - createHaruniInstance()] - 하루니 인스턴스 생성 실패 [{}] - {}", e.getStatusText(), e.getMessage());
-                return false;
-            }
-        }).exceptionally(throwable -> {
-            log.error("[HaruniService - createHaruniInstance()] - 하루니 인스턴스 생성 실패 {}", throwable.getMessage());
-            return false;
-        });
+            log.info("[HaruniService - createHaruniInstance()] - 하루니 인스턴스 생성 완료");
+
+            CompletableFuture.completedFuture(true);
+
+        } catch (HttpClientErrorException e) {
+            log.error("[HaruniService - createHaruniInstance()] - 하루니 인스턴스 생성 실패 [{}] - {}",
+                    e.getStatusText(), e.getMessage());
+            CompletableFuture.completedFuture(false);
+
+        } catch (Exception e) {
+            log.error("[HaruniService - createHaruniInstance()] - 하루니 인스턴스 생성 실패 {}",
+                    e.getMessage());
+            CompletableFuture.completedFuture(false);
+        }
     }
 
     @Transactional(readOnly = true)

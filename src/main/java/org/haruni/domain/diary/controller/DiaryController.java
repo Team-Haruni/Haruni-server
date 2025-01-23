@@ -43,5 +43,4 @@ public class DiaryController {
                                                                             String month){
         return ResponseEntity.status(HttpStatus.OK).body(ResponseDto.of(diaryService.getMonthDiary(user, month), "월별 캘린더 조회 완료"));
     }
-
 }

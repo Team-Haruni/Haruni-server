@@ -2,8 +2,10 @@ package org.haruni.domain.diary.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.haruni.domain.diary.dto.res.DayDiaryResponseDto;
 import org.haruni.domain.user.entity.User;
 
 @Entity
@@ -30,4 +32,13 @@ public class Diary {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    @Builder
+    public Diary(DayDiaryResponseDto response, User user, String date){
+        this.description = response.getDescription();
+        this.s3ImgUrl = response.getDaySummaryImgUrl();
+        this.mood = Mood.fromEmotion(response.getMood());
+        this.date = date;
+        this.user = user;
+    }
 }
