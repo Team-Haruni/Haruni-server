@@ -5,9 +5,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.haruni.domain.user.entity.User;
-import org.springframework.data.annotation.CreatedDate;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -21,15 +18,14 @@ public class Diary {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    @Column(name = "img_object_key")
-    private String imgObjectKey;
+    @Column(name = "s3_img_url")
+    private String s3ImgUrl;
 
     @Enumerated(EnumType.STRING)
     private Mood mood;
 
-    @CreatedDate
-    @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt;
+    @Column(nullable = false)
+    private String date;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)

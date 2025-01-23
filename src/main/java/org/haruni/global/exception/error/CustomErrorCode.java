@@ -22,6 +22,9 @@ public enum CustomErrorCode implements ErrorCode {
     OAUTH2_INVALID_PROVIDER(HttpStatus.BAD_REQUEST, 400, "유효하지 않은 소셜 로그인 제공자입니다."),
     OAUTH2_ACCESS_TOKEN_UNAVAILABLE(HttpStatus.UNAUTHORIZED, 401, "유효하지 않은 인증서버의 엑세스 토큰입니다."),
 
+    // Diary
+    DIARY_NOT_FOUND(HttpStatus.NOT_FOUND, 404, "하루일기 조회에 실패하였습니다."),
+
     // FCM
     FCM_INITIALIZE_FAILED(HttpStatus.FAILED_DEPENDENCY, 424, "FCM 연결 실패"),
 

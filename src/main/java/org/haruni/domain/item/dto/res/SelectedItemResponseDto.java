@@ -15,7 +15,7 @@ import org.haruni.domain.item.entity.Item;
 @NoArgsConstructor
 public class SelectedItemResponseDto {
 
-    @Schema(description = "아이탬 이미지 url", example = "https://")
+    @Schema(description = "아이탬 이미지 url", example = "https://{bucket-name}.s3.{region}.amazonaws.com/{object-key}")
     private String itemImgUrl;
 
     @Schema(description = "선택 여부", example = "true")

@@ -1,10 +1,7 @@
 package org.haruni.domain.haruni.dto.res;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.haruni.domain.item.entity.Item;
 
 import java.util.List;
@@ -14,7 +11,7 @@ import java.util.List;
 @Getter
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class MainPageResponseDto {
 
     @Schema(description = "하루니 이미지 url")
