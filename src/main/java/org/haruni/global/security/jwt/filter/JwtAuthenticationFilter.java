@@ -25,12 +25,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final AntPathMatcher pathMatcher = new AntPathMatcher();
 
     private final List<String> whiteListUri = Arrays.asList(
-            "/swagger-ui.html",
             "/swagger-ui/**",
             "/v3/api-docs/**",
-            "/swagger-resources/**",
-            "/webjars/**",
-            "/favicon.ico",
             "/api/v1/auth/**"
     );
 
