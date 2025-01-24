@@ -6,10 +6,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.haruni.domain.user.entity.User;
 
+@Table(name = "backgrounds")
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "backgrounds")
 public class Background {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

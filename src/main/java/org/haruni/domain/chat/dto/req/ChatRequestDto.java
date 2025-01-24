@@ -12,11 +12,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ChatRequestDto {
 
-    // CONCEPT : 하루니 모델 서버에 전송할 채팅 양식(Client -> Spring)
-
-    @Schema(description = "채팅 내용", example = "오늘은 러닝을 뛰고 왔어! 정말 상쾌하더라")
-    @NotBlank(message = "채팅 내용은 공백일 수 없습니다.")
-    @Size(max = 300, message = "채팅 내용의 길이가 너무 깁니다.(최대 300자)")
+    @Schema(
+            description = "채팅 본문",
+            example = "오늘은 한강 잠실교에서 러닝을 뛰고 왔어. 숨이 정말 가빠졌는데 포기하고 싶지 않았어. 정말 뿌듯하더라고!"
+    )
+    @NotBlank(message = "채팅 본문이 비어있습니다")
+    @Size(max = 300, message = "채팅 본문의 길이가 너무 깁니다")
     private String content;
 
 }

@@ -1,20 +1,21 @@
 package org.haruni.domain.haruni.dto.req;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
 
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@Getter
+@Schema(description = "Spring 서버 -> 모델 서버로 하루니 인스턴스 생성 Request")
 public class HaruniInstanceCreateRequestDto {
 
-    // CONCEPT : 모델 서버에 하루니 인스턴스 생성을 요청하는 DTO
+    private final Long userId;
+    private final Long haruniId;
+    private final String prompt;
 
-    private Long userId;
-
-    private Long haruniId;
-
-    private String prompt;
+    @Builder
+    private HaruniInstanceCreateRequestDto(Long userId, Long haruniId, String prompt) {
+        this.userId = userId;
+        this.haruniId = haruniId;
+        this.prompt = prompt;
+    }
 }

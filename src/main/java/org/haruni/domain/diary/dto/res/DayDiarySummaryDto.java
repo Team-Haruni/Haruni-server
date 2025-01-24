@@ -5,18 +5,27 @@ import lombok.*;
 import org.haruni.domain.diary.entity.Diary;
 
 @Getter
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class DayDiarySummaryDto {
 
-    @Schema(description = "날짜", example = "25")
-    private String date;
+    @Schema(
+            description = "날짜",
+            example = "25"
+    )
+    private final String date;
 
-    @Schema(description = "기분", example = "HAPPY")
-    private String mood;
+    @Schema(
+            description = "기분",
+            example = "HAPPY"
+    )
+    private final String mood;
 
-    public static DayDiarySummaryDto from(Diary diary){
+    @Builder
+    private DayDiarySummaryDto(String date, String mood) {
+        this.date = date;
+        this.mood = mood;
+    }
+
+    public static DayDiarySummaryDto entityToDto(Diary diary){
         return DayDiarySummaryDto.builder()
                 .date(diary.getDate())
                 .mood(diary.getMood().getEmotion())

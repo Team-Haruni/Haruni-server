@@ -43,7 +43,7 @@ public class AlarmService {
 
         String now = LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm"));
         List<AlarmDto> alarms = alarmRepository.findAllBySendingTime(now).stream()
-                .map(AlarmDto::from)
+                .map(AlarmDto::entityToDto)
                 .toList();
 
         alarmRepository.deleteAllBySendingTime(now);

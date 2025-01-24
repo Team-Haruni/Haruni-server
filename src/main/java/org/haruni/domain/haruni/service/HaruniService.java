@@ -1,7 +1,7 @@
 package org.haruni.domain.haruni.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.haruni.domain.chat.dto.req.ChatRequestBodyDto;
+import org.haruni.domain.chat.dto.req.ChatRequestBody;
 import org.haruni.domain.chat.dto.req.ChatRequestDto;
 import org.haruni.domain.chat.dto.res.ChatResponseDto;
 import org.haruni.domain.chat.service.ChatService;
@@ -142,7 +142,7 @@ public class HaruniService {
         Haruni haruni = haruniRepository.findById(authUser.getHaruni().getId())
                 .orElseThrow(() -> new RestApiException(CustomErrorCode.HARUNI_NOT_FOUND));
 
-        ChatRequestBodyDto requestBody = ChatRequestBodyDto.builder()
+        ChatRequestBody requestBody = ChatRequestBody.builder()
                 .haruniId(haruni.getId())
                 .content(request.getContent())
                 .build();
@@ -161,7 +161,7 @@ public class HaruniService {
         }
 
         log.info("[HaruniService - sendChatToHaruni()] - 하루니 채팅 전송 종료");
-        return ChatResponseDto.from(
+        return ChatResponseDto.entityToDto(
                 chatService.saveHaruniChat(user, haruni.getName(), responseBody)
         );
     }

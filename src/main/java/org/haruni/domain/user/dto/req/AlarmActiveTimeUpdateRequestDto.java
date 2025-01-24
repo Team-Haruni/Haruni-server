@@ -6,12 +6,15 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Schema(description = "알람 전송 시간 수정 Request")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
+@Schema(description = "알람 전송 시간 수정 Request")
 public class AlarmActiveTimeUpdateRequestDto {
 
-    @Schema(description = "알람 전송 시간", example = "11:10")
-    @NotBlank(message = "알람 전송 시간이 비어있습니다.")
+    @Schema(
+            description = "알람 전송 시간",
+            example = "11:10"
+    )
+    @NotBlank(message = "알람 전송 시간이 비어있습니다")
     private String alarmActiveTime;
 }

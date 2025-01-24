@@ -34,7 +34,7 @@ public class Haruni {
     private Double level = 1.0;
 
     @Builder
-    protected Haruni(String name, MBTI mbti, String prompt){
+    private Haruni(String name, MBTI mbti, String prompt){
         this.name = name;
         this.mbti = mbti;
         this.prompt = prompt;

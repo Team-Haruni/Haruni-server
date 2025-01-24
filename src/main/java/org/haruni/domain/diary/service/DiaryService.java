@@ -72,7 +72,7 @@ public class DiaryService {
                 .orElseThrow(() -> new RestApiException(CustomErrorCode.USER_NOT_FOUND));
 
         List<DayDiarySummaryDto> summaries = diaryRepository.findAllByUserAndStartWithMonth(user.getId(), month).stream()
-                .map(DayDiarySummaryDto::from)
+                .map(DayDiarySummaryDto::entityToDto)
                 .toList();
 
         log.info("[DiaryService - getMonthDiary()] : {}월의 다이어리 조회 완료", month);

@@ -25,7 +25,7 @@ public class ItemService {
 
         log.info("[ItemService - getSelectedItem()] - Out");
         return user.getItems().stream()
-                .map(SelectedItemResponseDto::from)
+                .map(SelectedItemResponseDto::entityToDto)
                 .toList();
     }
 

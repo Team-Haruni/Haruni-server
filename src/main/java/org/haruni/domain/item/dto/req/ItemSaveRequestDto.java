@@ -8,9 +8,9 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-@Schema(description = "아이탬 선택 Request")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
+@Schema(description = "아이탬 선택 Request")
 public class ItemSaveRequestDto {
 
     @Schema(description = "저장할 아이탬 리스트")

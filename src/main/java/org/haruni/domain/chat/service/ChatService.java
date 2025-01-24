@@ -85,7 +85,7 @@ public class ChatService {
         log.info("[ChatService - getChats()] - 채팅 조회 종료");
 
         return chatroom.getChats().stream()
-                .map(ChatResponseDto::from)
+                .map(ChatResponseDto::entityToDto)
                 .toList();
     }
 
