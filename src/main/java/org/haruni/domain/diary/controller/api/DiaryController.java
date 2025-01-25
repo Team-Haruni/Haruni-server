@@ -1,9 +1,9 @@
-package org.haruni.domain.diary.controller;
+package org.haruni.domain.diary.controller.api;
 
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import org.haruni.domain.common.dto.res.ResponseDto;
+import org.haruni.domain.diary.controller.docs.DiaryControllerSpecification;
 import org.haruni.domain.diary.dto.res.DayDiaryResponseDto;
 import org.haruni.domain.diary.dto.res.MonthDiaryResponseDto;
 import org.haruni.domain.diary.service.DiaryService;
@@ -17,12 +17,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name = "DiaryController", description = "Diary management Controller")
 @Validated
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/v1/diary")
-public class DiaryController {
+public class DiaryController implements DiaryControllerSpecification {
 
     private final DiaryService diaryService;
 

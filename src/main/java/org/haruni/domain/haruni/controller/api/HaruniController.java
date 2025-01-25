@@ -1,12 +1,12 @@
-package org.haruni.domain.haruni.controller;
+package org.haruni.domain.haruni.controller.api;
 
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import org.haruni.domain.chat.dto.req.ChatRequestDto;
 import org.haruni.domain.chat.dto.res.ChatResponseDto;
 import org.haruni.domain.common.dto.res.ResponseDto;
+import org.haruni.domain.haruni.controller.docs.HaruniControllerSpecification;
 import org.haruni.domain.haruni.dto.req.PromptUpdateRequestDto;
 import org.haruni.domain.haruni.dto.res.MainPageResponseDto;
 import org.haruni.domain.haruni.service.HaruniService;
@@ -19,12 +19,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Tag(name = "HaruniController", description = "Haruni management Controller")
-@RestController
 @Validated
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/haruni")
-public class HaruniController {
+public class HaruniController implements HaruniControllerSpecification {
 
     private final HaruniService haruniService;
 

@@ -1,13 +1,12 @@
-package org.haruni.domain.user.controller;
+package org.haruni.domain.user.controller.api;
 
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.haruni.domain.common.dto.res.ResponseDto;
-import org.haruni.domain.oauth.service.OAuth2UserService;
-import org.haruni.domain.user.dto.req.LoginRequestDto;
 import org.haruni.domain.oauth.dto.req.OAuthLoginRequestDto;
+import org.haruni.domain.oauth.service.OAuth2UserService;
+import org.haruni.domain.user.controller.docs.AuthControllerSpecification;
+import org.haruni.domain.user.dto.req.LoginRequestDto;
 import org.haruni.domain.user.dto.req.SignUpRequestDto;
 import org.haruni.domain.user.dto.res.TokenResponseDto;
 import org.haruni.domain.user.service.AuthService;
@@ -18,12 +17,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name = "AuthController", description = "Auth management Controller")
-@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/auth")
-public class AuthController {
+public class AuthController implements AuthControllerSpecification {
 
     private final AuthService authService;
     private final OAuth2UserService oAuth2UserService;

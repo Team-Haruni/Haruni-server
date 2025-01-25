@@ -1,10 +1,9 @@
-package org.haruni.domain.user.controller;
+package org.haruni.domain.user.controller.api;
 
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.haruni.domain.common.dto.res.ResponseDto;
+import org.haruni.domain.user.controller.docs.UserControllerSpecification;
 import org.haruni.domain.user.dto.req.AlarmActiveTimeUpdateRequestDto;
 import org.haruni.domain.user.dto.req.EmailUpdateRequestDto;
 import org.haruni.domain.user.dto.res.UserInfoResponseDto;
@@ -15,12 +14,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "UserController", description = "User management Controller")
-@Slf4j
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/user")
-public class UserController {
+public class UserController implements UserControllerSpecification {
 
     private final UserService userService;
 

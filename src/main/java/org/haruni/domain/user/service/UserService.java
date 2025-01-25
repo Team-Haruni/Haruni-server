@@ -47,6 +47,9 @@ public class UserService {
         User user = userRepository.findByEmail(authUser.getEmail())
                 .orElseThrow(() -> new RestApiException(CustomErrorCode.USER_NOT_FOUND));
 
+        if(userRepository.existsByEmail(request.getEmail()))
+            throw new RestApiException(CustomErrorCode.USER_EMAIL_DUPLICATED);
+
         user.updateEmail(request.getEmail());
 
         log.info("[UserService - updateEmail()] : Out");

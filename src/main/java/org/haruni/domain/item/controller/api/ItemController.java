@@ -1,9 +1,9 @@
-package org.haruni.domain.item.controller;
+package org.haruni.domain.item.controller.api;
 
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.haruni.domain.common.dto.res.ResponseDto;
+import org.haruni.domain.item.controller.docs.ItemControllerSpecification;
 import org.haruni.domain.item.dto.req.ItemSaveRequestDto;
 import org.haruni.domain.item.dto.res.SelectedItemResponseDto;
 import org.haruni.domain.item.service.ItemService;
@@ -15,11 +15,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Tag(name = "ItemController", description = "Item management Controller")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/v1/item")
-public class ItemController {
+public class ItemController implements ItemControllerSpecification {
 
     private final ItemService itemService;
 

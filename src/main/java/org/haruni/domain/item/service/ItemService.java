@@ -7,6 +7,9 @@ import org.haruni.domain.item.dto.res.SelectedItemResponseDto;
 import org.haruni.domain.item.entity.Item;
 import org.haruni.domain.item.repository.ItemRepository;
 import org.haruni.domain.user.entity.User;
+import org.haruni.domain.user.repository.UserRepository;
+import org.haruni.global.exception.entity.RestApiException;
+import org.haruni.global.exception.error.CustomErrorCode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,10 +21,14 @@ import java.util.List;
 public class ItemService {
 
     private final ItemRepository itemRepository;
+    private final UserRepository userRepository;
 
     @Transactional(readOnly = true)
-    public List<SelectedItemResponseDto> getSelectedItem(User user){
+    public List<SelectedItemResponseDto> getSelectedItem(User authUser){
         log.info("[ItemService - getSelectedItem()] - In");
+
+        User user = userRepository.findByEmail(authUser.getEmail())
+                .orElseThrow(() -> new RestApiException(CustomErrorCode.USER_NOT_FOUND));
 
         log.info("[ItemService - getSelectedItem()] - Out");
         return user.getItems().stream()
@@ -30,8 +37,11 @@ public class ItemService {
     }
 
     @Transactional
-    public Boolean saveItems(User user, ItemSaveRequestDto request){
+    public Boolean saveItems(User authUser, ItemSaveRequestDto request){
         log.info("[ItemService - saveItems()] - In");
+
+        User user = userRepository.findByEmail(authUser.getEmail())
+                .orElseThrow(() -> new RestApiException(CustomErrorCode.USER_NOT_FOUND));
 
         user.getItems().clear();
         itemRepository.deleteAllByUser(user);
