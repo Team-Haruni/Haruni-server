@@ -10,7 +10,7 @@ import org.springframework.web.client.RestTemplate;
 @Configuration
 public class RestTemplateConfig {
 
-    @Value("${haruni.model.url}")
+    @Value("${model-server.url.url}")
     private String modelServerUrl;
 
     @Bean
