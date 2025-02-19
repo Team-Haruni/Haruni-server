@@ -8,6 +8,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.haruni.domain.alarm.dto.req.AlarmDto;
 import org.haruni.domain.alarm.entity.Alarm;
 import org.haruni.domain.alarm.repository.AlarmRepository;
+import org.haruni.domain.chat.entity.Chat;
+import org.haruni.domain.chat.entity.ChatType;
+import org.haruni.domain.chat.repository.ChatRepository;
+import org.haruni.domain.chat.service.ChatService;
+import org.haruni.domain.chatroom.entity.Chatroom;
+import org.haruni.domain.chatroom.service.ChatroomService;
 import org.haruni.domain.user.entity.User;
 import org.haruni.domain.user.repository.UserRepository;
 import org.springframework.scheduling.annotation.Async;
@@ -23,10 +29,15 @@ import java.util.concurrent.CompletableFuture;
 @RequiredArgsConstructor
 public class AlarmService {
 
+    private final ChatroomService chatroomService;
+    private final ChatService chatService;
+
     private final UserRepository userRepository;
     private final AlarmRepository alarmRepository;
+    private final ChatRepository chatRepository;
 
     private final FirebaseMessaging firebaseMessaging;
+
 
     public void scheduleAlarm(){
         log.info("[AlarmService - scheduleAlarm() - 알람 스케줄링 시작]");
@@ -39,12 +50,29 @@ public class AlarmService {
     }
 
     public void sendScheduledAlarm(){
-        log.info("[AlarmService - sendAlarm() - 알람 전송 시작]");
+        log.info("[AlarmService - sendScheduledAlarm() - 알람 전송 시작]");
 
         String now = LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm"));
         List<AlarmDto> alarms = alarmRepository.findAllBySendingTime(now).stream()
                 .map(AlarmDto::entityToDto)
                 .toList();
+
+        log.info("[AlarmService - sendScheduledAlarm() - 알람 조회 완료 및 채팅 저장 시작]");
+        alarms.stream().forEach(alarmDto -> {
+            User user = userRepository.findByFcmToken(alarmDto.getFcmToken());
+
+            Chatroom chatroom = user.getChatrooms().stream()
+                    .filter(chatroom1 -> chatroom1.getCreatedAt().equals(chatService.getNow()))
+                    .findFirst()
+                    .orElseGet(() -> chatroomService.createChatroom(user, chatService.getNow()));
+
+            Chat chat = new Chat(user.getNickname(), chatroom, ChatType.HARUNI, alarmDto.getContent(), chatService.getNow());
+
+            chatroom.getChats().add(chat);
+            chatRepository.save(chat);
+        });
+
+        log.info("[AlarmService - sendScheduledAlarm() - 채팅 저장 완료]");
 
         alarmRepository.deleteAllBySendingTime(now);
 
@@ -58,14 +86,14 @@ public class AlarmService {
 
             try{
                 String response = firebaseMessaging.send(message);
-                log.info("[AlarmService - sendAlarm() - 알람 전송 성공 {}", alarmDto.getFcmToken());
+                log.info("[AlarmService - sendScheduledAlarm() - 알람 전송 성공 {}", alarmDto.getFcmToken());
             }catch (FirebaseMessagingException e){
-                log.error("[AlarmService - sendAlarm() - 알람 전송 실패 {}", alarmDto.getFcmToken());
-                log.error("[AlarmService - sendAlarm() - Alarm send Failed with {}", e.getMessage());
+                log.error("[AlarmService - sendScheduledAlarm() - 알람 전송 실패 {}", alarmDto.getFcmToken());
+                log.error("[AlarmService - sendScheduledAlarm() - Alarm send Failed with {}", e.getMessage());
             }
         });
 
-        log.info("[AlarmService - sendAlarm() - 알람 전송 종료]");
+        log.info("[AlarmService - sendScheduledAlarm() - 알람 전송 종료]");
     }
 
     @Async

@@ -94,12 +94,12 @@ public class ChatService {
                 .toList();
     }
 
-    private String getNow() {
+    public String getNow() {
         LocalDate now = LocalDate.now(ZoneId.of("Asia/Seoul"));
         return now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
     }
 
-    private String getCurrentTime() {
+    public String getCurrentTime() {
         LocalTime now = LocalTime.now(ZoneId.of("Asia/Seoul"));
         return now.format(DateTimeFormatter.ofPattern("HH:mm"));
     }
