@@ -74,6 +74,11 @@ public class ChatService {
     public List<ChatResponseDto> getChats(User user, String request){
         log.info("[ChatService - getChats()] - 채팅 조회 시작");
 
+        /**
+         * Chat 테이블에서 유저 아이디를 통회 조회하고 id를 기준으로 내림차순 조회
+         *
+         */
+
         Chatroom chatroom = chatroomRepository.findByUserAndCreatedAt(user, request)
                 .orElse(null);
 

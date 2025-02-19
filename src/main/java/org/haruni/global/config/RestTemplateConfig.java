@@ -10,7 +10,7 @@ import org.springframework.web.client.RestTemplate;
 @Configuration
 public class RestTemplateConfig {
 
-    @Value("${model-server.url.url}")
+    @Value("${model-server.url}")
     private String modelServerUrl;
 
     @Bean
