@@ -19,4 +19,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "FROM User u " +
             "WHERE u.alarmActive = true")
     List<Alarm> findAlarmByAlarmActive();
+
+    User findByFcmToken(String fcmToken);
 }

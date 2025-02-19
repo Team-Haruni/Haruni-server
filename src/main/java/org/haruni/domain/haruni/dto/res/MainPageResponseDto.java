@@ -24,7 +24,7 @@ public class MainPageResponseDto {
 
     @Schema(
             description = "하루니 레벨(소수부)",
-            example = "31.5"
+            example = "0.5"
     )
     private final Double haruniLevelDecimal;
 

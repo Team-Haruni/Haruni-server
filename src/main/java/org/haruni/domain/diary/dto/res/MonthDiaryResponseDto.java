@@ -5,7 +5,6 @@ import lombok.*;
 
 import java.util.List;
 
-
 @Getter
 @Schema(description = "월별 캘린더 Response")
 public class MonthDiaryResponseDto {

@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Validated
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/v1/diary")
+@RequestMapping("/api/v1/diary")
 public class DiaryController implements DiaryControllerSpecification {
 
     private final DiaryService diaryService;

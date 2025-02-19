@@ -74,6 +74,11 @@ public class ChatService {
     public List<ChatResponseDto> getChats(User user, String request){
         log.info("[ChatService - getChats()] - 채팅 조회 시작");
 
+        /**
+         * Chat 테이블에서 유저 아이디를 통회 조회하고 id를 기준으로 내림차순 조회
+         *
+         */
+
         Chatroom chatroom = chatroomRepository.findByUserAndCreatedAt(user, request)
                 .orElse(null);
 
@@ -89,12 +94,12 @@ public class ChatService {
                 .toList();
     }
 
-    private String getNow() {
+    public String getNow() {
         LocalDate now = LocalDate.now(ZoneId.of("Asia/Seoul"));
         return now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
     }
 
-    private String getCurrentTime() {
+    public String getCurrentTime() {
         LocalTime now = LocalTime.now(ZoneId.of("Asia/Seoul"));
         return now.format(DateTimeFormatter.ofPattern("HH:mm"));
     }
