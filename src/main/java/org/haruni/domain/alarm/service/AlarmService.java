@@ -58,11 +58,12 @@ public class AlarmService {
                 .toList();
 
         log.info("[AlarmService - sendScheduledAlarm() - 알람 조회 완료 및 채팅 저장 시작]");
-        alarms.stream().forEach(alarmDto -> {
+
+        alarms.forEach(alarmDto -> {
             User user = userRepository.findByFcmToken(alarmDto.getFcmToken());
 
             Chatroom chatroom = user.getChatrooms().stream()
-                    .filter(chatroom1 -> chatroom1.getCreatedAt().equals(chatService.getNow()))
+                    .filter(userChatroom -> userChatroom.getCreatedAt().equals(chatService.getNow()))
                     .findFirst()
                     .orElseGet(() -> chatroomService.createChatroom(user, chatService.getNow()));
 

@@ -41,6 +41,15 @@ jobs:
           spring.security.jwt.access-token.expired-time: ${{ secrets.JWT_ACCESS_TOKEN_EXPIRED_TIME}}
           spring.security.jwt.refresh-token.expired-time: ${{ secrets.JWT_REFRESH_TOKEN_EXPIRED_TIME}}
 
+          spring.oauth2.client.registration.google.client-id: ${{ secrets.GOOGLE_CLIENT_ID }}
+          spring.oauth2.client.registration.google.client-secret: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+
+          spring.oauth2.client.registration.naver.client-id: ${{ secrets.NAVER_CLIENT_ID }}
+          spring.oauth2.client.registration.naver.client-secret: ${{ secrets.NAVER_CLIENT_SECRET }}
+
+          spring.oauth2.client.registration.kakao.client-id: ${{ secrets.KAKAO_CLIENT_ID }}
+          spring.oauth2.client.registration.kakao.client-secret: ${{ secrets.KAKAO_CLIENT_SECRET }}
+
           model-server.url: ${{ secrets.MODEL_SERVER_URL}}
 
       - name: Build with Gradle
