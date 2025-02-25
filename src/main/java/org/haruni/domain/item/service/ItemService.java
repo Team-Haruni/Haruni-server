@@ -25,12 +25,12 @@ public class ItemService {
 
     @Transactional(readOnly = true)
     public List<SelectedItemResponseDto> getSelectedItem(User authUser){
-        log.info("[ItemService - getSelectedItem()] - In");
 
         User user = userRepository.findByEmail(authUser.getEmail())
                 .orElseThrow(() -> new RestApiException(CustomErrorCode.USER_NOT_FOUND));
 
-        log.info("[ItemService - getSelectedItem()] - Out");
+        log.info("[ItemService - getSelectedItem()] - 선택된 아이탬 조회 성공");
+
         return user.getItems().stream()
                 .map(SelectedItemResponseDto::entityToDto)
                 .toList();
@@ -38,15 +38,12 @@ public class ItemService {
 
     @Transactional
     public Boolean saveItems(User authUser, ItemSaveRequestDto request){
-        log.info("[ItemService - saveItems()] - In");
 
         User user = userRepository.findByEmail(authUser.getEmail())
                 .orElseThrow(() -> new RestApiException(CustomErrorCode.USER_NOT_FOUND));
 
         user.getItems().clear();
         itemRepository.deleteAllByUser(user);
-
-        log.info("[ItemService - saveItems()] - User's Item Clear Succeed");
 
         List<Item> newItems = request.getItems().stream()
                 .map(item -> Item.builder()
@@ -58,8 +55,7 @@ public class ItemService {
         user.getItems().addAll(newItems);
         itemRepository.saveAll(newItems);
 
-        log.info("[ItemService - saveItems()] - User's Item Save Succeed");
-        log.info("[ItemService - saveItems()] - Out");
+        log.info("[ItemService - saveItems()] - 아이탬 저장 성공");
 
         return true;
     }

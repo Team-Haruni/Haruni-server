@@ -1,11 +1,13 @@
 package org.haruni.domain.chatroom.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.haruni.domain.chatroom.entity.Chatroom;
 import org.haruni.domain.chatroom.repository.ChatroomRepository;
 import org.haruni.domain.user.entity.User;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ChatroomService {
@@ -17,6 +19,8 @@ public class ChatroomService {
                 .user(user)
                 .createdAt(createdAt)
                 .build();
+
+        log.info("[ChatroomService - createChatroom()] : 채팅룸 생성 완료");
 
         return chatroomRepository.save(chatroom);
     }

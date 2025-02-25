@@ -40,18 +40,14 @@ public class OAuth2UserService {
     }
 
     public OAuth2ResponseDto<?> oauth2LoginProcess(OAuthLoginRequestDto request) {
-        log.info("[OAuth2UserService - oauth2LoginProcess()] : In");
 
         String endpoint = OAuth2Provider.getProviderEndPoint(request.getProviderId());
-
-        log.info("[OAuth2UserService - oauth2LoginProcess()] : HttpRequest setting started");
 
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setBearerAuth(request.getAccessToken());
 
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
 
-        log.info("[OAuth2UserService - oauth2LoginProcess()] : HttpRequest sending process started");
 
         ResponseEntity<Map<String, Object>> response;
         try {
@@ -62,12 +58,11 @@ public class OAuth2UserService {
                     new ParameterizedTypeReference<Map<String, Object>>() {
                     }
             );
+
         } catch (HttpClientErrorException e) {
             log.error("[OAuth2UserService - oauth2LoginProcess()] : AccessToken is not available and rejected from resource server({})", request.getProviderId());
             throw new RestApiException(CustomErrorCode.OAUTH2_ACCESS_TOKEN_UNAVAILABLE);
         }
-
-        log.info("[OAuth2UserService - oauth2LoginProcess()] : HttpResponse processing started");
 
         OAuth2UserInfo oAuth2UserInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(
                 request.getProviderId(),
@@ -75,8 +70,9 @@ public class OAuth2UserService {
                 request.getAccessToken()
         );
 
+        log.info("[OAuth2UserService - oauth2LoginProcess()] : [{}] 사용자 정보 불러오기 완료 - {}", oAuth2UserInfo.getProvider(), oAuth2UserInfo.getName());
+
         if (userRepository.existsByEmail(oAuth2UserInfo.getEmail())) {
-            log.info("[OAuth2UserService - oauth2LoginProcess()] : Generating access & refresh Token");
 
             OAuth2UserDetailsImpl oAuth2UserDetails = new OAuth2UserDetailsImpl(oAuth2UserInfo);
             Authentication authentication = new OAuth2AuthenticationToken(
@@ -85,9 +81,11 @@ public class OAuth2UserService {
                     request.getProviderId()
             );
 
+            log.info("[OAuth2UserService - oauth2LoginProcess()] : Spring Security 인증 및 JWT 발급 성공");
+
             return OAuth2ResponseDto.login(jwtTokenProvider.generateToken(authentication));
         } else {
-            log.info("[OAuth2UserService - oauth2LoginProcess()] : Generating redirect response");
+            log.info("[OAuth2UserService - oauth2LoginProcess()] : 서비스 회원 아님. 회원가입 페이지로 리디랙션");
             return OAuth2ResponseDto.signup(oAuth2UserInfo.getEmail());
         }
     }

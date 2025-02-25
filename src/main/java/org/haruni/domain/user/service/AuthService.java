@@ -40,12 +40,9 @@ public class AuthService {
 
     @Transactional
     public String signUp(SignUpRequestDto req){
-        log.info("[AuthService - signUp()] : In");
 
         if(userRepository.existsByEmail((req.getEmail())))
             throw new RestApiException(CustomErrorCode.USER_EMAIL_DUPLICATED);
-
-        log.info("[AuthService - signUp()] : Email duplication validate Finished");
 
         User user = User.builder()
                 .req(req)
@@ -55,7 +52,7 @@ public class AuthService {
         userRepository.save(user);
         alarmService.updateAlarmSchedule(user.getFcmToken(), user.getAlarmActiveTime());
 
-        log.info("[AuthService - signUp()] : User saved");
+        log.info("[AuthService - signUp()] : 유저({}) 회원 가입 성공", user.getEmail());
 
         Haruni haruni = Haruni.builder()
                 .name(req.getHaruniName())
@@ -68,20 +65,16 @@ public class AuthService {
 
         haruniService.createHaruniInstance(haruni.getId());
 
-        log.info("[AuthService - signUp()] : Haruni saved");
-        log.info("[AuthService - signUp()] : Out");
-
         return user.getEmail();
     }
 
     @Transactional
     public TokenResponseDto login(LoginRequestDto req){
-        log.info("[AuthService - login()] : In");
 
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(req.getEmail(), req.getPassword());
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
-        log.info("[AuthService - login()] : Authenticate user Succeed");
+        log.info("[AuthService - login()] : 유저({}) 인증 성공", authentication.getName());
 
         return jwtTokenProvider.generateToken(authentication);
     }

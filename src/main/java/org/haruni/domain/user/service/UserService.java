@@ -27,11 +27,10 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public UserInfoResponseDto getUserInfo(User user){
-        log.info("[UserService - getUserInfo()] : In");
 
         Boolean emailUpdateAvailable = user.getProviderId().equals(OAuth2Provider.NORMAL);
 
-        log.info("[UserService - getUserInfo()] : Out");
+        log.info("[UserService - getUserInfo()] : 유저 정보 조회 성공");
 
         return UserInfoResponseDto.builder()
                 .nickname(user.getNickname())
@@ -42,7 +41,6 @@ public class UserService {
 
     @Transactional
     public String updateEmail(User authUser, EmailUpdateRequestDto request){
-        log.info("[UserService - updateEmail()] : In");
 
         User user = userRepository.findByEmail(authUser.getEmail())
                 .orElseThrow(() -> new RestApiException(CustomErrorCode.USER_NOT_FOUND));
@@ -52,24 +50,22 @@ public class UserService {
 
         user.updateEmail(request.getEmail());
 
-        log.info("[UserService - updateEmail()] : Out");
+        log.info("[UserService - updateEmail()] : 유저 이메일 수정 성공");
 
         return request.getEmail();
     }
 
     @Transactional
     public String updateAlarmActiveTime(User authUser, AlarmActiveTimeUpdateRequestDto request){
-        log.info("[UserService - updateAlarmActiveTime()] : In");
 
-        User user = userRepository.findByEmail(authUser.getEmail())
+         User user = userRepository.findByEmail(authUser.getEmail())
                 .orElseThrow(() -> new RestApiException(CustomErrorCode.USER_NOT_FOUND));
 
         user.updateAlarmActiveTime(request.getAlarmActiveTime());
 
-        log.info("[UserService - updateAlarmActiveTime()] : Update Scheduled Alarm in Redis");
         alarmService.updateAlarmSchedule(user.getFcmToken(), request.getAlarmActiveTime());
 
-        log.info("[UserService - updateAlarmActiveTime()] : Out");
+        log.info("[UserService - updateAlarmActiveTime()] : 유저 알람 활성화 시간 수정 성공");
         return request.getAlarmActiveTime();
     }
 
