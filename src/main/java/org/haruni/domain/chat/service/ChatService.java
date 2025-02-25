@@ -48,6 +48,8 @@ public class ChatService {
 
         chatRepository.save(chat);
         chatroom.getChats().add(chat);
+
+        log.info("[ChatService - saveUserChat()] - 유저 채팅 저장 성공");
     }
 
     public Chat saveHaruniChat(User user, String haruniName, String haruniResponse){
@@ -67,17 +69,13 @@ public class ChatService {
         chatRepository.save(chat);
         chatroom.getChats().add(chat);
 
+        log.info("[ChatService - saveHaruniChat()] - 하루니 채팅 저장 성공 {} - {}", user.getEmail(), haruniName);
+
         return chat;
     }
 
     @Transactional(readOnly = true)
     public List<ChatResponseDto> getChats(User user, String request){
-        log.info("[ChatService - getChats()] - 채팅 조회 시작");
-
-        /**
-         * Chat 테이블에서 유저 아이디를 통회 조회하고 id를 기준으로 내림차순 조회
-         *
-         */
 
         Chatroom chatroom = chatroomRepository.findByUserAndCreatedAt(user, request)
                 .orElse(null);
@@ -87,7 +85,7 @@ public class ChatService {
             return Collections.emptyList();
         }
 
-        log.info("[ChatService - getChats()] - 채팅 조회 종료");
+        log.info("[ChatService - getChats()] - 채팅 조회 성공");
 
         return chatroom.getChats().stream()
                 .map(ChatResponseDto::entityToDto)

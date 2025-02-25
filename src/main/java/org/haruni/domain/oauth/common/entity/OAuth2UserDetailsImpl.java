@@ -10,8 +10,6 @@ import java.util.Map;
 
 public class OAuth2UserDetailsImpl implements OAuth2User, UserDetails {
 
-    // CONCEPT : Spring Security 에서 활용할 인증용 객체
-
     private final OAuth2UserInfo oAuth2UserInfo;
 
     public OAuth2UserDetailsImpl(OAuth2UserInfo oAuth2UserInfo) {
