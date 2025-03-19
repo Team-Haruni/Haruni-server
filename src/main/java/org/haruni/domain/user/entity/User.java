@@ -48,6 +48,10 @@ public class User {
     @Column(name = "provider_id")
     private OAuth2Provider providerId;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "gender", unique = true)
+    private Gender gender;
+
     @Column(name = "fcm_token", nullable = false)
     private String fcmToken;
 
@@ -82,6 +86,7 @@ public class User {
         this.email = req.getEmail();
         this.password = encodedPassword;
         this.providerId = OAuth2Provider.fromOAuth2Provider(req.getProviderId());
+        this.gender = Gender.fromGender(req.getGender());
         this.nickname = req.getNickname();
         this.alarmActive = req.getAlarmActive();
         this.alarmActiveTime = req.getAlarmActiveTime();
