@@ -46,7 +46,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource(){
         CorsConfiguration corsConfiguration = new CorsConfiguration();
 
-        corsConfiguration.setAllowedOriginPatterns(List.of("http://localhost:3000", "https://actserver.site"));
+        corsConfiguration.setAllowedOriginPatterns(List.of("http://localhost:3000", "https://haruni.site", "https://haruni.site"));
         corsConfiguration.setExposedHeaders(List.of("*"));
         corsConfiguration.addAllowedMethod("*");
         corsConfiguration.addAllowedHeader("*");
