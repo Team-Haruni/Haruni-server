@@ -25,7 +25,7 @@ public class SwaggerConfig {
         SecurityRequirement securityRequirement = new SecurityRequirement().addList("BearerAuth");
 
         Server server = new Server();
-        server.setUrl("https://actserver.site");
+        server.setUrl("https://haruni.site");
 
         return new OpenAPI()
                 .info(new Info()
