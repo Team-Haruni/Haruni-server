@@ -10,6 +10,7 @@ import org.haruni.domain.diary.dto.res.MonthDiaryResponseDto;
 import org.haruni.domain.diary.entity.Diary;
 import org.haruni.domain.diary.repository.DiaryRepository;
 import org.haruni.domain.user.entity.User;
+import org.haruni.domain.user.entity.UserDetailsImpl;
 import org.haruni.domain.user.repository.UserRepository;
 import org.haruni.global.exception.entity.RestApiException;
 import org.haruni.global.exception.error.CustomErrorCode;
@@ -41,13 +42,12 @@ public class DiaryService {
         this.userRepository = userRepository;
         this.chatroomRepository = chatroomRepository;
         this.modelServerTemplate = modelServerTemplate;
-
     }
 
     @Transactional(readOnly = true)
-    public DayDiaryResponseDto getDayDiary(User authUser, String date){
+    public DayDiaryResponseDto getDayDiary(UserDetailsImpl authUser, String date){
 
-        User user = userRepository.findByEmail(authUser.getEmail())
+        User user = userRepository.findByEmail(authUser.getUser().getEmail())
                 .orElseThrow(() -> new RestApiException(CustomErrorCode.USER_NOT_FOUND));
 
         Diary diary = diaryRepository.findByUserIdAndDate(user.getId(), date)
@@ -64,9 +64,9 @@ public class DiaryService {
     }
 
     @Transactional(readOnly = true)
-    public MonthDiaryResponseDto getMonthDiary(User authUser, String month){
+    public MonthDiaryResponseDto getMonthDiary(UserDetailsImpl authUser, String month){
 
-        User user = userRepository.findByEmail(authUser.getEmail())
+        User user = userRepository.findByEmail(authUser.getUser().getEmail())
                 .orElseThrow(() -> new RestApiException(CustomErrorCode.USER_NOT_FOUND));
 
         List<DayDiarySummaryDto> summaries = diaryRepository.findAllByUserAndStartWithMonth(user.getId(), month).stream()

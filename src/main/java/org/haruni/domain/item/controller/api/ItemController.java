@@ -7,7 +7,7 @@ import org.haruni.domain.item.controller.docs.ItemControllerSpecification;
 import org.haruni.domain.item.dto.req.ItemSaveRequestDto;
 import org.haruni.domain.item.dto.res.SelectedItemResponseDto;
 import org.haruni.domain.item.service.ItemService;
-import org.haruni.domain.user.entity.User;
+import org.haruni.domain.user.entity.UserDetailsImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -23,14 +23,13 @@ public class ItemController implements ItemControllerSpecification {
     private final ItemService itemService;
 
     @GetMapping
-    public ResponseEntity<ResponseDto<List<SelectedItemResponseDto>>> getSelectedItem(@AuthenticationPrincipal User user){
+    public ResponseEntity<ResponseDto<List<SelectedItemResponseDto>>> getSelectedItem(@AuthenticationPrincipal UserDetailsImpl user){
         return ResponseEntity.status(HttpStatus.OK).body(ResponseDto.of(itemService.getSelectedItem(user), "선택된 아이탬 조회 완료"));
     }
 
     @PostMapping
-    public ResponseEntity<ResponseDto<Boolean>> saveItems(@AuthenticationPrincipal User user,
+    public ResponseEntity<ResponseDto<Boolean>> saveItems(@AuthenticationPrincipal UserDetailsImpl user,
                                                           @Valid@RequestBody ItemSaveRequestDto request){
         return ResponseEntity.status(HttpStatus.CREATED).body(ResponseDto.of(itemService.saveItems(user, request), "아이탬 저장 완료"));
     }
-
 }

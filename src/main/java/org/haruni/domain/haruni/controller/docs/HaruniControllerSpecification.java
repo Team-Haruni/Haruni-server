@@ -14,7 +14,7 @@ import org.haruni.domain.chat.dto.res.ChatResponseDto;
 import org.haruni.domain.common.dto.res.ResponseDto;
 import org.haruni.domain.haruni.dto.req.PromptUpdateRequestDto;
 import org.haruni.domain.haruni.dto.res.MainPageResponseDto;
-import org.haruni.domain.user.entity.User;
+import org.haruni.domain.user.entity.UserDetailsImpl;
 import org.haruni.global.exception.error.ErrorResponse;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -45,7 +45,7 @@ public interface HaruniControllerSpecification {
                             schema = @Schema(implementation = ErrorResponse.class)))
     })
     @GetMapping
-    ResponseEntity<ResponseDto<MainPageResponseDto>> getHaruni(@AuthenticationPrincipal User user);
+    ResponseEntity<ResponseDto<MainPageResponseDto>> getHaruni(@AuthenticationPrincipal UserDetailsImpl user);
 
 
     @Operation(summary = "프롬프트 수정", description = "하루니의 프롬프트를 수정합니다<br>" +
@@ -76,7 +76,7 @@ public interface HaruniControllerSpecification {
                             schema = @Schema(implementation = ErrorResponse.class)))
     })
     @PatchMapping("/prompt")
-    ResponseEntity<ResponseDto<String>> updateUserPrompt(@AuthenticationPrincipal User user,
+    ResponseEntity<ResponseDto<String>> updateUserPrompt(@AuthenticationPrincipal UserDetailsImpl user,
                                                          @Valid @RequestBody PromptUpdateRequestDto request);
 
     @Operation(summary = "메시지 전송", description = "하루니 모델 서버로 메시지를 전송합니다<br>" +
@@ -111,7 +111,7 @@ public interface HaruniControllerSpecification {
                             schema = @Schema(implementation = ErrorResponse.class)))
     })
     @PostMapping("/chat")
-    ResponseEntity<ResponseDto<ChatResponseDto>> sendChatToHaruni(@AuthenticationPrincipal User user,
+    ResponseEntity<ResponseDto<ChatResponseDto>> sendChatToHaruni(@AuthenticationPrincipal UserDetailsImpl user,
                                                                   @Valid@RequestBody ChatRequestDto request);
 
     @Operation(summary = "메시지 조회", description = "특정 일의 메시지를 조회합니다<br>" +
@@ -142,7 +142,7 @@ public interface HaruniControllerSpecification {
                             schema = @Schema(implementation = ErrorResponse.class)))
     })
     @GetMapping("/chat")
-    ResponseEntity<ResponseDto<List<ChatResponseDto>>> getChats(@AuthenticationPrincipal User user,
+    ResponseEntity<ResponseDto<List<ChatResponseDto>>> getChats(@AuthenticationPrincipal UserDetailsImpl user,
                                                                 @RequestParam
                                                                 @Pattern(regexp = "^\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01])$",
                                                                         message = "날짜 형식은 YYYY-MM-DD 여야 합니다.")

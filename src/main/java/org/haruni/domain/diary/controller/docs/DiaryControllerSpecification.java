@@ -11,7 +11,7 @@ import jakarta.validation.constraints.Pattern;
 import org.haruni.domain.common.dto.res.ResponseDto;
 import org.haruni.domain.diary.dto.res.DayDiaryResponseDto;
 import org.haruni.domain.diary.dto.res.MonthDiaryResponseDto;
-import org.haruni.domain.user.entity.User;
+import org.haruni.domain.user.entity.UserDetailsImpl;
 import org.haruni.global.exception.error.ErrorResponse;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -50,7 +50,7 @@ public interface DiaryControllerSpecification {
                             schema = @Schema(implementation = ErrorResponse.class)))
     })
     @GetMapping("/day")
-    ResponseEntity<ResponseDto<DayDiaryResponseDto>> getDayDiary(@AuthenticationPrincipal User user,
+    ResponseEntity<ResponseDto<DayDiaryResponseDto>> getDayDiary(@AuthenticationPrincipal UserDetailsImpl user,
                                                                  @RequestParam
                                                                  @Pattern(regexp = "^\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01])$",
                                                                          message = "날짜 형식은 YYYY-MM-DD 여야 합니다.")
@@ -81,7 +81,7 @@ public interface DiaryControllerSpecification {
                             schema = @Schema(implementation = ErrorResponse.class)))
     })
     @GetMapping("/month")
-    ResponseEntity<ResponseDto<MonthDiaryResponseDto>> getMonthDiary(@AuthenticationPrincipal User user,
+    ResponseEntity<ResponseDto<MonthDiaryResponseDto>> getMonthDiary(@AuthenticationPrincipal UserDetailsImpl user,
                                                                      @RequestParam
                                                                      @Pattern(regexp = "^\\d{4}-(0[1-9]|1[0-2])$",
                                                                              message = "날짜 형식은 YYYY-MM 이어야 합니다.")

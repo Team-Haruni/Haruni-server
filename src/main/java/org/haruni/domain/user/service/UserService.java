@@ -9,6 +9,7 @@ import org.haruni.domain.user.dto.req.AlarmActiveTimeUpdateRequestDto;
 import org.haruni.domain.user.dto.req.EmailUpdateRequestDto;
 import org.haruni.domain.user.dto.res.UserInfoResponseDto;
 import org.haruni.domain.user.entity.User;
+import org.haruni.domain.user.entity.UserDetailsImpl;
 import org.haruni.domain.user.repository.UserRepository;
 import org.haruni.global.exception.entity.RestApiException;
 import org.haruni.global.exception.error.CustomErrorCode;
@@ -26,23 +27,23 @@ public class UserService {
     private final HaruniRepository haruniRepository;
 
     @Transactional(readOnly = true)
-    public UserInfoResponseDto getUserInfo(User user){
+    public UserInfoResponseDto getUserInfo(UserDetailsImpl user){
 
-        Boolean emailUpdateAvailable = user.getProviderId().equals(OAuth2Provider.NORMAL);
+        Boolean emailUpdateAvailable = user.getUser().getProviderId().equals(OAuth2Provider.NORMAL);
 
         log.info("[UserService - getUserInfo()] : 유저 정보 조회 성공");
 
         return UserInfoResponseDto.builder()
-                .nickname(user.getNickname())
-                .email(user.getEmail())
+                .nickname(user.getUser().getNickname())
+                .email(user.getUser().getEmail())
                 .emailUpdateAvailable(emailUpdateAvailable)
                 .build();
     }
 
     @Transactional
-    public String updateEmail(User authUser, EmailUpdateRequestDto request){
+    public String updateEmail(UserDetailsImpl authUser, EmailUpdateRequestDto request){
 
-        User user = userRepository.findByEmail(authUser.getEmail())
+        User user = userRepository.findByEmail(authUser.getUser().getEmail())
                 .orElseThrow(() -> new RestApiException(CustomErrorCode.USER_NOT_FOUND));
 
         if(userRepository.existsByEmail(request.getEmail()))
@@ -56,9 +57,9 @@ public class UserService {
     }
 
     @Transactional
-    public String updateAlarmActiveTime(User authUser, AlarmActiveTimeUpdateRequestDto request){
+    public String updateAlarmActiveTime(UserDetailsImpl authUser, AlarmActiveTimeUpdateRequestDto request){
 
-         User user = userRepository.findByEmail(authUser.getEmail())
+         User user = userRepository.findByEmail(authUser.getUser().getEmail())
                 .orElseThrow(() -> new RestApiException(CustomErrorCode.USER_NOT_FOUND));
 
         user.updateAlarmActiveTime(request.getAlarmActiveTime());
