@@ -76,7 +76,6 @@ public class JwtTokenProvider {
         if(req.getHeader("Authorization") == null)
             throw new JwtException("Authorization Header is null");
 
-
         return req
                 .getHeader("Authorization")
                 .substring(7);
