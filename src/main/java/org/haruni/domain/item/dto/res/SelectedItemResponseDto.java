@@ -30,7 +30,7 @@ public class SelectedItemResponseDto {
 
     public static SelectedItemResponseDto entityToDto(Item item){
         return SelectedItemResponseDto.builder()
-                .itemImgUrl(item.getItemImgUrl())
+                .itemImgUrl(item.getObjectKey())
                 .selected(true)
                 .build();
     }

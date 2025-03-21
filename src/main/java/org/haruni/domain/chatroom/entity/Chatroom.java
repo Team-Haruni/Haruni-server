@@ -1,16 +1,17 @@
 package org.haruni.domain.chatroom.entity;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.haruni.domain.chat.entity.Chat;
-import org.haruni.domain.user.entity.User;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Schema(hidden = true)
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -20,19 +21,18 @@ public class Chatroom {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @Column(name = "user_id", nullable = false)
+    private Long userId;
 
     @Column(name = "created_at", nullable = false)
     private String createdAt;
 
-    @OneToMany(mappedBy = "chatroom", cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "chatroom_id")
     private List<Chat> chats = new ArrayList<>();
 
     @Builder
-    public Chatroom(User user, String createdAt){
-        this.user = user;
+    public Chatroom(String createdAt) {
         this.createdAt = createdAt;
     }
 }

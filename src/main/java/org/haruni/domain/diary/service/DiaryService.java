@@ -2,7 +2,6 @@ package org.haruni.domain.diary.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.haruni.domain.alarm.service.AlarmService;
-import org.haruni.domain.chatroom.entity.Chatroom;
 import org.haruni.domain.chatroom.repository.ChatroomRepository;
 import org.haruni.domain.diary.dto.res.DayDiaryResponseDto;
 import org.haruni.domain.diary.dto.res.DayDiarySummaryDto;
@@ -23,6 +22,7 @@ import org.springframework.web.client.RestTemplate;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -57,7 +57,7 @@ public class DiaryService {
 
         return DayDiaryResponseDto.builder()
                 .description(diary.getDescription())
-                .daySummaryImgUrl(diary.getS3ImgUrl())
+                .objectKey(diary.getObjectKey())
                 .mood(diary.getMood().getEmotion())
                 .date(diary.getDate())
                 .build();
@@ -88,7 +88,9 @@ public class DiaryService {
 
         List<User> userEmails = chatroomRepository.findByCreatedAt(date).stream()
                 .filter(chatroom -> chatroom.getChats().size() >= 6)
-                .map(Chatroom::getUser).distinct()
+                .map(chatroom -> userRepository.findById(chatroom.getUserId()))
+                .flatMap(Optional::stream)
+                .distinct()
                 .toList();
 
         log.info("[DiaryService - createDayDiary()] : 사용자 이메일 {}개 조회 완료", userEmails.size());
@@ -106,7 +108,6 @@ public class DiaryService {
                 Diary diary = Diary.builder()
                         .response(response)
                         .date(date)
-                        .user(user)
                         .build();
 
                 diaryRepository.save(diary);

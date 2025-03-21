@@ -1,13 +1,14 @@
 package org.haruni.domain.diary.entity;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.haruni.domain.diary.dto.res.DayDiaryResponseDto;
-import org.haruni.domain.user.entity.User;
 
+@Schema(hidden = true)
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -20,8 +21,8 @@ public class Diary {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    @Column(name = "s3_img_url")
-    private String s3ImgUrl;
+    @Column(name = "object_key")
+    private String objectKey;
 
     @Enumerated(EnumType.STRING)
     private Mood mood;
@@ -29,16 +30,11 @@ public class Diary {
     @Column(nullable = false)
     private String date;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
-
     @Builder
-    public Diary(DayDiaryResponseDto response, User user, String date){
+    public Diary(DayDiaryResponseDto response, String date) {
         this.description = response.getDescription();
-        this.s3ImgUrl = response.getDaySummaryImgUrl();
+        this.objectKey = response.getObjectKey();
         this.mood = Mood.fromEmotion(response.getMood());
         this.date = date;
-        this.user = user;
     }
 }

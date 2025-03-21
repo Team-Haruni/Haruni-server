@@ -1,8 +1,8 @@
 package org.haruni.domain.user.entity;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.*;
-import org.haruni.domain.background.entity.Background;
 import org.haruni.domain.chatroom.entity.Chatroom;
 import org.haruni.domain.diary.entity.Diary;
 import org.haruni.domain.haruni.entity.Haruni;
@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@Schema(hidden = true)
 @Entity
 @Getter
 @AllArgsConstructor
@@ -63,26 +64,26 @@ public class User {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @Column(name = "role" ,nullable = false)
+    @Column(name = "role", nullable = false)
     private String role;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Haruni haruni;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Item> items = new ArrayList<>();
-
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    private Background background;
-
-    @OneToMany(mappedBy = "user")
-    private List<Diary> diaries = new ArrayList<>();
-
-    @OneToMany(mappedBy = "user")
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id")
     private List<Chatroom> chatrooms = new ArrayList<>();
 
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id")
+    private List<Diary> diaries = new ArrayList<>();
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id")
+    private List<Item> items = new ArrayList<>();
+
     @Builder
-    protected User(SignUpRequestDto req, String encodedPassword, Haruni haruni){
+    protected User(SignUpRequestDto req, String encodedPassword, Haruni haruni) {
         this.email = req.getEmail();
         this.password = encodedPassword;
         this.providerId = OAuth2Provider.fromOAuth2Provider(req.getProviderId());
@@ -96,7 +97,10 @@ public class User {
         this.haruni = haruni;
     }
 
-    public void updateEmail(String email) { this.email = email; }
-    public void updateAlarmActiveTime(String alarmActiveTime) { this.alarmActiveTime = alarmActiveTime; }
-
+    public void updateEmail(String email) {
+        this.email = email;
+    }
+    public void updateAlarmActiveTime(String alarmActiveTime) {
+        this.alarmActiveTime = alarmActiveTime;
+    }
 }
