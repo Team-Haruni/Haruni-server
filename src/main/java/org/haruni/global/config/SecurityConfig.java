@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.haruni.global.exception.handler.CustomAccessDeniedHandler;
 import org.haruni.global.exception.handler.CustomAuthenticationEntryPoint;
 import org.haruni.global.security.jwt.filter.JwtAuthenticationFilter;
+import org.haruni.global.security.jwt.filter.JwtExceptionFilter;
 import org.haruni.global.security.jwt.util.JwtTokenProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -47,6 +48,7 @@ public class SecurityConfig {
                         .authenticationEntryPoint(new CustomAuthenticationEntryPoint())
                 )
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtExceptionFilter(), JwtAuthenticationFilter.class)
                 .build();
     }
 
