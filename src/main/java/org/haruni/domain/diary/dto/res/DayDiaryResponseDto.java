@@ -14,10 +14,10 @@ public class DayDiaryResponseDto {
     private final String description;
 
     @Schema(
-            description = "하루 일기 그림 url",
-            example = "https://{bucket-name}.s3.{region}.amazonaws.com/{object-key}"
+            description = "일기 이미지 오브젝트 키",
+            example = ""
     )
-    private final String daySummaryImgUrl;
+    private final String objectKey;
 
     @Schema(
             description = "기분",
@@ -32,9 +32,9 @@ public class DayDiaryResponseDto {
     private final String date;
 
     @Builder
-    private DayDiaryResponseDto(String description, String daySummaryImgUrl, String mood, String date) {
+    private DayDiaryResponseDto(String description, String objectKey, String mood, String date) {
         this.description = description;
-        this.daySummaryImgUrl = daySummaryImgUrl;
+        this.objectKey = objectKey;
         this.mood = mood;
         this.date = date;
     }

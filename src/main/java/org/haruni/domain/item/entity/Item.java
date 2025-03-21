@@ -1,13 +1,14 @@
 package org.haruni.domain.item.entity;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.haruni.domain.item.dto.req.ItemRequestDto;
-import org.haruni.domain.user.entity.User;
 
+@Schema(hidden = true)
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -17,12 +18,8 @@ public class Item {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
-
     @Column(nullable = false, length = 100)
-    private String itemImgUrl;
+    private String objectKey;
 
     @Column(name = "active_level", nullable = false)
     private Double activeLevel;
@@ -34,9 +31,8 @@ public class Item {
     private Double yPosition;
 
     @Builder
-    protected Item(User user, ItemRequestDto request){
-        this.user = user;
-        this.itemImgUrl = request.getItemImgUrl();
+    protected Item(ItemRequestDto request) {
+        this.objectKey = request.getItemImgUrl();
         this.activeLevel = request.getActiveLevel();
         this.xPosition = request.getXPosition();
         this.yPosition = request.getYPosition();

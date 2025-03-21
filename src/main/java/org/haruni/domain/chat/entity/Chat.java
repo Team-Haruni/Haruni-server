@@ -5,7 +5,6 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.haruni.domain.chatroom.entity.Chatroom;
 
 @Entity
 @Getter
@@ -28,14 +27,9 @@ public class Chat {
     @Column(name = "created_at", nullable = false)
     private String createdAt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "chatroom_id", nullable = false)
-    private Chatroom chatroom;
-
     @Builder
-    public Chat(String senderName, Chatroom chatroom, ChatType type, String content, String createdAt){
+    public Chat(String senderName, ChatType type, String content, String createdAt) {
         this.senderName = senderName;
-        this.chatroom = chatroom;
         this.type = type;
         this.content = content;
         this.createdAt = createdAt;

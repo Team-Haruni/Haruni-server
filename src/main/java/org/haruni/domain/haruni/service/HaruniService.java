@@ -11,6 +11,7 @@ import org.haruni.domain.haruni.dto.res.MainPageResponseDto;
 import org.haruni.domain.haruni.entity.Haruni;
 import org.haruni.domain.haruni.repository.HaruniRepository;
 import org.haruni.domain.user.entity.User;
+import org.haruni.domain.user.entity.UserDetailsImpl;
 import org.haruni.domain.user.repository.UserRepository;
 import org.haruni.global.exception.entity.RestApiException;
 import org.haruni.global.exception.error.CustomErrorCode;
@@ -76,14 +77,14 @@ public class HaruniService {
     }
 
     @Transactional(readOnly = true)
-    public MainPageResponseDto getHaruni(User user){
+    public MainPageResponseDto getHaruni(UserDetailsImpl user){
 
-        Haruni haruni = haruniRepository.findById(user.getHaruni().getId())
+        Haruni haruni = haruniRepository.findById(user.getUser().getHaruni().getId())
                 .orElseThrow(() -> new RestApiException(CustomErrorCode.HARUNI_NOT_FOUND));
 
         LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
 
-        String greetingMessage = getGreetingMessage(now, user.getNickname());
+        String greetingMessage = getGreetingMessage(now, user.getUser().getNickname());
 
         log.info("[HaruniService - getHaruni()] - 하루니 조회 성공");
 
@@ -92,15 +93,14 @@ public class HaruniService {
                 .haruniLevelInteger((int)Math.floor(haruni.getLevel()))
                 .haruniLevelDecimal(haruni.getLevel() - (int)Math.floor(haruni.getLevel()))
                 .greetingMessage(greetingMessage)
-                .backgroundImgUrl(user.getBackground().getBackgroundImgUrl())
-                .selectedItems(user.getItems())
+                .selectedItems(user.getUser().getItems())
                 .build();
     }
 
     @Transactional
-    public String updatePrompt(User user, PromptUpdateRequestDto request){
+    public String updatePrompt(UserDetailsImpl user, PromptUpdateRequestDto request){
 
-        Haruni haruni = haruniRepository.findById(user.getHaruni().getId())
+        Haruni haruni = haruniRepository.findById(user.getUser().getHaruni().getId())
                 .orElseThrow(() -> new RestApiException(CustomErrorCode.HARUNI_NOT_FOUND));
 
         haruni.updatePrompt(request.getPrompt());
@@ -125,16 +125,16 @@ public class HaruniService {
     }
 
     @Transactional
-    public ChatResponseDto sendChatToHaruni(User authUser, ChatRequestDto request){
+    public ChatResponseDto sendChatToHaruni(UserDetailsImpl authUser, ChatRequestDto request){
 
-        User user = userRepository.findByEmail(authUser.getEmail())
+        User user = userRepository.findByEmail(authUser.getUser().getEmail())
                         .orElseThrow(() -> new RestApiException(CustomErrorCode.USER_NOT_FOUND));
 
         chatService.saveUserChat(user, request);
 
         log.info("[HaruniService - sendChatToHaruni()] - 사용자 채팅 저장 성공");
 
-        Haruni haruni = haruniRepository.findById(authUser.getHaruni().getId())
+        Haruni haruni = haruniRepository.findById(authUser.getUser().getHaruni().getId())
                 .orElseThrow(() -> new RestApiException(CustomErrorCode.HARUNI_NOT_FOUND));
 
         ChatRequestBody requestBody = ChatRequestBody.builder()
@@ -160,7 +160,7 @@ public class HaruniService {
         }
     }
 
-    public List<ChatResponseDto> getChats(User user, String request){
-        return chatService.getChats(user, request);
+    public List<ChatResponseDto> getChats(UserDetailsImpl user, String request){
+        return chatService.getChats(user.getUser(), request);
     }
 }

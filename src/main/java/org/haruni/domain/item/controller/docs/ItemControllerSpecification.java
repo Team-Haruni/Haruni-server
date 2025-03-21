@@ -11,7 +11,7 @@ import jakarta.validation.Valid;
 import org.haruni.domain.common.dto.res.ResponseDto;
 import org.haruni.domain.item.dto.req.ItemSaveRequestDto;
 import org.haruni.domain.item.dto.res.SelectedItemResponseDto;
-import org.haruni.domain.user.entity.User;
+import org.haruni.domain.user.entity.UserDetailsImpl;
 import org.haruni.global.exception.error.ErrorResponse;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -41,7 +41,7 @@ public interface ItemControllerSpecification {
                             schema = @Schema(implementation = ErrorResponse.class)))
     })
     @GetMapping
-    ResponseEntity<ResponseDto<List<SelectedItemResponseDto>>> getSelectedItem(@AuthenticationPrincipal User user);
+    ResponseEntity<ResponseDto<List<SelectedItemResponseDto>>> getSelectedItem(@AuthenticationPrincipal UserDetailsImpl user);
 
     @Operation(summary = "선택 아이탬 수정", description = "선택 아이탬 수정<br>" +
                                                        "🔐 <strong>Jwt 필요</strong><br>" +
@@ -70,6 +70,6 @@ public interface ItemControllerSpecification {
                             schema = @Schema(implementation = ErrorResponse.class))),
     })
     @PostMapping
-    ResponseEntity<ResponseDto<Boolean>> saveItems(@AuthenticationPrincipal User user,
+    ResponseEntity<ResponseDto<Boolean>> saveItems(@AuthenticationPrincipal UserDetailsImpl user,
                                                    @Valid @RequestBody ItemSaveRequestDto request);
 }

@@ -1,9 +1,11 @@
 package org.haruni.domain.haruni.entity;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.*;
 import org.haruni.domain.user.entity.User;
 
+@Schema(hidden = true)
 @Entity
 @Getter
 @AllArgsConstructor

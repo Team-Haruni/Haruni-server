@@ -12,7 +12,7 @@ import org.haruni.domain.common.dto.res.ResponseDto;
 import org.haruni.domain.user.dto.req.AlarmActiveTimeUpdateRequestDto;
 import org.haruni.domain.user.dto.req.EmailUpdateRequestDto;
 import org.haruni.domain.user.dto.res.UserInfoResponseDto;
-import org.haruni.domain.user.entity.User;
+import org.haruni.domain.user.entity.UserDetailsImpl;
 import org.haruni.global.exception.error.ErrorResponse;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +30,7 @@ public interface UserControllerSpecification {
             @ApiResponse(responseCode = "200", description = "✅ 사용자 정보 조회 성공")
     })
     @GetMapping
-    ResponseEntity<ResponseDto<UserInfoResponseDto>> getUserInfo(@AuthenticationPrincipal User user);
+    ResponseEntity<ResponseDto<UserInfoResponseDto>> getUserInfo(@AuthenticationPrincipal UserDetailsImpl user);
 
     @Operation(summary = "사용자 이메일 수정", description = "사용자의 이메일을 수정합니다<br>" +
                                                             "🔐 <strong>Jwt 필요</strong><br>")
@@ -60,7 +60,7 @@ public interface UserControllerSpecification {
                             schema = @Schema(implementation = ErrorResponse.class))),
     })
     @PatchMapping("/email")
-    ResponseEntity<ResponseDto<String>> updateUserEmail(@AuthenticationPrincipal User user,
+    ResponseEntity<ResponseDto<String>> updateUserEmail(@AuthenticationPrincipal UserDetailsImpl user,
                                                         @Valid @RequestBody EmailUpdateRequestDto request);
 
     @Operation(summary = "알람 활성화 시각 수정", description = "알람 활성화 시각을 수정합니다<br>" +
@@ -87,6 +87,6 @@ public interface UserControllerSpecification {
                             schema = @Schema(implementation = ErrorResponse.class))),
     })
     @PatchMapping("/alarm")
-    ResponseEntity<ResponseDto<String>> updateAlarmActiveTime(@AuthenticationPrincipal User user,
+    ResponseEntity<ResponseDto<String>> updateAlarmActiveTime(@AuthenticationPrincipal UserDetailsImpl user,
                                                               @Valid@RequestBody AlarmActiveTimeUpdateRequestDto request);
 }

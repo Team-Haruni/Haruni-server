@@ -52,7 +52,7 @@ public class JwtTokenProvider {
         Date now = new Date();
 
         String accessToken = Jwts.builder()
-                .setSubject(authentication.getName()) // email
+                .setSubject(authentication.getName())
                 .claim("auth", authorities)
                 .setIssuedAt(now)
                 .setExpiration(new Date((now.getTime() + accessTokenExpiredTime)))
@@ -76,7 +76,8 @@ public class JwtTokenProvider {
     public String getTokenFromRequest(HttpServletRequest req){
 
         if(req.getHeader("Authorization") == null)
-            throw new RestApiException(CustomErrorCode.INTERNAL_SERVER_ERROR);
+            throw new RestApiException(CustomErrorCode.JWT_HANDLING_ERROR);
+
 
         return req
                 .getHeader("Authorization")

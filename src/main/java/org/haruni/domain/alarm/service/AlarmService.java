@@ -62,7 +62,7 @@ public class AlarmService {
                     .findFirst()
                     .orElseGet(() -> chatroomService.createChatroom(user, chatService.getNow()));
 
-            Chat chat = new Chat(user.getNickname(), chatroom, ChatType.HARUNI, alarmDto.getContent(), chatService.getNow());
+            Chat chat = new Chat(user.getNickname(), ChatType.HARUNI, alarmDto.getContent(), chatService.getNow());
 
             chatroom.getChats().add(chat);
             chatRepository.save(chat);

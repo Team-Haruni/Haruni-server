@@ -16,9 +16,10 @@ public class ChatroomService {
 
     public Chatroom createChatroom(User user, String createdAt){
         Chatroom chatroom = Chatroom.builder()
-                .user(user)
                 .createdAt(createdAt)
                 .build();
+
+        user.getChatrooms().add(chatroom);
 
         log.info("[ChatroomService - createChatroom()] : 채팅룸 생성 완료");
 

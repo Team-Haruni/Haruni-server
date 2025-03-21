@@ -44,6 +44,9 @@ public class AuthService {
         if(userRepository.existsByEmail((req.getEmail())))
             throw new RestApiException(CustomErrorCode.USER_EMAIL_DUPLICATED);
 
+        if(userRepository.existsByFcmToken(req.getFcmToken()))
+            throw new RestApiException(CustomErrorCode.USER_FCM_TOKEN_DUPLICATED);
+
         User user = User.builder()
                 .req(req)
                 .encodedPassword(passwordEncoder.encode(req.getPassword()))

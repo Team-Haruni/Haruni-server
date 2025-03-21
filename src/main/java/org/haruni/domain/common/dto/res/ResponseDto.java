@@ -1,8 +1,10 @@
 package org.haruni.domain.common.dto.res;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
 
+@Schema(hidden = true)
 @Getter
 public class ResponseDto<T> {
     private final T data;

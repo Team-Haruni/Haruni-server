@@ -13,7 +13,5 @@ public interface AlarmRepository extends CrudRepository<Alarm, String> {
 
     List<Alarm> findAllBySendingTime(String sendingTime);
 
-    List<Alarm> findByFcmToken(String fcmToken);
-
     void deleteByFcmToken(String fcmToken);
 }

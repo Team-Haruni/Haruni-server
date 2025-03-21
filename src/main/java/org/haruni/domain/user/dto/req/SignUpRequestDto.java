@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import org.haruni.domain.common.enums.Enum;
 import org.haruni.domain.haruni.entity.MBTI;
 import org.haruni.domain.oauth.common.utils.OAuth2Provider;
+import org.haruni.domain.user.entity.Gender;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -40,6 +41,13 @@ public class SignUpRequestDto {
     )
     @Enum(target = OAuth2Provider.class, message = "유저 타입이 옳바르지 않습니다")
     private String providerId;
+
+    @Schema(
+            description = "성별",
+            example = "MALE/FEMALE"
+    )
+    @Enum(target = Gender.class, message = "유저 성별이 옳바르지 않습니다")
+    private String gender;
 
     @Schema(
             description = "닉네임",
