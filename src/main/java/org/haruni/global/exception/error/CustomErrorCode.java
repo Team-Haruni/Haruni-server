@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 public enum CustomErrorCode implements ErrorCode {
 
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, 500, "서버 내부에 오류가 발생했습니다."),
+    JWT_HANDLING_ERROR(HttpStatus.I_AM_A_TEAPOT, 418, "나쁜 행동을 하는 것은 좋지 않아요." ),
 
     // Auth
     USER_EMAIL_DUPLICATED(HttpStatus.BAD_REQUEST, 400, "이메일 중복 검사에 실패하였습니다"),

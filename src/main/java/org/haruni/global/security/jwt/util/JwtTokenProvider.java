@@ -8,6 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.haruni.domain.user.dto.res.TokenResponseDto;
 import org.haruni.domain.user.entity.UserDetailsImpl;
 import org.haruni.domain.user.service.UserDetailsServiceImpl;
+import org.haruni.global.exception.entity.RestApiException;
+import org.haruni.global.exception.error.CustomErrorCode;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -50,7 +52,7 @@ public class JwtTokenProvider {
         Date now = new Date();
 
         String accessToken = Jwts.builder()
-                .setSubject(authentication.getName()) // email
+                .setSubject(authentication.getName())
                 .claim("auth", authorities)
                 .setIssuedAt(now)
                 .setExpiration(new Date((now.getTime() + accessTokenExpiredTime)))
@@ -72,6 +74,10 @@ public class JwtTokenProvider {
     }
 
     public String getTokenFromRequest(HttpServletRequest req){
+
+        if(req.getHeader("Authorization") == null)
+            throw new RestApiException(CustomErrorCode.JWT_HANDLING_ERROR);
+
         return req
                 .getHeader("Authorization")
                 .substring(7);
