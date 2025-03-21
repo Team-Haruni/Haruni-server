@@ -35,12 +35,11 @@ public class ChatService {
 
         String formatDate = getNow();
 
-        Chatroom chatroom = chatroomRepository.findByUserAndCreatedAt(user, formatDate)
+        Chatroom chatroom = chatroomRepository.findByUserIdAndCreatedAt(user.getId(), formatDate)
                 .orElseGet(() -> chatroomService.createChatroom(user, formatDate));
 
         Chat chat = Chat.builder()
                 .senderName(user.getNickname())
-                .chatroom(chatroom)
                 .type(ChatType.USER)
                 .content(request.getContent())
                 .createdAt(getCurrentTime())
@@ -55,12 +54,11 @@ public class ChatService {
     public Chat saveHaruniChat(User user, String haruniName, String haruniResponse){
         String formatDate = getNow();
 
-        Chatroom chatroom = chatroomRepository.findByUserAndCreatedAt(user, formatDate)
+        Chatroom chatroom = chatroomRepository.findByUserIdAndCreatedAt(user.getId(), formatDate)
                 .orElseGet(() -> chatroomService.createChatroom(user, formatDate));
 
         Chat chat = Chat.builder()
                 .senderName(haruniName)
-                .chatroom(chatroom)
                 .type(ChatType.HARUNI)
                 .content(haruniResponse)
                 .createdAt(getCurrentTime())
@@ -77,7 +75,7 @@ public class ChatService {
     @Transactional(readOnly = true)
     public List<ChatResponseDto> getChats(User user, String request){
 
-        Chatroom chatroom = chatroomRepository.findByUserAndCreatedAt(user, request)
+        Chatroom chatroom = chatroomRepository.findByUserIdAndCreatedAt(user.getId(), request)
                 .orElse(null);
 
         if(chatroom == null){

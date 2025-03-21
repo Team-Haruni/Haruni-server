@@ -50,8 +50,10 @@ public class DiaryService {
         User user = userRepository.findByEmail(authUser.getUser().getEmail())
                 .orElseThrow(() -> new RestApiException(CustomErrorCode.USER_NOT_FOUND));
 
-        Diary diary = diaryRepository.findByUserIdAndDate(user.getId(), date)
-                .orElseThrow(() -> new RestApiException(CustomErrorCode.DIARY_NOT_FOUND));
+        Diary diary = user.getDiaries().stream()
+                        .filter(d -> d.getDate().equals(date))
+                        .findFirst()
+                        .orElseThrow(() -> new RestApiException(CustomErrorCode.DIARY_NOT_FOUND));
 
         log.info("[DiaryService - getDayDiary()] : {} 다이어리 조회 성공", date);
 

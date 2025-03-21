@@ -44,11 +44,9 @@ public class ItemService {
                 .orElseThrow(() -> new RestApiException(CustomErrorCode.USER_NOT_FOUND));
 
         user.getItems().clear();
-        itemRepository.deleteAllByUser(user);
 
         List<Item> newItems = request.getItems().stream()
                 .map(item -> Item.builder()
-                        .user(user)
                         .request(item)
                         .build())
                 .toList();

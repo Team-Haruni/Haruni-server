@@ -93,7 +93,6 @@ public class HaruniService {
                 .haruniLevelInteger((int)Math.floor(haruni.getLevel()))
                 .haruniLevelDecimal(haruni.getLevel() - (int)Math.floor(haruni.getLevel()))
                 .greetingMessage(greetingMessage)
-                .backgroundImgUrl(user.getUser().getBackground().getBackgroundImgUrl())
                 .selectedItems(user.getUser().getItems())
                 .build();
     }
