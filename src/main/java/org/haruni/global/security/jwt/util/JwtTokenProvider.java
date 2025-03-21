@@ -78,6 +78,7 @@ public class JwtTokenProvider {
         if(req.getHeader("Authorization") == null)
             throw new RestApiException(CustomErrorCode.JWT_HANDLING_ERROR);
 
+
         return req
                 .getHeader("Authorization")
                 .substring(7);
