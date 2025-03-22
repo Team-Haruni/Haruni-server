@@ -17,7 +17,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/v1/item")
+@RequestMapping("api/v1/items")
 public class ItemController implements ItemControllerSpecification {
 
     private final ItemService itemService;

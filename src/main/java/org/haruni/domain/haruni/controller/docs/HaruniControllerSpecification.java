@@ -75,7 +75,7 @@ public interface HaruniControllerSpecification {
                             },
                             schema = @Schema(implementation = ErrorResponse.class)))
     })
-    @PatchMapping("/prompt")
+    @PatchMapping("/prompts")
     ResponseEntity<ResponseDto<String>> updateUserPrompt(@AuthenticationPrincipal UserDetailsImpl user,
                                                          @Valid @RequestBody PromptUpdateRequestDto request);
 
@@ -110,7 +110,7 @@ public interface HaruniControllerSpecification {
                             },
                             schema = @Schema(implementation = ErrorResponse.class)))
     })
-    @PostMapping("/chat")
+    @PostMapping("/chats")
     ResponseEntity<ResponseDto<ChatResponseDto>> sendChatToHaruni(@AuthenticationPrincipal UserDetailsImpl user,
                                                                   @Valid@RequestBody ChatRequestDto request);
 
@@ -141,7 +141,7 @@ public interface HaruniControllerSpecification {
                             },
                             schema = @Schema(implementation = ErrorResponse.class)))
     })
-    @GetMapping("/chat")
+    @GetMapping("/chats")
     ResponseEntity<ResponseDto<List<ChatResponseDto>>> getChats(@AuthenticationPrincipal UserDetailsImpl user,
                                                                 @RequestParam
                                                                 @Pattern(regexp = "^\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01])$",

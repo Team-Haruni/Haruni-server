@@ -7,7 +7,6 @@ import org.haruni.domain.diary.controller.docs.DiaryControllerSpecification;
 import org.haruni.domain.diary.dto.res.DayDiaryResponseDto;
 import org.haruni.domain.diary.dto.res.MonthDiaryResponseDto;
 import org.haruni.domain.diary.service.DiaryService;
-import org.haruni.domain.user.entity.User;
 import org.haruni.domain.user.entity.UserDetailsImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Validated
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/diary")
+@RequestMapping("/api/v1/diaries")
 public class DiaryController implements DiaryControllerSpecification {
 
     private final DiaryService diaryService;
