@@ -45,6 +45,9 @@ public class User {
     @Column(name = "haruni_name", length = 50)
     private String haruniName;
 
+    @Column(length = 300)
+    private String prompts;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "provider_id")
     private OAuth2Provider providerId;
@@ -93,6 +96,7 @@ public class User {
         this.alarmActiveTime = req.getAlarmActiveTime();
         this.fcmToken = req.getFcmToken();
         this.haruniName = req.getHaruniName();
+        this.prompts = req.getPrompt();
         this.role = "ROLE_USER";
         this.haruni = haruni;
     }

@@ -14,7 +14,7 @@ public class MainPageResponseDto {
             description = "하루니 이미지 url",
             example = "https://{bucket-name}.s3.{region}.amazonaws.com/{object-key}"
     )
-    private final String haruniImgUrl;
+    private final String haruniImageUrl;
 
     @Schema(
             description = "하루니 레벨(정수부)",
@@ -45,8 +45,8 @@ public class MainPageResponseDto {
     private final List<Item> selectedItems;
 
     @Builder
-    private MainPageResponseDto(String haruniImgUrl, Integer haruniLevelInteger, Double haruniLevelDecimal, String greetingMessage, String backgroundImgUrl, List<Item> selectedItems) {
-        this.haruniImgUrl = haruniImgUrl;
+    private MainPageResponseDto(String haruniImageUrl, Integer haruniLevelInteger, Double haruniLevelDecimal, String greetingMessage, String backgroundImgUrl, List<Item> selectedItems) {
+        this.haruniImageUrl = haruniImageUrl;
         this.haruniLevelInteger = haruniLevelInteger;
         this.haruniLevelDecimal = haruniLevelDecimal;
         this.greetingMessage = greetingMessage;

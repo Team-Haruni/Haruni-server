@@ -9,7 +9,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.haruni.domain.common.enums.Enum;
-import org.haruni.domain.haruni.entity.MBTI;
 import org.haruni.domain.oauth.common.utils.OAuth2Provider;
 import org.haruni.domain.user.entity.Gender;
 
@@ -87,15 +86,8 @@ public class SignUpRequestDto {
     private String haruniName;
 
     @Schema(
-            description = "하루니 MBTI",
-            example = "INTJ"
-    )
-    @Enum(target = MBTI.class, message = "MBTI 타입이 옳바르지 않습니다")
-    private String mbti;
-
-    @Schema(
             description = "하루니 프롬프트",
-            example = "저는 예술에 대한 조예가 깊고 활동적이며 운동을 좋아합니다"
+            example = "차분한, 이성적인, 따뜻한"
     )
     @NotBlank(message = "하루니 프롬프트가 비어있습니다")
     @Size(max = 65535, message = "프롬프트의 길이가 너무 깁니다")

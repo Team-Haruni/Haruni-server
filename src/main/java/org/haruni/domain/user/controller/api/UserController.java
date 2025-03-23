@@ -7,7 +7,6 @@ import org.haruni.domain.user.controller.docs.UserControllerSpecification;
 import org.haruni.domain.user.dto.req.AlarmActiveTimeUpdateRequestDto;
 import org.haruni.domain.user.dto.req.EmailUpdateRequestDto;
 import org.haruni.domain.user.dto.res.UserInfoResponseDto;
-import org.haruni.domain.user.entity.User;
 import org.haruni.domain.user.entity.UserDetailsImpl;
 import org.haruni.domain.user.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -18,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/user")
+@RequestMapping("/api/v1/users")
 public class UserController implements UserControllerSpecification {
 
     private final UserService userService;
@@ -28,13 +27,13 @@ public class UserController implements UserControllerSpecification {
         return ResponseEntity.status(HttpStatus.OK).body(ResponseDto.of(userService.getUserInfo(user), "유저 정보 조회 완료"));
     }
 
-    @PatchMapping("/email")
+    @PatchMapping("/me/email")
     public ResponseEntity<ResponseDto<String>> updateUserEmail(@AuthenticationPrincipal UserDetailsImpl user,
                                                                @Valid@RequestBody EmailUpdateRequestDto request){
         return ResponseEntity.status(HttpStatus.OK).body(ResponseDto.of(userService.updateEmail(user,request), "유저 이메일 수정 완료"));
     }
 
-    @PatchMapping("/alarm")
+    @PatchMapping("/me/alarm")
     public ResponseEntity<ResponseDto<String>> updateAlarmActiveTime(@AuthenticationPrincipal UserDetailsImpl user,
                                                                      @Valid@RequestBody AlarmActiveTimeUpdateRequestDto request){
         return ResponseEntity.status(HttpStatus.OK).body(ResponseDto.of(userService.updateAlarmActiveTime(user, request), "유저 알람 활성화 시간 수정 완료"));

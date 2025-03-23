@@ -23,11 +23,8 @@ public class Haruni {
     @Column(nullable = false, length = 50)
     private String name;
 
-    @Column(nullable = false)
-    private String haruniImgUrl = "https://";
-
-    @Enumerated(EnumType.STRING)
-    private MBTI mbti;
+    @Column(name = "haruni_image_url", nullable = false)
+    private String haruniImageUrl = "https://haruni-ai.site/image";
 
     @Column(columnDefinition = "TEXT")
     private String prompt;
@@ -36,9 +33,8 @@ public class Haruni {
     private Double level = 1.0;
 
     @Builder
-    private Haruni(String name, MBTI mbti, String prompt){
+    private Haruni(String name, String prompt){
         this.name = name;
-        this.mbti = mbti;
         this.prompt = prompt;
     }
 

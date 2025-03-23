@@ -89,7 +89,7 @@ public class HaruniService {
         log.info("[HaruniService - getHaruni()] - 하루니 조회 성공");
 
         return MainPageResponseDto.builder()
-                .haruniImgUrl(haruni.getHaruniImgUrl())
+                .haruniImageUrl(haruni.getHaruniImageUrl())
                 .haruniLevelInteger((int)Math.floor(haruni.getLevel()))
                 .haruniLevelDecimal(haruni.getLevel() - (int)Math.floor(haruni.getLevel()))
                 .greetingMessage(greetingMessage)
