@@ -53,7 +53,7 @@ public class User {
     private OAuth2Provider providerId;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "gender", unique = true)
+    @Column(name = "gender")
     private Gender gender;
 
     @Column(name = "fcm_token", nullable = false)

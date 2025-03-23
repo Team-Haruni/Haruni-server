@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-@Schema(description = "회원가입(일반) Request")
+@Schema(description = "로그인(일반) Request")
 public class LoginRequestDto {
 
     @Schema(

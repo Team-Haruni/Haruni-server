@@ -14,9 +14,11 @@ import org.haruni.domain.user.repository.UserRepository;
 import org.haruni.global.exception.entity.RestApiException;
 import org.haruni.global.exception.error.CustomErrorCode;
 import org.haruni.global.security.jwt.util.JwtTokenProvider;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -71,12 +73,15 @@ public class AuthService {
 
     @Transactional
     public TokenResponseDto login(LoginRequestDto req){
+        try{
+            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(req.getEmail(), req.getPassword());
+            Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(req.getEmail(), req.getPassword());
-        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+            log.info("[AuthService - login()] : 유저({}) 인증 성공", authentication.getName());
 
-        log.info("[AuthService - login()] : 유저({}) 인증 성공", authentication.getName());
-
-        return jwtTokenProvider.generateToken(authentication);
+            return jwtTokenProvider.generateToken(authentication);
+        }catch(BadCredentialsException | UsernameNotFoundException e) {
+            throw new RestApiException(CustomErrorCode.USER_NOT_FOUND);
+        }
     }
 }

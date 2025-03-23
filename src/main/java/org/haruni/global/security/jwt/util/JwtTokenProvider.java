@@ -8,11 +8,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.haruni.domain.user.dto.res.TokenResponseDto;
 import org.haruni.domain.user.entity.UserDetailsImpl;
 import org.haruni.domain.user.service.UserDetailsServiceImpl;
+import org.haruni.global.exception.entity.RestApiException;
+import org.haruni.global.exception.error.CustomErrorCode;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -111,8 +115,12 @@ public class JwtTokenProvider {
                 .map(SimpleGrantedAuthority::new)
                 .toList();
 
-        UserDetailsImpl userDetails = userDetailsService.loadUserByUsername(getEmailFromToken(accessToken));
-        return new UsernamePasswordAuthenticationToken(userDetails, "", authorities);
+        try{
+            UserDetailsImpl userDetails = userDetailsService.loadUserByUsername(getEmailFromToken(accessToken));
+            return new UsernamePasswordAuthenticationToken(userDetails, "", authorities);
+        }catch(BadCredentialsException | UsernameNotFoundException e) {
+            throw new RestApiException(CustomErrorCode.USER_NOT_FOUND);
+        }
     }
 
     public Claims getClaims(String accessToken){
