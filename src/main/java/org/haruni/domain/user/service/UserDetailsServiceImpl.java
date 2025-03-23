@@ -4,8 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.haruni.domain.user.entity.User;
 import org.haruni.domain.user.entity.UserDetailsImpl;
 import org.haruni.domain.user.repository.UserRepository;
-import org.haruni.global.exception.entity.RestApiException;
-import org.haruni.global.exception.error.CustomErrorCode;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -19,7 +17,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetailsImpl loadUserByUsername(String username) throws UsernameNotFoundException{
         User user = userRepository.findByEmail(username)
-                .orElseThrow(() -> new RestApiException(CustomErrorCode.USER_NOT_FOUND));
+                .orElseThrow(() -> new UsernameNotFoundException("유저 조회 실패"));
 
         return new UserDetailsImpl(user);
     }
