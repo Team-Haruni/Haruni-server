@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.haruni.domain.alarm.service.AlarmService;
 import org.haruni.domain.haruni.entity.Haruni;
-import org.haruni.domain.haruni.entity.MBTI;
 import org.haruni.domain.haruni.repository.HaruniRepository;
 import org.haruni.domain.haruni.service.HaruniService;
 import org.haruni.domain.user.dto.req.LoginRequestDto;
@@ -59,7 +58,6 @@ public class AuthService {
 
         Haruni haruni = Haruni.builder()
                 .name(req.getHaruniName())
-                .mbti(MBTI.fromMBTI(req.getMbti()))
                 .prompt(req.getPrompt())
                 .build();
 

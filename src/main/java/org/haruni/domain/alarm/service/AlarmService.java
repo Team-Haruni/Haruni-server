@@ -14,6 +14,7 @@ import org.haruni.domain.chat.repository.ChatRepository;
 import org.haruni.domain.chat.service.ChatService;
 import org.haruni.domain.chatroom.entity.Chatroom;
 import org.haruni.domain.chatroom.service.ChatroomService;
+import org.haruni.domain.diary.entity.Diary;
 import org.haruni.domain.user.entity.User;
 import org.haruni.domain.user.repository.UserRepository;
 import org.haruni.global.exception.entity.RestApiException;
@@ -91,10 +92,13 @@ public class AlarmService {
     }
 
     @Async
-    public void sendDayDiaryAlarm(Long userId){
+    public void sendDayDiaryAlarm(Long userId, Diary diary){
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RestApiException(CustomErrorCode.USER_NOT_FOUND));
+
+        user.getDiaries().add(diary);
+        userRepository.save(user);
 
         Message message = Message.builder()
                 .setToken(user.getFcmToken())
