@@ -16,6 +16,8 @@ import org.haruni.domain.chatroom.entity.Chatroom;
 import org.haruni.domain.chatroom.service.ChatroomService;
 import org.haruni.domain.user.entity.User;
 import org.haruni.domain.user.repository.UserRepository;
+import org.haruni.global.exception.entity.RestApiException;
+import org.haruni.global.exception.error.CustomErrorCode;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -89,7 +91,11 @@ public class AlarmService {
     }
 
     @Async
-    public void sendDayDiaryAlarm(User user){
+    public void sendDayDiaryAlarm(Long userId){
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RestApiException(CustomErrorCode.USER_NOT_FOUND));
+
         Message message = Message.builder()
                 .setToken(user.getFcmToken())
                 .putData("content", "하루 일기가 생성되었습니다! 확인해보세요!")

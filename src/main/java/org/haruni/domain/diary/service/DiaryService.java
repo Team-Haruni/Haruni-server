@@ -2,12 +2,16 @@ package org.haruni.domain.diary.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.haruni.domain.alarm.service.AlarmService;
+import org.haruni.domain.chat.entity.Chat;
+import org.haruni.domain.chatroom.entity.Chatroom;
 import org.haruni.domain.chatroom.repository.ChatroomRepository;
+import org.haruni.domain.diary.dto.req.DayDiaryRequestDto;
 import org.haruni.domain.diary.dto.res.DayDiaryResponseDto;
 import org.haruni.domain.diary.dto.res.DayDiarySummaryDto;
 import org.haruni.domain.diary.dto.res.MonthDiaryResponseDto;
 import org.haruni.domain.diary.entity.Diary;
 import org.haruni.domain.diary.repository.DiaryRepository;
+import org.haruni.domain.user.dto.req.UserSummaryDto;
 import org.haruni.domain.user.entity.User;
 import org.haruni.domain.user.entity.UserDetailsImpl;
 import org.haruni.domain.user.repository.UserRepository;
@@ -22,7 +26,8 @@ import org.springframework.web.client.RestTemplate;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -55,7 +60,7 @@ public class DiaryService {
                         .findFirst()
                         .orElseThrow(() -> new RestApiException(CustomErrorCode.DIARY_NOT_FOUND));
 
-        log.info("[DiaryService - getDayDiary()] : {} 다이어리 조회 성공", date);
+        log.info("getDayDiary() : {} 다이어리 조회 성공", date);
 
         return DayDiaryResponseDto.builder()
                 .description(diary.getDescription())
@@ -75,7 +80,7 @@ public class DiaryService {
                 .map(DayDiarySummaryDto::entityToDto)
                 .toList();
 
-        log.info("[DiaryService - getMonthDiary()] : {}월 다이어리 조회 성공", month);
+        log.info("getMonthDiary() : {}월 다이어리 조회 성공", month);
 
         return MonthDiaryResponseDto.builder()
                 .month(month)
@@ -88,37 +93,48 @@ public class DiaryService {
 
         String date = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
-        List<User> userEmails = chatroomRepository.findByCreatedAt(date).stream()
-                .filter(chatroom -> chatroom.getChats().size() >= 6)
-                .map(chatroom -> userRepository.findById(chatroom.getUserId()))
-                .flatMap(Optional::stream)
-                .distinct()
-                .toList();
+        List<Long> userIds = chatroomRepository.findUserIdsByChatCountAndCreatedAt(6L, date);
 
-        log.info("[DiaryService - createDayDiary()] : 사용자 이메일 {}개 조회 완료", userEmails.size());
+        log.info("createDayDiary() : 사용자 이메일 {}개 조회 완료", userIds.size());
 
-        userEmails.forEach(user -> {
-            try {
-                DayDiaryResponseDto response = modelServerTemplate.getForObject(
-                        "/day-diary/{email}",
-                        DayDiaryResponseDto.class,
-                        user.getEmail()
+        if(userIds.isEmpty())
+            return;
+
+        List<UserSummaryDto> userSummaries = userRepository.findUserSummariesByUserIds(userIds);
+
+        List<Chatroom> chatrooms = chatroomRepository.findChatroomByUserIdsAndCreatedAt(userIds, date);
+
+        // <사용자 아이디, 채팅 내용> 구조로 맵 생성
+        Map<Long, List<Chat>> userChats = chatrooms.stream()
+                        .collect(Collectors.toMap(Chatroom::getUserId, Chatroom::getChats));
+
+        userSummaries.forEach(userSummary -> {
+            try{
+                List<Chat> chats = userChats.get(userSummary.getUserId());
+
+                DayDiaryRequestDto request = DayDiaryRequestDto.builder()
+                        .userSummary(userSummary)
+                        .chats(chats)
+                        .build();
+
+                DayDiaryResponseDto response = modelServerTemplate.postForObject(
+                        "/api/v1/diary",
+                        request,
+                        DayDiaryResponseDto.class
                 );
 
-                log.info("[DiaryService - createDayDiary()] : {}의 하루일기 생성 성공]", user.getNickname());
+                log.info("createDayDiary() : userId = {}의 하루일기 생성 성공]", userSummary.getUserId());
 
-                Diary diary = Diary.builder()
+                Diary diary= Diary.builder()
                         .response(response)
                         .date(date)
                         .build();
 
                 diaryRepository.save(diary);
-                user.getDiaries().add(diary);
 
-                alarmService.sendDayDiaryAlarm(user);
-
-            } catch(HttpClientErrorException e) {
-                log.error("[DiaryService - createDayDiary()] : {}의 하루일기 생성 실패]", user.getNickname());
+                alarmService.sendDayDiaryAlarm(userSummary.getUserId());
+            }catch(HttpClientErrorException e) {
+                log.error("createDayDiary() : userId = {}의 하루일기 생성 실패]", userSummary.getUserId());
             }
         });
     }

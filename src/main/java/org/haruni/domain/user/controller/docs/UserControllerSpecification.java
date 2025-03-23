@@ -59,7 +59,7 @@ public interface UserControllerSpecification {
                             },
                             schema = @Schema(implementation = ErrorResponse.class))),
     })
-    @PatchMapping("/email")
+    @PatchMapping("/me/email")
     ResponseEntity<ResponseDto<String>> updateUserEmail(@AuthenticationPrincipal UserDetailsImpl user,
                                                         @Valid @RequestBody EmailUpdateRequestDto request);
 
@@ -86,7 +86,7 @@ public interface UserControllerSpecification {
                             },
                             schema = @Schema(implementation = ErrorResponse.class))),
     })
-    @PatchMapping("/alarm")
+    @PatchMapping("/me/alarm")
     ResponseEntity<ResponseDto<String>> updateAlarmActiveTime(@AuthenticationPrincipal UserDetailsImpl user,
                                                               @Valid@RequestBody AlarmActiveTimeUpdateRequestDto request);
 }
