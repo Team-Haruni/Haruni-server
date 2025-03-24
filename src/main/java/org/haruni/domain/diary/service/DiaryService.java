@@ -11,7 +11,7 @@ import org.haruni.domain.diary.dto.res.DayDiarySummaryDto;
 import org.haruni.domain.diary.dto.res.MonthDiaryResponseDto;
 import org.haruni.domain.diary.entity.Diary;
 import org.haruni.domain.diary.repository.DiaryRepository;
-import org.haruni.domain.user.dto.req.UserSummaryDto;
+import org.haruni.domain.user.dto.res.UserSummaryDto;
 import org.haruni.domain.user.entity.User;
 import org.haruni.domain.user.entity.UserDetailsImpl;
 import org.haruni.domain.user.repository.UserRepository;
