@@ -23,6 +23,7 @@ import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -54,6 +55,7 @@ public class AlarmService {
         log.info("[AlarmService - scheduleAlarm()] : {} 개의 알람 스케줄링 완료", userAlarm.size());
     }
 
+    @Transactional
     public void sendScheduledAlarm() {
         String now = LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm"));
 
@@ -102,6 +104,21 @@ public class AlarmService {
                 log.error("[AlarmService - sendScheduledAlarm()] : {}, 알람 전송 실패", alarmDto.getFcmToken());
             }
         });
+    }
+
+    @Transactional
+    public void alarmSendTest(){
+        Message message = Message.builder()
+                .setToken("c7xi8CmfT-65UbUI2oMU58:APA91bEhcHmn2gtq1JeXlJD2cBRK2TGBvQdBeWg3un_PCQCMYY-YwbJTHC5gPCd1iJkMAdPTcZN7ItVSJkoFxMmHiuSNcglD92o1COf4ngCQ7OXa2bNM4SA")
+                .putData("content", "hi")
+                .build();
+
+        try {
+            String response = firebaseMessaging.send(message);
+            log.info("[AlarmService - sendScheduledAlarm()] : 알람 전송 성공");
+        } catch (FirebaseMessagingException e) {
+            log.error("[AlarmService - sendScheduledAlarm()] : 알람 전송 실패");
+        }
     }
 
     @Async
