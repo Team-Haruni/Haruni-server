@@ -3,6 +3,7 @@ package org.haruni.domain.alarm.service;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
+import com.google.firebase.messaging.Notification;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.haruni.domain.alarm.dto.req.AlarmDto;
@@ -93,10 +94,17 @@ public class AlarmService {
         }
 
         alarms.forEach(alarmDto -> {
+
+            Notification notification = Notification.builder()
+                    .setTitle("하루 질문이 도착했습니다!")
+                    .setBody(alarmDto.getContent())
+                    .build();
+
             Message message = Message.builder()
                     .setToken(alarmDto.getFcmToken())
-                    .putData("content", alarmDto.getContent())
+                    .setNotification(notification)
                     .build();
+
             try {
                 String response = firebaseMessaging.send(message);
                 log.info("[AlarmService - sendScheduledAlarm()] : {}, 알람 전송 성공", alarmDto.getFcmToken());
@@ -104,21 +112,6 @@ public class AlarmService {
                 log.error("[AlarmService - sendScheduledAlarm()] : {}, 알람 전송 실패", alarmDto.getFcmToken());
             }
         });
-    }
-
-    @Transactional
-    public void alarmSendTest(){
-        Message message = Message.builder()
-                .setToken("c7xi8CmfT-65UbUI2oMU58:APA91bEhcHmn2gtq1JeXlJD2cBRK2TGBvQdBeWg3un_PCQCMYY-YwbJTHC5gPCd1iJkMAdPTcZN7ItVSJkoFxMmHiuSNcglD92o1COf4ngCQ7OXa2bNM4SA")
-                .putData("content", "hi")
-                .build();
-
-        try {
-            String response = firebaseMessaging.send(message);
-            log.info("[AlarmService - sendScheduledAlarm()] : 알람 전송 성공");
-        } catch (FirebaseMessagingException e) {
-            log.error("[AlarmService - sendScheduledAlarm()] : 알람 전송 실패");
-        }
     }
 
     @Async
