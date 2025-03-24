@@ -17,6 +17,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "chatrooms")
 public class Chatroom {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -32,7 +33,8 @@ public class Chatroom {
     private List<Chat> chats = new ArrayList<>();
 
     @Builder
-    public Chatroom(String createdAt) {
+    private Chatroom(Long userId, String createdAt) {
+        this.userId = userId;
         this.createdAt = createdAt;
     }
 }
