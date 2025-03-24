@@ -5,7 +5,6 @@ import org.haruni.domain.chat.dto.req.ChatRequestBody;
 import org.haruni.domain.chat.dto.req.ChatRequestDto;
 import org.haruni.domain.chat.dto.res.ChatResponseDto;
 import org.haruni.domain.chat.service.ChatService;
-import org.haruni.domain.haruni.dto.req.HaruniInstanceCreateRequestDto;
 import org.haruni.domain.haruni.dto.req.PromptUpdateRequestDto;
 import org.haruni.domain.haruni.dto.res.MainPageResponseDto;
 import org.haruni.domain.haruni.entity.Haruni;
@@ -16,7 +15,6 @@ import org.haruni.domain.user.repository.UserRepository;
 import org.haruni.global.exception.entity.RestApiException;
 import org.haruni.global.exception.error.CustomErrorCode;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
@@ -25,7 +23,6 @@ import org.springframework.web.client.RestTemplate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @Service
@@ -41,39 +38,6 @@ public class HaruniService {
         this.haruniRepository = haruniRepository;
         this.userRepository = userRepository;
         this.modelServerTemplate = modelServerTemplate;
-    }
-
-    @Async
-    public void createHaruniInstance(Long haruniId) {
-        try {
-            Haruni haruni = haruniRepository.findById(haruniId)
-                    .orElseThrow(() -> new RestApiException(CustomErrorCode.HARUNI_NOT_FOUND));
-
-            HaruniInstanceCreateRequestDto requestBody = HaruniInstanceCreateRequestDto
-                    .builder()
-                    .userId(haruni.getUser().getId())
-                    .haruniId(haruniId)
-                    .prompt(haruni.getPrompt())
-                    .build();
-
-            modelServerTemplate.postForObject("/chat", requestBody, String.class);
-
-            // TODO 인스턴스 생성 완료시, 하루니 고유키 반환 로직 추가 후 로그에 출력
-
-            log.info("[HaruniService - createHaruniInstance()] - 하루니 인스턴스 생성 성공");
-
-            CompletableFuture.completedFuture(true);
-
-        } catch (HttpClientErrorException e) {
-            log.error("[HaruniService - createHaruniInstance()] - 하루니 인스턴스 생성 실패 [{}] - {}",
-                    e.getStatusText(), e.getMessage());
-            CompletableFuture.completedFuture(false);
-
-        } catch (Exception e) {
-            log.error("[HaruniService - createHaruniInstance()] - 하루니 인스턴스 생성 실패 {}",
-                    e.getMessage());
-            CompletableFuture.completedFuture(false);
-        }
     }
 
     @Transactional(readOnly = true)

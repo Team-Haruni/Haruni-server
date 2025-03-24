@@ -66,8 +66,6 @@ public class AuthService {
         haruni.matchUser(user);
         haruniRepository.save(haruni);
 
-        haruniService.createHaruniInstance(haruni.getId());
-
         return user.getEmail();
     }
 
