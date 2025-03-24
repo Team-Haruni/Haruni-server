@@ -16,6 +16,7 @@ public class ChatroomService {
 
     public Chatroom createChatroom(User user, String createdAt){
         Chatroom chatroom = Chatroom.builder()
+                .userId(user.getId())
                 .createdAt(createdAt)
                 .build();
 

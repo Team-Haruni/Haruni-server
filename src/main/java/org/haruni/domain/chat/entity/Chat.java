@@ -28,7 +28,7 @@ public class Chat {
     private String createdAt;
 
     @Builder
-    public Chat(String senderName, ChatType type, String content, String createdAt) {
+    private Chat(String senderName, ChatType type, String content, String createdAt) {
         this.senderName = senderName;
         this.type = type;
         this.content = content;
