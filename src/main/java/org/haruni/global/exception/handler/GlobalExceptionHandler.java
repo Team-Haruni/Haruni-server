@@ -13,6 +13,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,7 +49,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DataAccessException.class)
     public ResponseEntity<ErrorResponse<String>> handleSqlException(DataAccessException e){
         log.error("SQLException occur with {}", e.getMessage());
-
+        SQLException
         return handleExceptionInternal(CustomErrorCode.SQL_EXCEPTION);
     }
 

@@ -1,7 +1,7 @@
 name: Capstone Design CI & CD
 
 on:
-  pull_request:
+  push:
     branches: [ "main" ]
 
 jobs:
