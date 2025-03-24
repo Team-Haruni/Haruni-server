@@ -37,16 +37,21 @@ import java.util.concurrent.CompletableFuture;
 @RequiredArgsConstructor
 public class AlarmService {
 
+    // TODO ALARM_HASH 값 설정 파일에서 주입받는 방식으로 변경
     private static final String ALARM_HASH = "alarm";
 
     private final ChatroomService chatroomService;
     private final ChatService chatService;
+
     private final UserRepository userRepository;
     private final ChatRepository chatRepository;
+
     private final FirebaseMessaging firebaseMessaging;
+
     private final RedisTemplate<String, String> redisTemplate;
     private final HashOperations<String, String, String> hashOperations;
 
+    @Transactional
     public void scheduleAlarm() {
 
         List<UserAlarmDto> userAlarm = userRepository.findAlarmByAlarmActive();
@@ -58,11 +63,12 @@ public class AlarmService {
 
     @Transactional
     public void sendScheduledAlarm() {
+
         String now = LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm"));
 
-        Map<String, String> allAlarms = hashOperations.entries(ALARM_HASH);
+        Map<String, String> entireAlarm = hashOperations.entries(ALARM_HASH);
 
-        List<AlarmDto> alarms = allAlarms.entrySet().stream()
+        List<AlarmDto> alarms = entireAlarm.entrySet().stream()
                 .filter(entry -> entry.getValue().equals(now))
                 .map(entry -> AlarmDto.builder()
                         .fcmToken(entry.getKey())
@@ -78,7 +84,6 @@ public class AlarmService {
                     .findFirst()
                     .orElseGet(() -> chatroomService.createChatroom(user, chatService.getNow()));
 
-
             Chat chat = Chat.builder()
                         .senderName(user.getHaruniName())
                         .type(ChatType.HARUNI)
@@ -88,11 +93,9 @@ public class AlarmService {
 
             chatroom.getChats().add(chat);
             chatRepository.save(chat);
-        });
 
-        allAlarms.entrySet().stream()
-                .filter(entry -> entry.getValue().equals(now))
-                .forEach(entry -> hashOperations.delete(ALARM_HASH, entry.getKey()));
+            hashOperations.delete(ALARM_HASH, user.getFcmToken());
+        });
 
         if (alarms.isEmpty()) {
             log.info("sendScheduledAlarm() - 스케줄링된 알람이 없습니다.");
@@ -128,9 +131,14 @@ public class AlarmService {
         user.getDiaries().add(diary);
         userRepository.save(user);
 
+        Notification notification = Notification.builder()
+                .setTitle("하루 그림 일기가 도착했습니다!")
+                .setBody("앱에서 하루 그림 일기를 확인해보세요!")
+                .build();
+
         Message message = Message.builder()
                 .setToken(user.getFcmToken())
-                .putData("content", "하루 일기가 생성되었습니다! 확인해보세요!")
+                .setNotification(notification)
                 .build();
 
         try {
