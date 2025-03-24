@@ -1,4 +1,4 @@
-package org.haruni.domain.user.dto.req;
+package org.haruni.domain.user.dto.res;
 
 import lombok.Builder;
 import lombok.Getter;

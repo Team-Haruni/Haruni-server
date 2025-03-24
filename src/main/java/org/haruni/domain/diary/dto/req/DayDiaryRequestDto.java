@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
 import org.haruni.domain.chat.entity.Chat;
-import org.haruni.domain.user.dto.req.UserSummaryDto;
+import org.haruni.domain.user.dto.res.UserSummaryDto;
 
 import java.util.List;
 

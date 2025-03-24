@@ -6,8 +6,7 @@ import com.google.firebase.messaging.Message;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.haruni.domain.alarm.dto.req.AlarmDto;
-import org.haruni.domain.alarm.entity.Alarm;
-import org.haruni.domain.alarm.repository.AlarmRepository;
+import org.haruni.domain.alarm.entity.AlarmContent;
 import org.haruni.domain.chat.entity.Chat;
 import org.haruni.domain.chat.entity.ChatType;
 import org.haruni.domain.chat.repository.ChatRepository;
@@ -15,16 +14,20 @@ import org.haruni.domain.chat.service.ChatService;
 import org.haruni.domain.chatroom.entity.Chatroom;
 import org.haruni.domain.chatroom.service.ChatroomService;
 import org.haruni.domain.diary.entity.Diary;
+import org.haruni.domain.user.dto.res.UserAlarmDto;
 import org.haruni.domain.user.entity.User;
 import org.haruni.domain.user.repository.UserRepository;
 import org.haruni.global.exception.entity.RestApiException;
 import org.haruni.global.exception.error.CustomErrorCode;
+import org.springframework.data.redis.core.HashOperations;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 @Slf4j
@@ -32,36 +35,43 @@ import java.util.concurrent.CompletableFuture;
 @RequiredArgsConstructor
 public class AlarmService {
 
+    private static final String ALARM_HASH = "alarm";
+
     private final ChatroomService chatroomService;
     private final ChatService chatService;
-
     private final UserRepository userRepository;
-    private final AlarmRepository alarmRepository;
     private final ChatRepository chatRepository;
-
     private final FirebaseMessaging firebaseMessaging;
+    private final RedisTemplate<String, String> redisTemplate;
+    private final HashOperations<String, String, String> hashOperations;
 
-    public void scheduleAlarm(){
+    public void scheduleAlarm() {
 
-        List<Alarm> reservedAlarm = userRepository.findAlarmByAlarmActive();
+        List<UserAlarmDto> userAlarm = userRepository.findAlarmByAlarmActive();
 
-        alarmRepository.saveAll(reservedAlarm);
+        userAlarm.forEach(alarm -> saveAlarm(alarm.getFcmToken(), alarm.getAlarmActiveTime()));
 
-        log.info("[AlarmService - scheduleAlarm()] : {} 개의 알람 스케줄링 완료", reservedAlarm.size());
+        log.info("[AlarmService - scheduleAlarm()] : {} 개의 알람 스케줄링 완료", userAlarm.size());
     }
 
-    public void sendScheduledAlarm(){
-
+    public void sendScheduledAlarm() {
         String now = LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm"));
-        List<AlarmDto> alarms = alarmRepository.findAllBySendingTime(now).stream()
-                .map(AlarmDto::entityToDto)
+
+        Map<String, String> allAlarms = hashOperations.entries(ALARM_HASH);
+
+        List<AlarmDto> alarms = allAlarms.entrySet().stream()
+                .filter(entry -> entry.getValue().equals(now))
+                .map(entry -> AlarmDto.builder()
+                        .fcmToken(entry.getKey())
+                        .content(AlarmContent.getRandomMessage())
+                        .build())
                 .toList();
 
         alarms.forEach(alarmDto -> {
             User user = userRepository.findByFcmToken(alarmDto.getFcmToken());
 
             Chatroom chatroom = user.getChatrooms().stream()
-                    .filter(userChatroom -> userChatroom.getCreatedAt().equals(chatService.getNow()))
+                    .filter(cr -> cr.getCreatedAt().equals(chatService.getNow()))
                     .findFirst()
                     .orElseGet(() -> chatroomService.createChatroom(user, chatService.getNow()));
 
@@ -71,29 +81,31 @@ public class AlarmService {
             chatRepository.save(chat);
         });
 
-        alarmRepository.deleteAllBySendingTime(now);
+        allAlarms.entrySet().stream()
+                .filter(entry -> entry.getValue().equals(now))
+                .forEach(entry -> hashOperations.delete(ALARM_HASH, entry.getKey()));
 
-        if(alarms.isEmpty()) return;
+        if (alarms.isEmpty()) {
+            log.info("sendScheduledAlarm() - 스케줄링된 알람이 없습니다.");
+            return;
+        }
 
         alarms.forEach(alarmDto -> {
             Message message = Message.builder()
                     .setToken(alarmDto.getFcmToken())
                     .putData("content", alarmDto.getContent())
                     .build();
-
-            try{
+            try {
                 String response = firebaseMessaging.send(message);
-
                 log.info("[AlarmService - sendScheduledAlarm()] : {}, 알람 전송 성공", alarmDto.getFcmToken());
-            }catch (FirebaseMessagingException e){
+            } catch (FirebaseMessagingException e) {
                 log.error("[AlarmService - sendScheduledAlarm()] : {}, 알람 전송 실패", alarmDto.getFcmToken());
             }
         });
     }
 
     @Async
-    public void sendDayDiaryAlarm(Long userId, Diary diary){
-
+    public void sendDayDiaryAlarm(Long userId, Diary diary) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RestApiException(CustomErrorCode.USER_NOT_FOUND));
 
@@ -104,35 +116,36 @@ public class AlarmService {
                 .setToken(user.getFcmToken())
                 .putData("content", "하루 일기가 생성되었습니다! 확인해보세요!")
                 .build();
-        try{
+
+        try {
             String response = firebaseMessaging.send(message);
-
-            log.info("[AlarmService - sendScheduledAlarm()] : 하루 일기 알람 전송 성공");
-
+            log.info("[AlarmService - sendDayDiaryAlarm()] : 하루 일기 알람 전송 성공");
             CompletableFuture.completedFuture(true);
-        } catch (FirebaseMessagingException e){
-
-            log.error("[AlarmService - sendScheduledAlarm()] : 하루 일기 알람 전송 실패. {}", e.getMessage());
-
+        } catch (FirebaseMessagingException e) {
+            log.error("[AlarmService - sendDayDiaryAlarm()] : 하루 일기 알람 전송 실패. {}", e.getMessage());
             CompletableFuture.completedFuture(false);
         }
     }
 
     @Async
-    public void updateAlarmSchedule(String fcmToken, String alarmActiveTime){
+    public void updateAlarmSchedule(String fcmToken, String alarmActiveTime) {
         try {
-            alarmRepository.deleteByFcmToken(fcmToken);
+            updateAlarm(fcmToken, alarmActiveTime);
 
-            Alarm alarm = new Alarm(fcmToken, alarmActiveTime);
-            alarmRepository.save(alarm);
-
-            log.info("[AlarmService - updateAlarmSchedule()] : 알람 스캐줄링 업데이트 완료");
+            log.info("[AlarmService - updateAlarmSchedule()] : 알람 스케줄링 업데이트 완료");
 
             CompletableFuture.completedFuture(true);
         } catch (Exception e) {
-            log.error("[AlarmService - updateAlarmSchedule()] : 알람 스캐줄링 업데이트 실패. {}", e.getMessage());
-
+            log.error("[AlarmService - updateAlarmSchedule()] : 알람 스케줄링 업데이트 실패. {}", e.getMessage());
             CompletableFuture.completedFuture(false);
         }
+    }
+
+    private void saveAlarm(String fcmToken, String alarmActiveTime) {
+        hashOperations.put(ALARM_HASH, fcmToken, alarmActiveTime);
+    }
+
+    private void updateAlarm(String fcmToken, String updatedAlarmActiveTime) {
+        hashOperations.put(ALARM_HASH, fcmToken, updatedAlarmActiveTime);
     }
 }
