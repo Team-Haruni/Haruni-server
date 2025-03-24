@@ -2,6 +2,7 @@ package org.haruni.domain.user.controller.api;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.haruni.domain.alarm.service.AlarmService;
 import org.haruni.domain.common.dto.res.ResponseDto;
 import org.haruni.domain.user.controller.docs.UserControllerSpecification;
 import org.haruni.domain.user.dto.req.AlarmActiveTimeUpdateRequestDto;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController implements UserControllerSpecification {
 
     private final UserService userService;
+    private final AlarmService alarmService;
 
     @GetMapping
     public ResponseEntity<ResponseDto<UserInfoResponseDto>> getUserInfo(@AuthenticationPrincipal UserDetailsImpl user){
@@ -37,5 +39,10 @@ public class UserController implements UserControllerSpecification {
     public ResponseEntity<ResponseDto<String>> updateAlarmActiveTime(@AuthenticationPrincipal UserDetailsImpl user,
                                                                      @Valid@RequestBody AlarmActiveTimeUpdateRequestDto request){
         return ResponseEntity.status(HttpStatus.OK).body(ResponseDto.of(userService.updateAlarmActiveTime(user, request), "유저 알람 활성화 시간 수정 완료"));
+    }
+
+    @GetMapping("/test")
+    public void sendAlarmActive(){
+        alarmService.alarmSendTest();
     }
 }
