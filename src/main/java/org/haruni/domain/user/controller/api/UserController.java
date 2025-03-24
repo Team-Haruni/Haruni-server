@@ -40,9 +40,4 @@ public class UserController implements UserControllerSpecification {
                                                                      @Valid@RequestBody AlarmActiveTimeUpdateRequestDto request){
         return ResponseEntity.status(HttpStatus.OK).body(ResponseDto.of(userService.updateAlarmActiveTime(user, request), "유저 알람 활성화 시간 수정 완료"));
     }
-
-    @GetMapping("/test")
-    public void sendAlarmActive(){
-        alarmService.alarmSendTest();
-    }
 }
