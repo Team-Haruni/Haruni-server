@@ -50,7 +50,7 @@ public class HaruniService {
 
         String greetingMessage = getGreetingMessage(now, user.getUser().getNickname());
 
-        log.info("[HaruniService - getHaruni()] - 하루니 조회 성공");
+        log.info("getHaruni() - 하루니 조회 성공");
 
         return MainPageResponseDto.builder()
                 .haruniImageUrl(haruni.getHaruniImageUrl())
@@ -69,7 +69,7 @@ public class HaruniService {
 
         haruni.updatePrompt(request.getPrompt());
 
-        log.info("[HaruniService - updatePrompt()] - 하루니 프롬프트 수정 성공");
+        log.info("updatePrompt() - 하루니 프롬프트 수정 성공");
 
         return request.getPrompt();
     }
@@ -96,7 +96,7 @@ public class HaruniService {
 
         chatService.saveUserChat(user, request);
 
-        log.info("[HaruniService - sendChatToHaruni()] - 사용자 채팅 저장 성공");
+        log.info("sendChatToHaruni() - 사용자 채팅 저장 성공");
 
         Haruni haruni = haruniRepository.findById(authUser.getUser().getHaruni().getId())
                 .orElseThrow(() -> new RestApiException(CustomErrorCode.HARUNI_NOT_FOUND));
@@ -113,13 +113,13 @@ public class HaruniService {
                     requestBody,
                     String.class
             );
-            log.info("[HaruniService - sendChatToHaruni()] - 하루니 채팅 전송 성공");
+            log.info("sendChatToHaruni() - 하루니 채팅 전송 성공");
 
             return ChatResponseDto.entityToDto(
                     chatService.saveHaruniChat(user, haruni.getName(), responseBody)
             );
         }catch (HttpClientErrorException e){
-            log.error("[HaruniService - sendChatToHaruni()] - 하루니 채팅 전송 실패 [{}] - {}", e.getStatusText(), e.getMessage());
+            log.error("sendChatToHaruni() - 하루니 채팅 전송 실패 [{}] - {}", e.getStatusText(), e.getMessage());
             throw new RestApiException(CustomErrorCode.POST_MESSAGE_TO_MODEL_SERVER_FAILED);
         }
     }

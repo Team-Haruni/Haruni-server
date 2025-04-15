@@ -22,7 +22,7 @@ public class ChatroomService {
 
         user.getChatrooms().add(chatroom);
 
-        log.info("[ChatroomService - createChatroom()] : 채팅룸 생성 완료");
+        log.info("createChatroom() : 채팅룸 생성 완료");
 
         return chatroomRepository.save(chatroom);
     }

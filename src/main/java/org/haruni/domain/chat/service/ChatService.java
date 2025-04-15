@@ -48,7 +48,7 @@ public class ChatService {
         chatRepository.save(chat);
         chatroom.getChats().add(chat);
 
-        log.info("[ChatService - saveUserChat()] - 유저 채팅 저장 성공");
+        log.info("saveUserChat() - 유저 채팅 저장 성공");
     }
 
     public Chat saveHaruniChat(User user, String haruniName, String haruniResponse){
@@ -67,7 +67,7 @@ public class ChatService {
         chatRepository.save(chat);
         chatroom.getChats().add(chat);
 
-        log.info("[ChatService - saveHaruniChat()] - 하루니 채팅 저장 성공 {} - {}", user.getEmail(), haruniName);
+        log.info("saveHaruniChat() - 하루니 채팅 저장 성공 {} - {}", user.getEmail(), haruniName);
 
         return chat;
     }
@@ -79,11 +79,11 @@ public class ChatService {
                 .orElse(null);
 
         if(chatroom == null){
-            log.warn("[ChatService - getChats()] - 채팅 내역이 존재하지 않습니다");
+            log.warn("getChats() - 채팅 내역이 존재하지 않습니다");
             return Collections.emptyList();
         }
 
-        log.info("[ChatService - getChats()] - 채팅 조회 성공");
+        log.info("getChats() - 채팅 조회 성공");
 
         return chatroom.getChats().stream()
                 .map(ChatResponseDto::entityToDto)

@@ -5,7 +5,7 @@ import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.haruni.domain.alarm.dto.req.AlarmDto;
 import org.haruni.domain.alarm.entity.AlarmContent;
 import org.haruni.domain.chat.entity.Chat;
@@ -32,12 +32,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-@Slf4j
+@Log4j2
 @Service
 @RequiredArgsConstructor
 public class AlarmService {
 
-    // TODO ALARM_HASH 값 설정 파일에서 주입받는 방식으로 변경
     private static final String ALARM_HASH = "alarm";
 
     private final ChatroomService chatroomService;
@@ -58,7 +57,7 @@ public class AlarmService {
 
         userAlarm.forEach(alarm -> saveAlarm(alarm.getFcmToken(), alarm.getAlarmActiveTime()));
 
-        log.info("[AlarmService - scheduleAlarm()] : {} 개의 알람 스케줄링 완료", userAlarm.size());
+        log.info("[ scheduleAlarm()) ] - {}개의 알람 스캐쥴링 완료", userAlarm.size());
     }
 
     @Transactional
@@ -66,9 +65,9 @@ public class AlarmService {
 
         String now = LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm"));
 
-        Map<String, String> entireAlarm = hashOperations.entries(ALARM_HASH);
+        Map<String, String> reservedAlarms = hashOperations.entries(ALARM_HASH);
 
-        List<AlarmDto> alarms = entireAlarm.entrySet().stream()
+        List<AlarmDto> alarms = reservedAlarms.entrySet().stream()
                 .filter(entry -> entry.getValue().equals(now))
                 .map(entry -> AlarmDto.builder()
                         .fcmToken(entry.getKey())

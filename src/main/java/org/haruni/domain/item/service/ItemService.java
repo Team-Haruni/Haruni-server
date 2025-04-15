@@ -30,7 +30,7 @@ public class ItemService {
         User user = userRepository.findByEmail(authUser.getUser().getEmail())
                 .orElseThrow(() -> new RestApiException(CustomErrorCode.USER_NOT_FOUND));
 
-        log.info("[ItemService - getSelectedItem()] - 선택된 아이탬 조회 성공");
+        log.info("getSelectedItem() - 선택된 아이탬 조회 성공");
 
         return user.getItems().stream()
                 .map(SelectedItemResponseDto::entityToDto)
@@ -54,7 +54,7 @@ public class ItemService {
         user.getItems().addAll(newItems);
         itemRepository.saveAll(newItems);
 
-        log.info("[ItemService - saveItems()] - 아이탬 저장 성공");
+        log.info("saveItems() - 아이탬 저장 성공");
 
         return true;
     }

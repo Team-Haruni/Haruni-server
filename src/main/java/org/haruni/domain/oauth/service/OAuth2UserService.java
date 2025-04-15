@@ -48,7 +48,6 @@ public class OAuth2UserService {
 
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
 
-
         ResponseEntity<Map<String, Object>> response;
         try {
             response = oauthTemplate.exchange(
@@ -60,7 +59,7 @@ public class OAuth2UserService {
             );
 
         } catch (HttpClientErrorException e) {
-            log.error("[OAuth2UserService - oauth2LoginProcess()] : AccessToken is not available and rejected from resource server({})", request.getProviderId());
+            log.error("oauth2LoginProcess() : AccessToken is not available and rejected from resource server({})", request.getProviderId());
             throw new RestApiException(CustomErrorCode.OAUTH2_ACCESS_TOKEN_UNAVAILABLE);
         }
 
@@ -70,7 +69,7 @@ public class OAuth2UserService {
                 request.getAccessToken()
         );
 
-        log.info("[OAuth2UserService - oauth2LoginProcess()] : [{}] 사용자 정보 불러오기 완료 - {}", oAuth2UserInfo.getProvider(), oAuth2UserInfo.getName());
+        log.info("oauth2LoginProcess() : [{}] 사용자 정보 불러오기 완료 - {}", oAuth2UserInfo.getProvider(), oAuth2UserInfo.getName());
 
         if (userRepository.existsByEmail(oAuth2UserInfo.getEmail())) {
 
@@ -81,11 +80,11 @@ public class OAuth2UserService {
                     request.getProviderId()
             );
 
-            log.info("[OAuth2UserService - oauth2LoginProcess()] : Spring Security 인증 및 JWT 발급 성공");
+            log.info("oauth2LoginProcess() : Spring Security 인증 및 JWT 발급 성공");
 
             return OAuth2ResponseDto.login(jwtTokenProvider.generateToken(authentication));
         } else {
-            log.info("[OAuth2UserService - oauth2LoginProcess()] : 서비스 회원 아님. 회원가입 페이지로 리디랙션");
+            log.info("oauth2LoginProcess() : 서비스 회원 아님. 회원가입 페이지로 리디랙션");
             return OAuth2ResponseDto.signup(oAuth2UserInfo.getEmail());
         }
     }

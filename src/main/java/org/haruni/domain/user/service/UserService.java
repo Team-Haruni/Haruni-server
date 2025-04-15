@@ -31,7 +31,7 @@ public class UserService {
 
         Boolean emailUpdateAvailable = user.getUser().getProviderId().equals(OAuth2Provider.NORMAL);
 
-        log.info("[UserService - getUserInfo()] : 유저 정보 조회 성공");
+        log.info("getUserInfo() : 유저 정보 조회 성공");
 
         return UserInfoResponseDto.builder()
                 .nickname(user.getUser().getNickname())
@@ -51,7 +51,7 @@ public class UserService {
 
         user.updateEmail(request.getEmail());
 
-        log.info("[UserService - updateEmail()] : 유저 이메일 수정 성공");
+        log.info("updateEmail() : 유저 이메일 수정 성공");
 
         return request.getEmail();
     }
@@ -66,7 +66,7 @@ public class UserService {
 
         alarmService.updateAlarmSchedule(user.getFcmToken(), request.getAlarmActiveTime());
 
-        log.info("[UserService - updateAlarmActiveTime()] : 유저 알람 활성화 시간 수정 성공");
+        log.info("updateAlarmActiveTime() : 유저 알람 활성화 시간 수정 성공");
         return request.getAlarmActiveTime();
     }
 
