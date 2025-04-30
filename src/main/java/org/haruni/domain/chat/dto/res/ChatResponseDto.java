@@ -1,18 +1,20 @@
 package org.haruni.domain.chat.dto.res;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
 import org.haruni.domain.chat.entity.Chat;
+import org.haruni.domain.chat.entity.ChatType;
 
 @Getter
 @Schema(description = "채팅 Response")
 public class ChatResponseDto {
 
     @Schema(
-            description = "발신자 닉네임",
-            example = "하룬이"
+            description = "채팅 유형",
+            example = "HARUNI"
     )
-    private final String senderName;
+    private final ChatType chatType;
 
     @Schema(
             description = "채팅 본문",
@@ -24,20 +26,20 @@ public class ChatResponseDto {
             description = "발신 시간",
             example = "11:34"
     )
-    private final String createdAt;
+    private final String sendingTime;
 
     @Builder
-    private ChatResponseDto(String senderName, String content, String createdAt){
-        this.senderName = senderName;
+    private ChatResponseDto(ChatType chatType, String content, String sendingTime){
+        this.chatType = chatType;
         this.content = content;
-        this.createdAt = createdAt;
+        this.sendingTime = sendingTime;
     }
 
     public static ChatResponseDto entityToDto(Chat chat){
         return ChatResponseDto.builder()
-                .senderName(chat.getSenderName())
+                .chatType(chat.getChatType())
                 .content(chat.getContent())
-                .createdAt(chat.getCreatedAt())
+                .sendingTime(chat.getSendingTime())
                 .build();
     }
 }

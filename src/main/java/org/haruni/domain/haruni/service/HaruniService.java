@@ -98,25 +98,22 @@ public class HaruniService {
 
         log.info("sendChatToHaruni() - 사용자 채팅 저장 성공");
 
-        Haruni haruni = haruniRepository.findById(authUser.getUser().getHaruni().getId())
-                .orElseThrow(() -> new RestApiException(CustomErrorCode.HARUNI_NOT_FOUND));
-
         ChatRequestBody requestBody = ChatRequestBody.builder()
-                .haruniId(haruni.getId())
+                .user(user)
                 .content(request.getContent())
                 .build();
 
         String responseBody;
         try{
             responseBody = modelServerTemplate.postForObject(
-                    "/chat",
+                    "/api/v1/question",
                     requestBody,
                     String.class
             );
             log.info("sendChatToHaruni() - 하루니 채팅 전송 성공");
 
             return ChatResponseDto.entityToDto(
-                    chatService.saveHaruniChat(user, haruni.getName(), responseBody)
+                    chatService.saveHaruniChat(user, responseBody)
             );
         }catch (HttpClientErrorException e){
             log.error("sendChatToHaruni() - 하루니 채팅 전송 실패 [{}] - {}", e.getStatusText(), e.getMessage());
@@ -125,6 +122,6 @@ public class HaruniService {
     }
 
     public List<ChatResponseDto> getChats(UserDetailsImpl user, String request){
-        return chatService.getChats(user.getUser(), request);
+        return chatService.getChats(user.getUser().getId(), request);
     }
 }

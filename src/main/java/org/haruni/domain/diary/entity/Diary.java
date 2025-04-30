@@ -6,7 +6,6 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.haruni.domain.diary.dto.res.DayDiaryResponseDto;
 
 @Schema(hidden = true)
 @Entity
@@ -18,11 +17,14 @@ public class Diary {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(columnDefinition = "TEXT")
-    private String description;
+    @Column(nullable = false, name = "user_id")
+    private Long userId;
 
-    @Column(name = "object_key")
-    private String objectKey;
+    @Column(nullable = false, name = "day_summary_description", columnDefinition = "TEXT")
+    private String daySummaryDescription;
+
+    @Column(nullable = false, name = "day_summary_Image")
+    private String daySummaryImage;
 
     @Enumerated(EnumType.STRING)
     private Mood mood;
@@ -31,10 +33,11 @@ public class Diary {
     private String date;
 
     @Builder
-    public Diary(DayDiaryResponseDto response, String date) {
-        this.description = response.getDescription();
-        this.objectKey = response.getObjectKey();
-        this.mood = Mood.fromEmotion(response.getMood());
+    private Diary(Long userId, String daySummaryDescription, String daySummaryImage, Mood mood, String date) {
+        this.userId = userId;
+        this.daySummaryDescription = daySummaryDescription;
+        this.daySummaryImage = daySummaryImage;
+        this.mood = mood;
         this.date = date;
     }
 }

@@ -5,15 +5,14 @@ import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.haruni.domain.alarm.dto.req.AlarmDto;
 import org.haruni.domain.alarm.entity.AlarmContent;
 import org.haruni.domain.chat.entity.Chat;
 import org.haruni.domain.chat.entity.ChatType;
 import org.haruni.domain.chat.repository.ChatRepository;
 import org.haruni.domain.chat.service.ChatService;
-import org.haruni.domain.chatroom.entity.Chatroom;
-import org.haruni.domain.chatroom.service.ChatroomService;
+import org.haruni.domain.common.util.TimeUtils;
 import org.haruni.domain.diary.entity.Diary;
 import org.haruni.domain.user.dto.res.UserAlarmDto;
 import org.haruni.domain.user.entity.User;
@@ -21,7 +20,6 @@ import org.haruni.domain.user.repository.UserRepository;
 import org.haruni.global.exception.entity.RestApiException;
 import org.haruni.global.exception.error.CustomErrorCode;
 import org.springframework.data.redis.core.HashOperations;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,42 +30,35 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-@Log4j2
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AlarmService {
 
     private static final String ALARM_HASH = "alarm";
 
-    private final ChatroomService chatroomService;
     private final ChatService chatService;
-
     private final UserRepository userRepository;
     private final ChatRepository chatRepository;
-
     private final FirebaseMessaging firebaseMessaging;
-
-    private final RedisTemplate<String, String> redisTemplate;
     private final HashOperations<String, String, String> hashOperations;
 
-    @Transactional
     public void scheduleAlarm() {
 
         List<UserAlarmDto> userAlarm = userRepository.findAlarmByAlarmActive();
 
         userAlarm.forEach(alarm -> saveAlarm(alarm.getFcmToken(), alarm.getAlarmActiveTime()));
 
-        log.info("[ scheduleAlarm()) ] - {}개의 알람 스캐쥴링 완료", userAlarm.size());
+        log.info("[AlarmService - scheduleAlarm()] : {} 개의 알람 스케줄링 완료", userAlarm.size());
     }
 
     @Transactional
     public void sendScheduledAlarm() {
-
         String now = LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm"));
 
-        Map<String, String> reservedAlarms = hashOperations.entries(ALARM_HASH);
+        Map<String, String> allAlarms = hashOperations.entries(ALARM_HASH);
 
-        List<AlarmDto> alarms = reservedAlarms.entrySet().stream()
+        List<AlarmDto> alarms = allAlarms.entrySet().stream()
                 .filter(entry -> entry.getValue().equals(now))
                 .map(entry -> AlarmDto.builder()
                         .fcmToken(entry.getKey())
@@ -76,25 +67,23 @@ public class AlarmService {
                 .toList();
 
         alarms.forEach(alarmDto -> {
+
             User user = userRepository.findByFcmToken(alarmDto.getFcmToken());
 
-            Chatroom chatroom = user.getChatrooms().stream()
-                    .filter(cr -> cr.getCreatedAt().equals(chatService.getNow()))
-                    .findFirst()
-                    .orElseGet(() -> chatroomService.createChatroom(user, chatService.getNow()));
-
             Chat chat = Chat.builder()
-                        .senderName(user.getHaruniName())
-                        .type(ChatType.HARUNI)
-                        .content(alarmDto.getContent())
-                        .createdAt(chatService.getNow())
-                        .build();
+                    .chatType(ChatType.HARUNI)
+                    .userId(user.getId())
+                    .content(alarmDto.getContent())
+                    .sendingDate(TimeUtils.getCurrentDate())
+                    .sendingTime(TimeUtils.getCurrentTime())
+                    .build();
 
-            chatroom.getChats().add(chat);
             chatRepository.save(chat);
-
-            hashOperations.delete(ALARM_HASH, user.getFcmToken());
         });
+
+        allAlarms.entrySet().stream()
+                .filter(entry -> entry.getValue().equals(now))
+                .forEach(entry -> hashOperations.delete(ALARM_HASH, entry.getKey()));
 
         if (alarms.isEmpty()) {
             log.info("sendScheduledAlarm() - 스케줄링된 알람이 없습니다.");
@@ -127,17 +116,11 @@ public class AlarmService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RestApiException(CustomErrorCode.USER_NOT_FOUND));
 
-        user.getDiaries().add(diary);
         userRepository.save(user);
-
-        Notification notification = Notification.builder()
-                .setTitle("하루 그림 일기가 도착했습니다!")
-                .setBody("앱에서 하루 그림 일기를 확인해보세요!")
-                .build();
 
         Message message = Message.builder()
                 .setToken(user.getFcmToken())
-                .setNotification(notification)
+                .putData("content", "하루 일기가 생성되었습니다! 확인해보세요!")
                 .build();
 
         try {
