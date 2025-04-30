@@ -5,15 +5,12 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.haruni.domain.haruni.entity.Haruni;
 import org.haruni.domain.haruni.entity.MBTI;
-import org.haruni.domain.item.entity.Item;
 import org.haruni.domain.oauth.common.utils.OAuth2Provider;
 import org.haruni.domain.user.dto.req.SignUpRequestDto;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Schema(hidden = true)
 @Entity
@@ -72,10 +69,6 @@ public class User {
 
     @Column(name = "role", nullable = false)
     private String role;
-
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id")
-    private List<Item> items = new ArrayList<>();
 
     @Builder
     private User(SignUpRequestDto req, String encodedPassword, Haruni haruni) {
