@@ -20,12 +20,12 @@ public class Item {
     @Column(nullable = false, name = "user_id")
     private Long userId;
 
-    @Column(nullable = false, length = 100)
-    private Long index;
+    @Column(nullable = false, length = 100, name = "item_index")
+    private Long itemIndex;
 
     @Builder
-    private Item(Long userId, Long index) {
+    private Item(Long userId, Long itemIndex) {
         this.userId = userId;
-        this.index = index;
+        this.itemIndex = itemIndex;
     }
 }

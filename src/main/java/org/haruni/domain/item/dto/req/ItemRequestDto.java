@@ -16,5 +16,5 @@ public class ItemRequestDto {
             example = "https://{bucket-name}.s3.{region}.amazonaws.com/{object-key}"
     )
     @NotBlank(message = "아이탬 이미지 url은 공백이 될 수 없습니다.")
-    private Long index;
+    private Long itemIndex;
 }

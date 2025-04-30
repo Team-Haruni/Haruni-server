@@ -23,7 +23,7 @@ public class SelectedItemResponseDto {
 
     public static SelectedItemResponseDto entityToDto(Item item){
         return SelectedItemResponseDto.builder()
-                .index(item.getIndex())
+                .index(item.getItemIndex())
                 .build();
     }
 }

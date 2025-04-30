@@ -44,7 +44,7 @@ public class ItemService {
         request.getItems().forEach(item -> {
             Item newItem = Item.builder()
                     .userId(user.getId())
-                    .index(item.getIndex())
+                    .itemIndex(item.getItemIndex())
                     .build();
             itemRepository.save(newItem);
         });
