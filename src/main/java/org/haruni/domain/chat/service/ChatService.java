@@ -36,11 +36,11 @@ public class ChatService {
         log.info("saveUserChat() - 유저 채팅 저장 성공");
     }
 
-    public Chat saveHaruniChat(User user, String haruniChat){
+    public Chat saveHaruniChat(User user, String response){
         Chat chat = Chat.builder()
                 .chatType(ChatType.HARUNI)
                 .userId(user.getId())
-                .content(haruniChat)
+                .content(response)
                 .sendingDate(TimeUtils.getCurrentDate())
                 .sendingTime(TimeUtils.getCurrentTime())
                 .build();

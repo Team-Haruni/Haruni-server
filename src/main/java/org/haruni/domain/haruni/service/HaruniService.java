@@ -134,18 +134,15 @@ public class HaruniService {
 
         log.info("[HaruniService - sendChatToHaruni()] - 사용자 채팅 저장 성공");
 
-        Haruni haruni = haruniRepository.findById(authUser.getUser().getHaruni().getId())
-                .orElseThrow(() -> new RestApiException(CustomErrorCode.HARUNI_NOT_FOUND));
-
         ChatRequestBody requestBody = ChatRequestBody.builder()
-                .haruniId(haruni.getId())
+                .user(user)
                 .content(request.getContent())
                 .build();
 
         String responseBody;
         try{
             responseBody = modelServerTemplate.postForObject(
-                    "/chat",
+                    "/api/v1/question",
                     requestBody,
                     String.class
             );
