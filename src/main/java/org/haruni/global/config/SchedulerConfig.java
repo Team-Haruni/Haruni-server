@@ -13,19 +13,22 @@ public class SchedulerConfig {
     private final AlarmService alarmService;
     private final DiaryService diaryService;
 
-    @Scheduled(cron = "0 0 0 * * *")
+    @Scheduled(cron = "0 0 0 * * *", zone = "Asia/Seoul")
     public void scheduleAlarmTask(){
         alarmService.scheduleAlarm();
     }
 
-    @Scheduled(cron = "0 */10 * * * *")
+    @Scheduled(cron = "0 */10 * * * *", zone = "Asia/Seoul")
     public void sendAlarmTask(){
         alarmService.sendScheduledAlarm();
     }
 
-    @Scheduled(cron = "0 50 23 * * *")
+    @Scheduled(cron = "0 50 23 * * *", zone = "Asia/Seoul")
     public void createDayDiary(){
         diaryService.createDayDiary();
     }
+
+//    @Scheduled(cron = "0 0 20 * * SUN", zone = "Asia/Seoul")
+//    public void createWeekEmotionSummary() { diaryService.createWeekEmotionSummary();}
 
 }
