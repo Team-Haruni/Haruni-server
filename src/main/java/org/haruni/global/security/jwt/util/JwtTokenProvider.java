@@ -45,7 +45,6 @@ public class JwtTokenProvider {
     }
 
     public TokenResponseDto generateToken(Authentication authentication){
-        log.info("[JwtTokenProvider - generateToken()] : In");
 
         String authorities = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
@@ -67,7 +66,7 @@ public class JwtTokenProvider {
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
 
-        log.info("[JwtTokenProvider - generateToken()] : Out");
+        log.info("generateToken() - {} 토큰 생성 완료", authentication.getName());
 
         return TokenResponseDto.builder()
                 .accessToken(accessToken)

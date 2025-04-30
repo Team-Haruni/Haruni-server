@@ -56,7 +56,7 @@ public class AuthService {
         userRepository.save(user);
         alarmService.updateAlarmSchedule(user.getFcmToken(), user.getAlarmActiveTime());
 
-        log.info("[AuthService - signUp()] : 유저({}) 회원 가입 성공", user.getEmail());
+        log.info("signUp() : 유저({}) 회원 가입 성공", user.getEmail());
 
         Haruni haruni = Haruni.builder()
                 .name(req.getHaruniName())
@@ -65,8 +65,6 @@ public class AuthService {
 
         haruni.matchUser(user);
         haruniRepository.save(haruni);
-
-        haruniService.createHaruniInstance(haruni.getId());
 
         return user.getEmail();
     }
@@ -77,7 +75,7 @@ public class AuthService {
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(req.getEmail(), req.getPassword());
             Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
-            log.info("[AuthService - login()] : 유저({}) 인증 성공", authentication.getName());
+            log.info("login() : 유저({}) 인증 성공", authentication.getName());
 
             return jwtTokenProvider.generateToken(authentication);
         }catch(BadCredentialsException | UsernameNotFoundException e) {

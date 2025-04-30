@@ -34,7 +34,10 @@ public enum CustomErrorCode implements ErrorCode {
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, 404, "유저 조회에 실패하였습니다"),
 
     // Request
-    INVALID_PARAMS(HttpStatus.BAD_REQUEST, 400, "유효성 검사에 실패하였습니다");
+    INVALID_PARAMS(HttpStatus.BAD_REQUEST, 400, "유효성 검사에 실패하였습니다"),
+
+    // DB
+    SQL_EXCEPTION(HttpStatus.SERVICE_UNAVAILABLE, 503, "데이터베이스 연산에 실패하였습니다");
 
     private final HttpStatus httpStatus;
     private final Integer code;

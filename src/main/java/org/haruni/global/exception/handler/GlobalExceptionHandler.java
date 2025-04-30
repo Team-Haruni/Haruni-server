@@ -1,17 +1,17 @@
 package org.haruni.global.exception.handler;
 
 import lombok.extern.slf4j.Slf4j;
+import org.haruni.global.exception.entity.RestApiException;
+import org.haruni.global.exception.error.CustomErrorCode;
+import org.haruni.global.exception.error.ErrorCode;
+import org.haruni.global.exception.error.ErrorResponse;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
-import org.haruni.global.exception.entity.RestApiException;
-import org.haruni.global.exception.error.ErrorCode;
-import org.haruni.global.exception.error.ErrorResponse;
-import org.haruni.global.exception.error.CustomErrorCode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +20,7 @@ import java.util.List;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    // TODO 에러 로깅 처리에 HttpServletRequest 에서 uri 가져와서 구체적인 로깅 처리
     @ExceptionHandler(RestApiException.class)
     public ResponseEntity<ErrorResponse<String>> handleRestApiException(RestApiException e){
         ErrorCode errorCode = e.getErrorCode();
@@ -31,7 +32,6 @@ public class GlobalExceptionHandler {
         BindingResult result = e.getBindingResult();
         List<String> errorMessages = new ArrayList<>();
 
-        log.error("@Valid Exception occur with below parameter");
         for (FieldError error : result.getFieldErrors()){
             String errorMessage = "[ " + error.getField() + " ]" +
                     "[ " + error.getDefaultMessage() + " ]" +
@@ -39,7 +39,16 @@ public class GlobalExceptionHandler {
             errorMessages.add(errorMessage);
         }
 
+        log.error("@Valid Exception occur with below parameter");
+        log.error("{}", errorMessages);
+
         return handleExceptionInternal(CustomErrorCode.INVALID_PARAMS, errorMessages);
+    }
+
+    @ExceptionHandler(DataAccessException.class)
+    public ResponseEntity<ErrorResponse<String>> handleSqlException(DataAccessException e){
+        log.error("SQLException occur with {}", e.getMessage());
+        return handleExceptionInternal(CustomErrorCode.SQL_EXCEPTION);
     }
 
     @ExceptionHandler(Exception.class)

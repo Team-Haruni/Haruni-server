@@ -80,6 +80,13 @@ spring:
             user-info-authentication-method: header
             user-name-attribute: id
 
+server:
+  servlet:
+    encoding:
+      charset: UTF-8
+      force: true
+  port: 8443
+
 model-server:
   url: ${MODEL_SERVER_URL}
 
@@ -87,14 +94,13 @@ firebase:
   config:
     path: firebase/firebase_service_key.json
 
-server:
-  servlet:
-    encoding:
-      charset: UTF-8
-      force: true
-  port: 8080
-
 logging:
   level:
     org.hibernate.sql: debug
     org.hibernate.type: trace
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus, health, info

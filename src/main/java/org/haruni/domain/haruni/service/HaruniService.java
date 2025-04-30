@@ -5,7 +5,6 @@ import org.haruni.domain.chat.dto.req.ChatRequestBody;
 import org.haruni.domain.chat.dto.req.ChatRequestDto;
 import org.haruni.domain.chat.dto.res.ChatResponseDto;
 import org.haruni.domain.chat.service.ChatService;
-import org.haruni.domain.haruni.dto.req.HaruniInstanceCreateRequestDto;
 import org.haruni.domain.haruni.dto.req.PromptUpdateRequestDto;
 import org.haruni.domain.haruni.dto.res.MainPageResponseDto;
 import org.haruni.domain.haruni.entity.Haruni;
@@ -16,7 +15,6 @@ import org.haruni.domain.user.repository.UserRepository;
 import org.haruni.global.exception.entity.RestApiException;
 import org.haruni.global.exception.error.CustomErrorCode;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
@@ -25,7 +23,6 @@ import org.springframework.web.client.RestTemplate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @Service
@@ -43,39 +40,6 @@ public class HaruniService {
         this.modelServerTemplate = modelServerTemplate;
     }
 
-    @Async
-    public void createHaruniInstance(Long haruniId) {
-        try {
-            Haruni haruni = haruniRepository.findById(haruniId)
-                    .orElseThrow(() -> new RestApiException(CustomErrorCode.HARUNI_NOT_FOUND));
-
-            HaruniInstanceCreateRequestDto requestBody = HaruniInstanceCreateRequestDto
-                    .builder()
-                    .userId(haruni.getUser().getId())
-                    .haruniId(haruniId)
-                    .prompt(haruni.getPrompt())
-                    .build();
-
-            modelServerTemplate.postForObject("/chat", requestBody, String.class);
-
-            // TODO 인스턴스 생성 완료시, 하루니 고유키 반환 로직 추가 후 로그에 출력
-
-            log.info("[HaruniService - createHaruniInstance()] - 하루니 인스턴스 생성 성공");
-
-            CompletableFuture.completedFuture(true);
-
-        } catch (HttpClientErrorException e) {
-            log.error("[HaruniService - createHaruniInstance()] - 하루니 인스턴스 생성 실패 [{}] - {}",
-                    e.getStatusText(), e.getMessage());
-            CompletableFuture.completedFuture(false);
-
-        } catch (Exception e) {
-            log.error("[HaruniService - createHaruniInstance()] - 하루니 인스턴스 생성 실패 {}",
-                    e.getMessage());
-            CompletableFuture.completedFuture(false);
-        }
-    }
-
     @Transactional(readOnly = true)
     public MainPageResponseDto getHaruni(UserDetailsImpl user){
 
@@ -86,7 +50,7 @@ public class HaruniService {
 
         String greetingMessage = getGreetingMessage(now, user.getUser().getNickname());
 
-        log.info("[HaruniService - getHaruni()] - 하루니 조회 성공");
+        log.info("getHaruni() - 하루니 조회 성공");
 
         return MainPageResponseDto.builder()
                 .haruniImageUrl(haruni.getHaruniImageUrl())
@@ -105,7 +69,7 @@ public class HaruniService {
 
         haruni.updatePrompt(request.getPrompt());
 
-        log.info("[HaruniService - updatePrompt()] - 하루니 프롬프트 수정 성공");
+        log.info("updatePrompt() - 하루니 프롬프트 수정 성공");
 
         return request.getPrompt();
     }
@@ -132,7 +96,7 @@ public class HaruniService {
 
         chatService.saveUserChat(user, request);
 
-        log.info("[HaruniService - sendChatToHaruni()] - 사용자 채팅 저장 성공");
+        log.info("sendChatToHaruni() - 사용자 채팅 저장 성공");
 
         ChatRequestBody requestBody = ChatRequestBody.builder()
                 .user(user)
@@ -146,13 +110,13 @@ public class HaruniService {
                     requestBody,
                     String.class
             );
-            log.info("[HaruniService - sendChatToHaruni()] - 하루니 채팅 전송 성공");
+            log.info("sendChatToHaruni() - 하루니 채팅 전송 성공");
 
             return ChatResponseDto.entityToDto(
                     chatService.saveHaruniChat(user, responseBody)
             );
         }catch (HttpClientErrorException e){
-            log.error("[HaruniService - sendChatToHaruni()] - 하루니 채팅 전송 실패 [{}] - {}", e.getStatusText(), e.getMessage());
+            log.error("sendChatToHaruni() - 하루니 채팅 전송 실패 [{}] - {}", e.getStatusText(), e.getMessage());
             throw new RestApiException(CustomErrorCode.POST_MESSAGE_TO_MODEL_SERVER_FAILED);
         }
     }

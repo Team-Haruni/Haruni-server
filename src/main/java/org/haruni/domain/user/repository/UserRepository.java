@@ -23,7 +23,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
         WHERE u.alarmActive = true
     """)
     List<UserAlarmDto> findAlarmByAlarmActive();
-
+    
     User findByFcmToken(String fcmToken);
 
     boolean existsByFcmToken(String fcmToken);
