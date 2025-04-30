@@ -3,9 +3,8 @@ package org.haruni.domain.user.entity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.*;
-import org.haruni.domain.chatroom.entity.Chatroom;
-import org.haruni.domain.diary.entity.Diary;
 import org.haruni.domain.haruni.entity.Haruni;
+import org.haruni.domain.haruni.entity.MBTI;
 import org.haruni.domain.item.entity.Item;
 import org.haruni.domain.oauth.common.utils.OAuth2Provider;
 import org.haruni.domain.user.dto.req.SignUpRequestDto;
@@ -49,6 +48,10 @@ public class User {
     private String prompts;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private MBTI mbti;
+
+    @Enumerated(EnumType.STRING)
     @Column(name = "provider_id")
     private OAuth2Provider providerId;
 
@@ -75,14 +78,6 @@ public class User {
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
-    private List<Chatroom> chatrooms = new ArrayList<>();
-
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id")
-    private List<Diary> diaries = new ArrayList<>();
-
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id")
     private List<Item> items = new ArrayList<>();
 
     @Builder
@@ -97,6 +92,7 @@ public class User {
         this.fcmToken = req.getFcmToken();
         this.haruniName = req.getHaruniName();
         this.prompts = req.getPrompt();
+        this.mbti = MBTI.fromMBTI(req.getMbti());
         this.role = "ROLE_USER";
         this.haruni = haruni;
     }

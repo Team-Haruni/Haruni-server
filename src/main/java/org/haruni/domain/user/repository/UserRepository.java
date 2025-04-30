@@ -28,7 +28,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     boolean existsByFcmToken(String fcmToken);
 
-    @Query("SELECT new org.haruni.domain.user.dto.res.UserSummaryDto(u.id, u.gender) " +
+    @Query("SELECT new org.haruni.domain.user.dto.res.UserSummaryDto(u.id, u.gender, u.mbti) " +
             "FROM User u " +
             "WHERE u.id IN :userIds")
     List<UserSummaryDto> findUserSummariesByUserIds(@Param("userIds") List<Long> userIds);

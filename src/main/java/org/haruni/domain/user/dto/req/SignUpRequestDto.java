@@ -92,4 +92,11 @@ public class SignUpRequestDto {
     @NotBlank(message = "하루니 프롬프트가 비어있습니다")
     @Size(max = 65535, message = "프롬프트의 길이가 너무 깁니다")
     private String prompt;
+
+    @Schema(
+            description = "MBTI",
+            example = "ENTJ"
+    )
+    @NotBlank(message = "MBTI가 비어있습니다")
+    private String mbti;
 }

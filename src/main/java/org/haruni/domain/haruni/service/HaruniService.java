@@ -152,7 +152,7 @@ public class HaruniService {
             log.info("[HaruniService - sendChatToHaruni()] - 하루니 채팅 전송 성공");
 
             return ChatResponseDto.entityToDto(
-                    chatService.saveHaruniChat(user, haruni.getName(), responseBody)
+                    chatService.saveHaruniChat(user, responseBody)
             );
         }catch (HttpClientErrorException e){
             log.error("[HaruniService - sendChatToHaruni()] - 하루니 채팅 전송 실패 [{}] - {}", e.getStatusText(), e.getMessage());
@@ -161,6 +161,6 @@ public class HaruniService {
     }
 
     public List<ChatResponseDto> getChats(UserDetailsImpl user, String request){
-        return chatService.getChats(user.getUser(), request);
+        return chatService.getChats(user.getUser().getId(), request);
     }
 }

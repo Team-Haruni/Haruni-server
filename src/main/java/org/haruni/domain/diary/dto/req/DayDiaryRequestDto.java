@@ -3,7 +3,7 @@ package org.haruni.domain.diary.dto.req;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
-import org.haruni.domain.chat.entity.Chat;
+import org.haruni.domain.chat.dto.req.ChatDto;
 import org.haruni.domain.user.dto.res.UserSummaryDto;
 
 import java.util.List;
@@ -14,12 +14,14 @@ public class DayDiaryRequestDto {
 
     private final Long userId;
     private final String gender;
-    private final List<Chat> chats;
+    private final String mbti;
+    private final List<ChatDto> chats;
 
     @Builder
-    private DayDiaryRequestDto(UserSummaryDto userSummary, List<Chat> chats) {
+    private DayDiaryRequestDto(UserSummaryDto userSummary, List<ChatDto> chats) {
         this.userId = userSummary.getUserId();
         this.gender = userSummary.getGender().toString();
+        this.mbti = userSummary.getMbti().toString();
         this.chats = chats;
     }
 }

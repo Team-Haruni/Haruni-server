@@ -12,8 +12,7 @@ import org.haruni.domain.chat.entity.Chat;
 import org.haruni.domain.chat.entity.ChatType;
 import org.haruni.domain.chat.repository.ChatRepository;
 import org.haruni.domain.chat.service.ChatService;
-import org.haruni.domain.chatroom.entity.Chatroom;
-import org.haruni.domain.chatroom.service.ChatroomService;
+import org.haruni.domain.common.util.TimeUtils;
 import org.haruni.domain.diary.entity.Diary;
 import org.haruni.domain.user.dto.res.UserAlarmDto;
 import org.haruni.domain.user.entity.User;
@@ -21,7 +20,6 @@ import org.haruni.domain.user.repository.UserRepository;
 import org.haruni.global.exception.entity.RestApiException;
 import org.haruni.global.exception.error.CustomErrorCode;
 import org.springframework.data.redis.core.HashOperations;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,12 +37,10 @@ public class AlarmService {
 
     private static final String ALARM_HASH = "alarm";
 
-    private final ChatroomService chatroomService;
     private final ChatService chatService;
     private final UserRepository userRepository;
     private final ChatRepository chatRepository;
     private final FirebaseMessaging firebaseMessaging;
-    private final RedisTemplate<String, String> redisTemplate;
     private final HashOperations<String, String, String> hashOperations;
 
     public void scheduleAlarm() {
@@ -71,22 +67,17 @@ public class AlarmService {
                 .toList();
 
         alarms.forEach(alarmDto -> {
+
             User user = userRepository.findByFcmToken(alarmDto.getFcmToken());
 
-            Chatroom chatroom = user.getChatrooms().stream()
-                    .filter(cr -> cr.getCreatedAt().equals(chatService.getNow()))
-                    .findFirst()
-                    .orElseGet(() -> chatroomService.createChatroom(user, chatService.getNow()));
-
-
             Chat chat = Chat.builder()
-                        .senderName(user.getHaruniName())
-                        .type(ChatType.HARUNI)
-                        .content(alarmDto.getContent())
-                        .createdAt(chatService.getNow())
-                        .build();
+                    .chatType(ChatType.HARUNI)
+                    .userId(user.getId())
+                    .content(alarmDto.getContent())
+                    .sendingDate(TimeUtils.getCurrentDate())
+                    .sendingTime(TimeUtils.getCurrentTime())
+                    .build();
 
-            chatroom.getChats().add(chat);
             chatRepository.save(chat);
         });
 
@@ -125,7 +116,6 @@ public class AlarmService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RestApiException(CustomErrorCode.USER_NOT_FOUND));
 
-        user.getDiaries().add(diary);
         userRepository.save(user);
 
         Message message = Message.builder()

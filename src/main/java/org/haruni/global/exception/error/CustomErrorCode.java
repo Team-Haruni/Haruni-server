@@ -25,6 +25,7 @@ public enum CustomErrorCode implements ErrorCode {
 
     // Diary
     DIARY_NOT_FOUND(HttpStatus.NOT_FOUND, 404, "하루일기 조회에 실패하였습니다."),
+    DIARY_RESPONSE_NOT_VALID(HttpStatus.BAD_REQUEST, 400, "하루일기 생성에 실패하였습니다"),
 
     // FCM
     FCM_INITIALIZE_FAILED(HttpStatus.FAILED_DEPENDENCY, 424, "FCM 연결 실패"),
