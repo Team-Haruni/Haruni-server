@@ -73,15 +73,12 @@ public class User {
     @Column(name = "role", nullable = false)
     private String role;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    private Haruni haruni;
-
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private List<Item> items = new ArrayList<>();
 
     @Builder
-    protected User(SignUpRequestDto req, String encodedPassword, Haruni haruni) {
+    private User(SignUpRequestDto req, String encodedPassword, Haruni haruni) {
         this.email = req.getEmail();
         this.password = encodedPassword;
         this.providerId = OAuth2Provider.fromOAuth2Provider(req.getProviderId());
@@ -94,7 +91,6 @@ public class User {
         this.prompts = req.getPrompt();
         this.mbti = MBTI.fromMBTI(req.getMbti());
         this.role = "ROLE_USER";
-        this.haruni = haruni;
     }
 
     public void updateEmail(String email) {

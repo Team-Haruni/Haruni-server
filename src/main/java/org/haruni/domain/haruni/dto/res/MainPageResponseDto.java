@@ -1,20 +1,15 @@
 package org.haruni.domain.haruni.dto.res;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.*;
-import org.haruni.domain.item.entity.Item;
+import lombok.Builder;
+import lombok.Getter;
+import org.haruni.domain.item.dto.res.SelectedItemResponseDto;
 
 import java.util.List;
 
 @Getter
 @Schema(description = "메인 패이지 Response")
 public class MainPageResponseDto {
-
-    @Schema(
-            description = "하루니 이미지 url",
-            example = "https://{bucket-name}.s3.{region}.amazonaws.com/{object-key}"
-    )
-    private final String haruniImageUrl;
 
     @Schema(
             description = "하루니 레벨(정수부)",
@@ -40,17 +35,16 @@ public class MainPageResponseDto {
     private final String backgroundImgUrl;
 
     @Schema(
-            description = "아이탬 리스트"
+            description = "선택된 아이탬 인덱스 리스트"
     )
-    private final List<Item> selectedItems;
+    private final List<SelectedItemResponseDto> itemIndexes;
 
     @Builder
-    private MainPageResponseDto(String haruniImageUrl, Integer haruniLevelInteger, Double haruniLevelDecimal, String greetingMessage, String backgroundImgUrl, List<Item> selectedItems) {
-        this.haruniImageUrl = haruniImageUrl;
+    private MainPageResponseDto(Integer haruniLevelInteger, Double haruniLevelDecimal, String greetingMessage, String backgroundImgUrl, List<SelectedItemResponseDto> itemIndexes) {
         this.haruniLevelInteger = haruniLevelInteger;
         this.haruniLevelDecimal = haruniLevelDecimal;
         this.greetingMessage = greetingMessage;
         this.backgroundImgUrl = backgroundImgUrl;
-        this.selectedItems = selectedItems;
+        this.itemIndexes = itemIndexes;
     }
 }

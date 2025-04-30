@@ -11,27 +11,19 @@ import org.haruni.domain.item.entity.Item;
 public class SelectedItemResponseDto {
 
     @Schema(
-            description = "아이탬 이미지 url",
-            example = "https://{bucket-name}.s3.{region}.amazonaws.com/{object-key}"
+            description = "아이탬 PK",
+            example = "1"
     )
-    private final String itemImgUrl;
-
-    @Schema(
-            description = "선택 여부",
-            example = "true"
-    )
-    private final Boolean selected;
+    private final Long index;
 
     @Builder
-    private SelectedItemResponseDto(String itemImgUrl, Boolean selected) {
-        this.itemImgUrl = itemImgUrl;
-        this.selected = selected;
+    private SelectedItemResponseDto(Long index) {
+        this.index = index;
     }
 
     public static SelectedItemResponseDto entityToDto(Item item){
         return SelectedItemResponseDto.builder()
-                .itemImgUrl(item.getObjectKey())
-                .selected(true)
+                .index(item.getIndex())
                 .build();
     }
 }

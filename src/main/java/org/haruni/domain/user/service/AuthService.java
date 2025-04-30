@@ -40,39 +40,38 @@ public class AuthService {
 
 
     @Transactional
-    public String signUp(SignUpRequestDto req){
+    public String signUp(SignUpRequestDto request){
 
-        if(userRepository.existsByEmail((req.getEmail())))
+        if(userRepository.existsByEmail((request.getEmail())))
             throw new RestApiException(CustomErrorCode.USER_EMAIL_DUPLICATED);
 
-        if(userRepository.existsByFcmToken(req.getFcmToken()))
+        if(userRepository.existsByFcmToken(request.getFcmToken()))
             throw new RestApiException(CustomErrorCode.USER_FCM_TOKEN_DUPLICATED);
 
         User user = User.builder()
-                .req(req)
-                .encodedPassword(passwordEncoder.encode(req.getPassword()))
+                .req(request)
+                .encodedPassword(passwordEncoder.encode(request.getPassword()))
                 .build();
 
         userRepository.save(user);
         alarmService.updateAlarmSchedule(user.getFcmToken(), user.getAlarmActiveTime());
 
-        log.info("signUp() : 유저({}) 회원 가입 성공", user.getEmail());
-
         Haruni haruni = Haruni.builder()
-                .name(req.getHaruniName())
-                .prompt(req.getPrompt())
+                .userId(user.getId())
+                .name(request.getHaruniName())
                 .build();
 
-        haruni.matchUser(user);
         haruniRepository.save(haruni);
+
+        log.info("signUp() - 회원가입 완료 User/Haruni's PK = {}, {}", user.getId(), haruni.getId());
 
         return user.getEmail();
     }
 
     @Transactional
-    public TokenResponseDto login(LoginRequestDto req){
+    public TokenResponseDto login(LoginRequestDto request){
         try{
-            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(req.getEmail(), req.getPassword());
+            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword());
             Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
             log.info("login() : 유저({}) 인증 성공", authentication.getName());

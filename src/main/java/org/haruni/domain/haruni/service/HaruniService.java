@@ -5,10 +5,12 @@ import org.haruni.domain.chat.dto.req.ChatRequestBody;
 import org.haruni.domain.chat.dto.req.ChatRequestDto;
 import org.haruni.domain.chat.dto.res.ChatResponseDto;
 import org.haruni.domain.chat.service.ChatService;
-import org.haruni.domain.haruni.dto.req.PromptUpdateRequestDto;
+import org.haruni.domain.haruni.dto.req.HaruniExpIncrementRequestDto;
 import org.haruni.domain.haruni.dto.res.MainPageResponseDto;
 import org.haruni.domain.haruni.entity.Haruni;
 import org.haruni.domain.haruni.repository.HaruniRepository;
+import org.haruni.domain.item.dto.res.SelectedItemResponseDto;
+import org.haruni.domain.item.repository.ItemRepository;
 import org.haruni.domain.user.entity.User;
 import org.haruni.domain.user.entity.UserDetailsImpl;
 import org.haruni.domain.user.repository.UserRepository;
@@ -29,49 +31,41 @@ import java.util.List;
 public class HaruniService {
 
     private final ChatService chatService;
+
     private final HaruniRepository haruniRepository;
     private final UserRepository userRepository;
+    private final ItemRepository itemRepository;
+
     private final RestTemplate modelServerTemplate;
 
-    public HaruniService(ChatService chatService, HaruniRepository haruniRepository, UserRepository userRepository, @Qualifier("modelServerTemplate") RestTemplate modelServerTemplate) {
+    public HaruniService(ChatService chatService, HaruniRepository haruniRepository, UserRepository userRepository, @Qualifier("modelServerTemplate") RestTemplate modelServerTemplate, ItemRepository itemRepository) {
         this.chatService = chatService;
         this.haruniRepository = haruniRepository;
         this.userRepository = userRepository;
         this.modelServerTemplate = modelServerTemplate;
+        this.itemRepository = itemRepository;
     }
 
     @Transactional(readOnly = true)
-    public MainPageResponseDto getHaruni(UserDetailsImpl user){
+    public MainPageResponseDto getHaruni(UserDetailsImpl authUser){
 
-        Haruni haruni = haruniRepository.findById(user.getUser().getHaruni().getId())
+        Haruni haruni = haruniRepository.findByUserId(authUser.getUser().getId())
                 .orElseThrow(() -> new RestApiException(CustomErrorCode.HARUNI_NOT_FOUND));
 
         LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
 
-        String greetingMessage = getGreetingMessage(now, user.getUser().getNickname());
+        String greetingMessage = getGreetingMessage(now, authUser.getUser().getNickname());
+
+        List<SelectedItemResponseDto> itemIndexes = itemRepository.findAllByUserId(authUser.getUser().getId());
 
         log.info("getHaruni() - 하루니 조회 성공");
 
         return MainPageResponseDto.builder()
-                .haruniImageUrl(haruni.getHaruniImageUrl())
                 .haruniLevelInteger((int)Math.floor(haruni.getLevel()))
                 .haruniLevelDecimal(haruni.getLevel() - (int)Math.floor(haruni.getLevel()))
                 .greetingMessage(greetingMessage)
-                .selectedItems(user.getUser().getItems())
+                .itemIndexes(itemIndexes)
                 .build();
-    }
-
-    @Transactional
-    public String updatePrompt(UserDetailsImpl user, PromptUpdateRequestDto request){
-
-        Haruni haruni = haruniRepository.findById(user.getUser().getHaruni().getId())
-                .orElseThrow(() -> new RestApiException(CustomErrorCode.HARUNI_NOT_FOUND));
-
-        haruni.updatePrompt(request.getPrompt());
-
-        log.info("updatePrompt() - 하루니 프롬프트 수정 성공");
-
-        return request.getPrompt();
     }
 
     private String getGreetingMessage(LocalDateTime now, String nickname){
@@ -95,6 +89,11 @@ public class HaruniService {
                         .orElseThrow(() -> new RestApiException(CustomErrorCode.USER_NOT_FOUND));
 
         chatService.saveUserChat(user, request);
+
+        Haruni haruni = haruniRepository.findByUserId(user.getId())
+                        .orElseThrow(() -> new RestApiException(CustomErrorCode.HARUNI_NOT_FOUND));
+
+        haruni.incrementExp(10.0);
 
         log.info("sendChatToHaruni() - 사용자 채팅 저장 성공");
 
@@ -123,5 +122,15 @@ public class HaruniService {
 
     public List<ChatResponseDto> getChats(UserDetailsImpl user, String request){
         return chatService.getChats(user.getUser().getId(), request);
+    }
+
+    @Transactional
+    public Double incrementHaruniExp(UserDetailsImpl user, HaruniExpIncrementRequestDto request){
+        Haruni haruni = haruniRepository.findByUserId(user.getUser().getId())
+                .orElseThrow(() -> new RestApiException(CustomErrorCode.HARUNI_NOT_FOUND));
+
+        haruni.incrementExp(request.getExp());
+
+        return haruni.getLevel();
     }
 }

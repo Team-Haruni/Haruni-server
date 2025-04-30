@@ -3,7 +3,6 @@ package org.haruni.domain.haruni.entity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.*;
-import org.haruni.domain.user.entity.User;
 
 @Schema(hidden = true)
 @Entity
@@ -16,30 +15,23 @@ public class Haruni {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false, unique = true)
-    private User user;
+    @Column(nullable = false, name = "user_id")
+    private Long userId;
 
     @Column(nullable = false, length = 50)
     private String name;
 
-    @Column(name = "haruni_image_url", nullable = false)
-    private String haruniImageUrl = "https://haruni-ai.site/image";
-
-    @Column(columnDefinition = "TEXT")
-    private String prompt;
-
     @Column(nullable = false)
-    private Double level = 1.0;
+    private Double level;
 
     @Builder
-    private Haruni(String name, String prompt){
+    private Haruni(Long userId, String name) {
+        this.userId = userId;
         this.name = name;
-        this.prompt = prompt;
+        this.level = 0.0;
     }
 
-    public void matchUser(User user) {
-        this.user = user;
+    public void incrementExp(Double exp){
+        this.level += exp;
     }
-    public void updatePrompt(String prompt){ this.prompt = prompt; }
 }

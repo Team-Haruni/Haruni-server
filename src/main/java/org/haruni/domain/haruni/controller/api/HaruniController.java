@@ -7,7 +7,7 @@ import org.haruni.domain.chat.dto.req.ChatRequestDto;
 import org.haruni.domain.chat.dto.res.ChatResponseDto;
 import org.haruni.domain.common.dto.res.ResponseDto;
 import org.haruni.domain.haruni.controller.docs.HaruniControllerSpecification;
-import org.haruni.domain.haruni.dto.req.PromptUpdateRequestDto;
+import org.haruni.domain.haruni.dto.req.HaruniExpIncrementRequestDto;
 import org.haruni.domain.haruni.dto.res.MainPageResponseDto;
 import org.haruni.domain.haruni.service.HaruniService;
 import org.haruni.domain.user.entity.UserDetailsImpl;
@@ -32,12 +32,6 @@ public class HaruniController implements HaruniControllerSpecification {
         return ResponseEntity.status(HttpStatus.OK).body(ResponseDto.of(haruniService.getHaruni(user), "메인 패이지 조회 완료"));
     }
 
-    @PatchMapping("/prompts")
-    public ResponseEntity<ResponseDto<String>> updateUserPrompt(@AuthenticationPrincipal UserDetailsImpl user,
-                                                                @Valid@RequestBody PromptUpdateRequestDto request){
-        return ResponseEntity.status(HttpStatus.OK).body(ResponseDto.of(haruniService.updatePrompt(user, request), "유저 프롬프트 수정 완료"));
-    }
-
     @PostMapping("/chats")
     public ResponseEntity<ResponseDto<ChatResponseDto>> sendChatToHaruni(@AuthenticationPrincipal UserDetailsImpl user,
                                                                          @Valid@RequestBody ChatRequestDto request){
@@ -51,5 +45,11 @@ public class HaruniController implements HaruniControllerSpecification {
                                                                                message = "날짜 형식은 YYYY-MM-DD 여야 합니다.")
                                                                        String date){
         return ResponseEntity.status(HttpStatus.OK).body(ResponseDto.of(haruniService.getChats(user, date), "채팅 내역 조회 완료"));
+    }
+
+    @PatchMapping("/exp")
+    public ResponseEntity<ResponseDto<Double>> incrementHaruniExp(@AuthenticationPrincipal UserDetailsImpl user,
+                                                                  @Valid@RequestBody HaruniExpIncrementRequestDto request){
+        return ResponseEntity.status(HttpStatus.OK).body(ResponseDto.of(haruniService.incrementHaruniExp(user, request), "하루니 레벨 조정 완료"));
     }
 }

@@ -30,11 +30,7 @@ public class ItemService {
         User user = userRepository.findByEmail(authUser.getUser().getEmail())
                 .orElseThrow(() -> new RestApiException(CustomErrorCode.USER_NOT_FOUND));
 
-        log.info("getSelectedItem() - 선택된 아이탬 조회 성공");
-
-        return user.getItems().stream()
-                .map(SelectedItemResponseDto::entityToDto)
-                .toList();
+        return itemRepository.findAllByUserId(user.getId());
     }
 
     @Transactional
@@ -43,18 +39,17 @@ public class ItemService {
         User user = userRepository.findByEmail(authUser.getUser().getEmail())
                 .orElseThrow(() -> new RestApiException(CustomErrorCode.USER_NOT_FOUND));
 
-        user.getItems().clear();
+        itemRepository.deleteAllByUserId(user.getId());
 
-        List<Item> newItems = request.getItems().stream()
-                .map(item -> Item.builder()
-                        .request(item)
-                        .build())
-                .toList();
+        request.getItems().forEach(item -> {
+            Item newItem = Item.builder()
+                    .userId(user.getId())
+                    .index(item.getIndex())
+                    .build();
+            itemRepository.save(newItem);
+        });
 
-        user.getItems().addAll(newItems);
-        itemRepository.saveAll(newItems);
-
-        log.info("saveItems() - 아이탬 저장 성공");
+        log.info("saveItems() - 아이탬 업데이트 성공");
 
         return true;
     }
