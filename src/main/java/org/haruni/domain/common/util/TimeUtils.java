@@ -15,4 +15,9 @@ public class TimeUtils {
         LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
         return now.format(DateTimeFormatter.ofPattern("HH:mm"));
     }
+
+    public static String getDateDaysAgo(long day){
+        LocalDateTime past = LocalDateTime.now(ZoneId.of("Asia/Seoul")).minusDays(8);
+        return past.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+    }
 }

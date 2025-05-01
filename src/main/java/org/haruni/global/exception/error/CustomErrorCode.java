@@ -14,9 +14,13 @@ public enum CustomErrorCode implements ErrorCode {
     // Auth
     USER_EMAIL_DUPLICATED(HttpStatus.BAD_REQUEST, 400, "이메일 중복 검사에 실패하였습니다"),
     USER_FCM_TOKEN_DUPLICATED(HttpStatus.BAD_REQUEST, 400, "FCM 토큰 중복 검사에 실패하였습니다"),
+
     // Haruni
     HARUNI_NOT_FOUND(HttpStatus.NOT_FOUND, 404, "하루니 조회에 실패하였습니다"),
     POST_MESSAGE_TO_MODEL_SERVER_FAILED(HttpStatus.BAD_REQUEST, 400, "하루니 서버로의 채팅 전송에 실패하였습니다"),
+
+    // Feedback
+    FEEDBACK_NOT_CREATED(HttpStatus.BAD_REQUEST, 400, "주간 피드백이 아직 생성되지 않았습니다."),
 
     // OAuth 2.0
     OAUTH_NAVER_UNLINK_FAILED(HttpStatus.BAD_REQUEST, 400, "네이버 소셜 계정 연동 해지에 실패하였습니다."),

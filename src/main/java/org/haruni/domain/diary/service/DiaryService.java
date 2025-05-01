@@ -7,12 +7,17 @@ import org.haruni.domain.chat.entity.ChatType;
 import org.haruni.domain.chat.repository.ChatRepository;
 import org.haruni.domain.common.util.TimeUtils;
 import org.haruni.domain.diary.dto.req.DayDiaryRequestDto;
+import org.haruni.domain.diary.dto.req.DiaryDto;
 import org.haruni.domain.diary.dto.res.DayDiaryResponseDto;
 import org.haruni.domain.diary.dto.res.DayDiarySummaryDto;
 import org.haruni.domain.diary.dto.res.MonthDiaryResponseDto;
 import org.haruni.domain.diary.entity.Diary;
 import org.haruni.domain.diary.entity.Mood;
 import org.haruni.domain.diary.repository.DiaryRepository;
+import org.haruni.domain.feedback.dto.res.DayMood;
+import org.haruni.domain.feedback.dto.res.FeedbackResponseDto;
+import org.haruni.domain.feedback.entity.WeeklyFeedback;
+import org.haruni.domain.feedback.repository.WeeklyFeedbackRepository;
 import org.haruni.domain.user.dto.res.UserSummaryDto;
 import org.haruni.domain.user.entity.User;
 import org.haruni.domain.user.entity.UserDetailsImpl;
@@ -37,16 +42,18 @@ public class DiaryService {
     private final DiaryRepository diaryRepository;
     private final UserRepository userRepository;
     private final ChatRepository chatRepository;
+    private final WeeklyFeedbackRepository weeklyFeedbackRepository;
 
     private final RestTemplate modelServerTemplate;
 
 
-    public DiaryService(AlarmService alarmService, DiaryRepository diaryRepository, UserRepository userRepository, @Qualifier("modelServerTemplate") RestTemplate modelServerTemplate, ChatRepository chatRepository) {
+    public DiaryService(AlarmService alarmService, DiaryRepository diaryRepository, UserRepository userRepository, @Qualifier("modelServerTemplate") RestTemplate modelServerTemplate, ChatRepository chatRepository, WeeklyFeedbackRepository weeklyFeedbackRepository) {
         this.alarmService = alarmService;
         this.diaryRepository = diaryRepository;
         this.userRepository = userRepository;
         this.modelServerTemplate = modelServerTemplate;
         this.chatRepository = chatRepository;
+        this.weeklyFeedbackRepository = weeklyFeedbackRepository;
     }
 
     @Transactional(readOnly = true)
@@ -126,5 +133,49 @@ public class DiaryService {
                 log.error("createDayDiary() - 하루 일기 생성 실패");
             }
         });
+    }
+
+    @Transactional
+    public void createWeekEmotionSummary(){
+
+        String startDate = TimeUtils.getDateDaysAgo(8L);
+        String endDate = TimeUtils.getDateDaysAgo(1L);
+
+        List<Long> userIds = diaryRepository.findUserIdsByDateBetween(startDate, endDate);
+
+        userIds.forEach(userId -> {
+            List<DiaryDto> diaries = diaryRepository.findDiariesByDateBetween(userId, startDate, endDate);
+
+            try{
+                FeedbackResponseDto response = modelServerTemplate.postForObject(
+                        "/api/v1/week-status",
+                        diaries,
+                        FeedbackResponseDto.class
+                );
+
+                if(response == null)
+                    throw new HttpClientErrorException(HttpStatus.BAD_REQUEST);
+
+                WeeklyFeedback weeklyFeedback = WeeklyFeedback.builder()
+                        .userId(userId)
+                        .feedback(response.getFeedback())
+                        .weekSummary(response.getWeekSummary())
+                        .suggestion(response.getSuggestion())
+                        .recommendation(response.getRecommendation())
+                        .startDate(startDate)
+                        .endDate(endDate)
+                        .build();
+
+                weeklyFeedbackRepository.save(weeklyFeedback);
+
+                log.info("createWeekEmotionSummary() - 주간 피드백 생성 완료. userId = {}", userId);
+            }catch (HttpClientErrorException e){
+                log.error("createWeekEmotionSummary() - 주간 피드백 생성 실패. userid = {}", userId);
+            }
+        });
+    }
+
+    public List<DayMood> getDayMoods(Long userId, String startDate, String endDate){
+        return diaryRepository.findDayMoodByDateBetween(userId, startDate, endDate);
     }
 }
