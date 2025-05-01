@@ -9,6 +9,7 @@ import org.haruni.domain.user.entity.User;
 public class ChatRequestBody {
 
     private final Long userId;
+    private final String haruniPersonality;
     private final String mbti;
     private final String gender;
     private final String content;
@@ -16,8 +17,9 @@ public class ChatRequestBody {
     private final String sendingTime;
 
     @Builder
-    private ChatRequestBody(User user, String content) {
+    private ChatRequestBody(User user, String haruniPersonality, String content) {
         this.userId = user.getId();
+        this.haruniPersonality = haruniPersonality;
         this.mbti = user.getMbti().name();
         this.gender = user.getGender().name();
         this.content = content;

@@ -99,6 +99,7 @@ public class HaruniService {
 
         ChatRequestBody requestBody = ChatRequestBody.builder()
                 .user(user)
+                .haruniPersonality(haruni.getPersonality())
                 .content(request.getContent())
                 .build();
 

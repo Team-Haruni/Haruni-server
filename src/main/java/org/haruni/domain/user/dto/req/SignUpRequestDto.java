@@ -86,6 +86,13 @@ public class SignUpRequestDto {
     private String haruniName;
 
     @Schema(
+            description = "하루니 성격",
+            example = "차분한, 조용한, 밝은"
+    )
+    @NotBlank(message = "하루니 성격이 비어있습니다.")
+    private String haruniPersonality;
+
+    @Schema(
             description = "MBTI",
             example = "ENTJ"
     )

@@ -59,6 +59,7 @@ public class AuthService {
         Haruni haruni = Haruni.builder()
                 .userId(user.getId())
                 .name(request.getHaruniName())
+                .personality(request.getHaruniPersonality())
                 .build();
 
         haruniRepository.save(haruni);

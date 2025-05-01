@@ -22,12 +22,16 @@ public class Haruni {
     private String name;
 
     @Column(nullable = false)
+    private String personality;
+
+    @Column(nullable = false)
     private Double level;
 
     @Builder
-    private Haruni(Long userId, String name) {
+    private Haruni(Long userId, String name, String personality) {
         this.userId = userId;
         this.name = name;
+        this.personality = personality;
         this.level = 0.0;
     }
 

@@ -23,7 +23,7 @@ public class Diary {
     @Column(nullable = false, name = "day_summary_description", columnDefinition = "TEXT")
     private String daySummaryDescription;
 
-    @Column(nullable = false, name = "day_summary_Image")
+    @Column(name = "day_summary_image", columnDefinition = "TEXT", nullable = false)
     private String daySummaryImage;
 
     @Enumerated(EnumType.STRING)
