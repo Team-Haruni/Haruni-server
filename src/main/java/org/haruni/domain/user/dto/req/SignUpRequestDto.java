@@ -86,14 +86,6 @@ public class SignUpRequestDto {
     private String haruniName;
 
     @Schema(
-            description = "하루니 프롬프트",
-            example = "차분한, 이성적인, 따뜻한"
-    )
-    @NotBlank(message = "하루니 프롬프트가 비어있습니다")
-    @Size(max = 65535, message = "프롬프트의 길이가 너무 깁니다")
-    private String prompt;
-
-    @Schema(
             description = "MBTI",
             example = "ENTJ"
     )

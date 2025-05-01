@@ -81,7 +81,6 @@ public class User {
         this.alarmActiveTime = req.getAlarmActiveTime();
         this.fcmToken = req.getFcmToken();
         this.haruniName = req.getHaruniName();
-        this.prompts = req.getPrompt();
         this.mbti = MBTI.fromMBTI(req.getMbti());
         this.role = "ROLE_USER";
     }
