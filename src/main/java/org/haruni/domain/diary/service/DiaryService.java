@@ -121,7 +121,7 @@ public class DiaryService {
 
                 diaryRepository.save(diary);
 
-                alarmService.sendDayDiaryAlarm(userSummary.getUserId(), diary);
+                alarmService.sendDayDiaryAlarm(userSummary.getUserId());
             }catch (HttpClientErrorException e){
                 log.error("createDayDiary() - 하루 일기 생성 실패");
             }

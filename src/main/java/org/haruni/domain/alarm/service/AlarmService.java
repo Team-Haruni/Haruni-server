@@ -13,7 +13,6 @@ import org.haruni.domain.chat.entity.ChatType;
 import org.haruni.domain.chat.repository.ChatRepository;
 import org.haruni.domain.chat.service.ChatService;
 import org.haruni.domain.common.util.TimeUtils;
-import org.haruni.domain.diary.entity.Diary;
 import org.haruni.domain.user.dto.res.UserAlarmDto;
 import org.haruni.domain.user.entity.User;
 import org.haruni.domain.user.repository.UserRepository;
@@ -68,7 +67,15 @@ public class AlarmService {
 
         alarms.forEach(alarmDto -> {
 
-            User user = userRepository.findByFcmToken(alarmDto.getFcmToken());
+            User user;
+
+            try{
+                user = userRepository.findByFcmToken(alarmDto.getFcmToken())
+                        .orElseThrow(() -> new RestApiException(CustomErrorCode.USER_NOT_FOUND));
+            }catch (RestApiException e){
+                log.warn("sendScheduledAlarm() - FCM 토큰을 통한 사용자 조회 실패");
+                return;
+            }
 
             Chat chat = Chat.builder()
                     .chatType(ChatType.HARUNI)
@@ -112,7 +119,7 @@ public class AlarmService {
     }
 
     @Async
-    public void sendDayDiaryAlarm(Long userId, Diary diary) {
+    public void sendDayDiaryAlarm(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RestApiException(CustomErrorCode.USER_NOT_FOUND));
 

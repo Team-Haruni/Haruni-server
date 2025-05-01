@@ -24,7 +24,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     """)
     List<UserAlarmDto> findAlarmByAlarmActive();
     
-    User findByFcmToken(String fcmToken);
+    Optional<User> findByFcmToken(String fcmToken);
 
     boolean existsByFcmToken(String fcmToken);
 
