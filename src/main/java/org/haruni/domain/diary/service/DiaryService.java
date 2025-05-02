@@ -1,6 +1,6 @@
 package org.haruni.domain.diary.service;
 
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.haruni.domain.alarm.service.AlarmService;
 import org.haruni.domain.chat.dto.req.ChatDto;
 import org.haruni.domain.chat.entity.ChatType;
@@ -33,7 +33,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 
-@Slf4j
+@Log4j2
 @Service
 public class DiaryService {
 
@@ -45,7 +45,6 @@ public class DiaryService {
     private final WeeklyFeedbackRepository weeklyFeedbackRepository;
 
     private final RestTemplate modelServerTemplate;
-
 
     public DiaryService(AlarmService alarmService, DiaryRepository diaryRepository, UserRepository userRepository, @Qualifier("modelServerTemplate") RestTemplate modelServerTemplate, ChatRepository chatRepository, WeeklyFeedbackRepository weeklyFeedbackRepository) {
         this.alarmService = alarmService;
@@ -64,6 +63,8 @@ public class DiaryService {
         Diary diary = diaryRepository.findByUserIdAndDate(user.getId(), date)
                 .orElseThrow(() -> new RestApiException(CustomErrorCode.DIARY_NOT_FOUND));
 
+        log.info("getDayDiary() - {}의 {}일 하루 일기 조회 완료", authUser.getUser().getEmail(), date);
+
         return DayDiaryResponseDto.builder()
                 .diary(diary)
                 .build();
@@ -79,7 +80,7 @@ public class DiaryService {
                 .map(DayDiarySummaryDto::entityToDto)
                 .toList();
 
-        log.info("getMonthDiary() : {}월 다이어리 조회 성공", month);
+        log.info("getMonthDiary() : {}의 {}월 다이어리 조회 성공", authUser.getUser().getEmail(), month);
 
         return MonthDiaryResponseDto.builder()
                 .month(month)
@@ -129,8 +130,10 @@ public class DiaryService {
                 diaryRepository.save(diary);
 
                 alarmService.sendDayDiaryAlarm(userSummary.getUserId());
+
+                log.info("createDayDiary() - userId#{}의 하루일기 생성 성공", userSummary.getUserId());
             }catch (HttpClientErrorException e){
-                log.error("createDayDiary() - 하루 일기 생성 실패");
+                log.error("createDayDiary()- userId#{}의 하루일기 생성 실패", userSummary.getUserId());
             }
         });
     }
@@ -168,9 +171,11 @@ public class DiaryService {
 
                 weeklyFeedbackRepository.save(weeklyFeedback);
 
-                log.info("createWeekEmotionSummary() - 주간 피드백 생성 완료. userId = {}", userId);
+                alarmService.sendWeeklyFeedbackAlarm(userId);
+
+                log.info("createWeekEmotionSummary() - userId#{}의 주간 피드백 생성 완료", userId);
             }catch (HttpClientErrorException e){
-                log.error("createWeekEmotionSummary() - 주간 피드백 생성 실패. userid = {}", userId);
+                log.error("createWeekEmotionSummary() - userId#{}의 주간 피드백 생성 실패", userId);
             }
         });
     }

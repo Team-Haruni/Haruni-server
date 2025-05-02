@@ -18,6 +18,13 @@ import org.haruni.domain.user.entity.Gender;
 public class SignUpRequestDto {
 
     @Schema(
+            description = "사용자 유형",
+            example = "NORMAL/GOOGLE/KAKAO/NAVER"
+    )
+    @Enum(target = OAuth2Provider.class, message = "유저 타입이 옳바르지 않습니다")
+    private String providerId;
+
+    @Schema(
             description = "이메일",
             example = "ahh0520@inu.ac.kr"
     )
@@ -35,13 +42,6 @@ public class SignUpRequestDto {
     private String password;
 
     @Schema(
-            description = "사용자 유형",
-            example = "NORMAL/GOOGLE/KAKAO/NAVER"
-    )
-    @Enum(target = OAuth2Provider.class, message = "유저 타입이 옳바르지 않습니다")
-    private String providerId;
-
-    @Schema(
             description = "성별",
             example = "MALE/FEMALE"
     )
@@ -55,6 +55,13 @@ public class SignUpRequestDto {
     @NotBlank(message = "사용자 닉네임이 비어있습니다")
     @Size(max = 50, message = "사용자 닉네임의 길이가 너무 깁니다.")
     private String nickname;
+
+    @Schema(
+            description = "MBTI",
+            example = "ENTJ"
+    )
+    @NotBlank(message = "MBTI가 비어있습니다")
+    private String mbti;
 
     @Schema(
             description = "알람 허용 여부",
@@ -91,11 +98,4 @@ public class SignUpRequestDto {
     )
     @NotBlank(message = "하루니 성격이 비어있습니다.")
     private String haruniPersonality;
-
-    @Schema(
-            description = "MBTI",
-            example = "ENTJ"
-    )
-    @NotBlank(message = "MBTI가 비어있습니다")
-    private String mbti;
 }

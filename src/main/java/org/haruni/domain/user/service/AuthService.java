@@ -1,11 +1,10 @@
 package org.haruni.domain.user.service;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.haruni.domain.alarm.service.AlarmService;
 import org.haruni.domain.haruni.entity.Haruni;
 import org.haruni.domain.haruni.repository.HaruniRepository;
-import org.haruni.domain.haruni.service.HaruniService;
 import org.haruni.domain.user.dto.req.LoginRequestDto;
 import org.haruni.domain.user.dto.req.SignUpRequestDto;
 import org.haruni.domain.user.dto.res.TokenResponseDto;
@@ -23,12 +22,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Slf4j
+@Log4j2
 @Service
 @RequiredArgsConstructor
 public class AuthService {
 
-    private final HaruniService haruniService;
     private final AlarmService alarmService;
 
     private final UserRepository userRepository;
@@ -49,7 +47,7 @@ public class AuthService {
             throw new RestApiException(CustomErrorCode.USER_FCM_TOKEN_DUPLICATED);
 
         User user = User.builder()
-                .req(request)
+                .request(request)
                 .encodedPassword(passwordEncoder.encode(request.getPassword()))
                 .build();
 

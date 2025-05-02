@@ -21,7 +21,7 @@ public class WeeklyFeedbackController implements WeeklyFeedbackControllerSpecifi
     private final WeeklyFeedbackService weeklyFeedbackService;
 
     @GetMapping
-    public ResponseEntity<ResponseDto<WeeklyFeedbackResponseDto>> getFeedback(@AuthenticationPrincipal UserDetailsImpl user){
-        return ResponseEntity.status(HttpStatus.OK).body(ResponseDto.of(weeklyFeedbackService.getFeedback(user), "주간 사용자 피드백 조회 완료"));
+    public ResponseEntity<ResponseDto<WeeklyFeedbackResponseDto>> getFeedback(@AuthenticationPrincipal UserDetailsImpl authUser){
+        return ResponseEntity.status(HttpStatus.OK).body(ResponseDto.of(weeklyFeedbackService.getFeedback(authUser), "주간 사용자 피드백 조회 완료"));
     }
 }

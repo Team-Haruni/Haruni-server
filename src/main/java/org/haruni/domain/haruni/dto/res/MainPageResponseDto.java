@@ -15,10 +15,10 @@ public class MainPageResponseDto {
             description = "하루니 레벨(정수부)",
             example = "1"
     )
-    private final Integer haruniLevelInteger;
+    private final Double haruniLevelInteger;
 
     @Schema(
-            description = "하루니 레벨(소수부)",
+            description = "하루니 레벨(소수부) = 백분율로 환산된값이라, 그냥 넣으면 됨!",
             example = "0.5"
     )
     private final Double haruniLevelDecimal;
@@ -30,21 +30,15 @@ public class MainPageResponseDto {
     private final String greetingMessage;
 
     @Schema(
-            description = "배경 이미지 url"
-    )
-    private final String backgroundImgUrl;
-
-    @Schema(
             description = "선택된 아이탬 인덱스 리스트"
     )
     private final List<SelectedItemResponseDto> itemIndexes;
 
     @Builder
-    private MainPageResponseDto(Integer haruniLevelInteger, Double haruniLevelDecimal, String greetingMessage, String backgroundImgUrl, List<SelectedItemResponseDto> itemIndexes) {
+    private MainPageResponseDto(Double haruniLevelInteger, Double haruniLevelDecimal, String greetingMessage, List<SelectedItemResponseDto> itemIndexes) {
         this.haruniLevelInteger = haruniLevelInteger;
         this.haruniLevelDecimal = haruniLevelDecimal;
         this.greetingMessage = greetingMessage;
-        this.backgroundImgUrl = backgroundImgUrl;
         this.itemIndexes = itemIndexes;
     }
 }

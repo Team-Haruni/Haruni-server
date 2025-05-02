@@ -87,7 +87,7 @@ server:
       force: true
   port: 8443
 
-model-server:
+model-server:s
   url: ${MODEL_SERVER_URL}
 
 firebase:

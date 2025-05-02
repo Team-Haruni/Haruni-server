@@ -1,7 +1,7 @@
 package org.haruni.domain.item.service;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.haruni.domain.item.dto.req.ItemSaveRequestDto;
 import org.haruni.domain.item.dto.res.SelectedItemResponseDto;
 import org.haruni.domain.item.entity.Item;
@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-@Slf4j
+@Log4j2
 @Service
 @RequiredArgsConstructor
 public class ItemService {
@@ -29,6 +29,8 @@ public class ItemService {
 
         User user = userRepository.findByEmail(authUser.getUser().getEmail())
                 .orElseThrow(() -> new RestApiException(CustomErrorCode.USER_NOT_FOUND));
+
+        log.info("getSelectedItem() - 사용자 아이탬 조회 완료");
 
         return itemRepository.findAllByUserId(user.getId());
     }
@@ -49,7 +51,7 @@ public class ItemService {
             itemRepository.save(newItem);
         });
 
-        log.info("saveItems() - 아이탬 업데이트 성공");
+        log.info("saveItems() - 사용자 아이탬 업데이트 완료");
 
         return true;
     }

@@ -27,11 +27,13 @@ public class WeeklyFeedbackService {
     private final RestClient.Builder builder;
 
     @Transactional(readOnly = true)
-    public WeeklyFeedbackResponseDto getFeedback(UserDetailsImpl user){
-        WeeklyFeedback weeklyFeedback =  weeklyFeedbackRepository.findTopByUserIdOrderByIdDesc(user.getUser().getId())
+    public WeeklyFeedbackResponseDto getFeedback(UserDetailsImpl authUser){
+        WeeklyFeedback weeklyFeedback =  weeklyFeedbackRepository.findTopByUserIdOrderByIdDesc(authUser.getUser().getId())
                 .orElseThrow(() -> new RestApiException(CustomErrorCode.FEEDBACK_NOT_CREATED));
 
-        List<DayMood> dayMoods = diaryService.getDayMoods(user.getUser().getId(), weeklyFeedback.getStartDate(), weeklyFeedback.getEndDate());
+        List<DayMood> dayMoods = diaryService.getDayMoods(authUser.getUser().getId(), weeklyFeedback.getStartDate(), weeklyFeedback.getEndDate());
+
+        log.info("getFeedback() - {}의 피드백 조회 완료", authUser.getUser().getEmail());
 
         return WeeklyFeedbackResponseDto.builder()
                 .dayMoods(dayMoods)

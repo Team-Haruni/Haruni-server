@@ -1,6 +1,6 @@
 package org.haruni.domain.oauth.service;
 
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.haruni.domain.oauth.common.entity.OAuth2UserDetailsImpl;
 import org.haruni.domain.oauth.common.entity.OAuth2UserInfo;
 import org.haruni.domain.oauth.common.utils.OAuth2Provider;
@@ -25,7 +25,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Map;
 
-@Slf4j
+@Log4j2
 @Service
 public class OAuth2UserService {
 

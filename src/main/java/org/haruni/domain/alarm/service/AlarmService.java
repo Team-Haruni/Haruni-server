@@ -5,13 +5,12 @@ import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.haruni.domain.alarm.dto.req.AlarmDto;
 import org.haruni.domain.alarm.entity.AlarmContent;
 import org.haruni.domain.chat.entity.Chat;
 import org.haruni.domain.chat.entity.ChatType;
 import org.haruni.domain.chat.repository.ChatRepository;
-import org.haruni.domain.chat.service.ChatService;
 import org.haruni.domain.common.util.TimeUtils;
 import org.haruni.domain.user.dto.res.UserAlarmDto;
 import org.haruni.domain.user.entity.User;
@@ -29,14 +28,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-@Slf4j
+@Log4j2
 @Service
 @RequiredArgsConstructor
 public class AlarmService {
 
     private static final String ALARM_HASH = "alarm";
 
-    private final ChatService chatService;
     private final UserRepository userRepository;
     private final ChatRepository chatRepository;
     private final FirebaseMessaging firebaseMessaging;
@@ -48,7 +46,7 @@ public class AlarmService {
 
         userAlarm.forEach(alarm -> saveAlarm(alarm.getFcmToken(), alarm.getAlarmActiveTime()));
 
-        log.info("[AlarmService - scheduleAlarm()] : {} 개의 알람 스케줄링 완료", userAlarm.size());
+        log.info("scheduleAlarm() - {} 개의 알람 스케줄링 완료", userAlarm.size());
     }
 
     @Transactional
@@ -111,9 +109,9 @@ public class AlarmService {
 
             try {
                 String response = firebaseMessaging.send(message);
-                log.info("[AlarmService - sendScheduledAlarm()] : {}, 알람 전송 성공", alarmDto.getFcmToken());
+                log.info("sendScheduledAlarm() - {}, 알람 전송 성공", alarmDto.getFcmToken());
             } catch (FirebaseMessagingException e) {
-                log.error("[AlarmService - sendScheduledAlarm()] : {}, 알람 전송 실패", alarmDto.getFcmToken());
+                log.error("sendScheduledAlarm() - {}, 알람 전송 실패", alarmDto.getFcmToken());
             }
         });
     }
@@ -123,19 +121,47 @@ public class AlarmService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RestApiException(CustomErrorCode.USER_NOT_FOUND));
 
-        userRepository.save(user);
+        Notification notification = Notification.builder()
+                .setTitle("하루 일기가 생성되었습니다!")
+                .setBody("오늘은 어떤 일기가 만들어졌을까요?")
+                .build();
 
         Message message = Message.builder()
                 .setToken(user.getFcmToken())
-                .putData("content", "하루 일기가 생성되었습니다! 확인해보세요!")
+                .setNotification(notification)
                 .build();
 
         try {
             String response = firebaseMessaging.send(message);
-            log.info("[AlarmService - sendDayDiaryAlarm()] : 하루 일기 알람 전송 성공");
+            log.info("sendDayDiaryAlarm() - 하루 일기 알람 전송 성공");
             CompletableFuture.completedFuture(true);
         } catch (FirebaseMessagingException e) {
-            log.error("[AlarmService - sendDayDiaryAlarm()] : 하루 일기 알람 전송 실패. {}", e.getMessage());
+            log.error("sendDayDiaryAlarm() - 하루 일기 알람 전송 실패. {}", e.getMessage());
+            CompletableFuture.completedFuture(false);
+        }
+    }
+
+    @Async
+    public void sendWeeklyFeedbackAlarm(Long userId){
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RestApiException(CustomErrorCode.USER_NOT_FOUND));
+
+        Notification notification = Notification.builder()
+                .setTitle("주간 피드백이 도착했습니다!")
+                .setBody("다음주도 힘차게 보낼 준비 되셨나요?")
+                .build();
+
+        Message message = Message.builder()
+                .setToken(user.getFcmToken())
+                .setNotification(notification)
+                .build();
+
+        try {
+            String response = firebaseMessaging.send(message);
+            log.info("sendWeeklyFeedbackAlarm() - 주간 피드백 알림 전송 완료");
+            CompletableFuture.completedFuture(true);
+        } catch (FirebaseMessagingException e) {
+            log.error("sendWeeklyFeedbackAlarm() - 주간 피드백 알림 전송 실패 {}", e.getMessage());
             CompletableFuture.completedFuture(false);
         }
     }
@@ -145,11 +171,11 @@ public class AlarmService {
         try {
             updateAlarm(fcmToken, alarmActiveTime);
 
-            log.info("[AlarmService - updateAlarmSchedule()] : 알람 스케줄링 업데이트 완료");
+            log.info("updateAlarmSchedule() - 알람 스케줄링 업데이트 완료");
 
             CompletableFuture.completedFuture(true);
         } catch (Exception e) {
-            log.error("[AlarmService - updateAlarmSchedule()] : 알람 스케줄링 업데이트 실패. {}", e.getMessage());
+            log.error("updateAlarmSchedule() - 알람 스케줄링 업데이트 실패. {}", e.getMessage());
             CompletableFuture.completedFuture(false);
         }
     }

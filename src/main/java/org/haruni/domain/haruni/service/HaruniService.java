@@ -1,6 +1,6 @@
 package org.haruni.domain.haruni.service;
 
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.haruni.domain.chat.dto.req.ChatRequestBody;
 import org.haruni.domain.chat.dto.req.ChatRequestDto;
 import org.haruni.domain.chat.dto.res.ChatResponseDto;
@@ -26,7 +26,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
 
-@Slf4j
+@Log4j2
 @Service
 public class HaruniService {
 
@@ -61,25 +61,11 @@ public class HaruniService {
         log.info("getHaruni() - 하루니 조회 성공");
 
         return MainPageResponseDto.builder()
-                .haruniLevelInteger((int)Math.floor(haruni.getLevel()))
-                .haruniLevelDecimal(haruni.getLevel() - (int)Math.floor(haruni.getLevel()))
+                .haruniLevelInteger(haruni.getHaruniLevelInteger())
+                .haruniLevelDecimal(haruni.getHaruniLevelDecimal())
                 .greetingMessage(greetingMessage)
                 .itemIndexes(itemIndexes)
                 .build();
-    }
-
-    private String getGreetingMessage(LocalDateTime now, String nickname){
-        int hour = now.getHour();
-
-        if (hour < 7) {
-            return nickname + "님, 좋은 새벽입니다!";
-        } else if (hour < 12) {
-            return nickname + "님, 좋은 아침입니다!";
-        } else if (hour < 19) {
-            return nickname + "님, 즐거운 하루 보내고 계신가요?";
-        } else {
-            return nickname + "님, 오늘 하루도 수고하셨습니다.";
-        }
     }
 
     @Transactional
@@ -93,7 +79,7 @@ public class HaruniService {
         Haruni haruni = haruniRepository.findByUserId(user.getId())
                         .orElseThrow(() -> new RestApiException(CustomErrorCode.HARUNI_NOT_FOUND));
 
-        haruni.incrementExp(10.0);
+        haruni.incrementExp(3.3);
 
         log.info("sendChatToHaruni() - 사용자 채팅 저장 성공");
 
@@ -121,17 +107,33 @@ public class HaruniService {
         }
     }
 
-    public List<ChatResponseDto> getChats(UserDetailsImpl user, String request){
-        return chatService.getChats(user.getUser().getId(), request);
+    public List<ChatResponseDto> getChats(UserDetailsImpl authUser, String request){
+        return chatService.getChats(authUser.getUser().getId(), request);
     }
 
     @Transactional
-    public Double incrementHaruniExp(UserDetailsImpl user, HaruniExpIncrementRequestDto request){
-        Haruni haruni = haruniRepository.findByUserId(user.getUser().getId())
+    public Double incrementHaruniExp(UserDetailsImpl authUser, HaruniExpIncrementRequestDto request){
+        Haruni haruni = haruniRepository.findByUserId(authUser.getUser().getId())
                 .orElseThrow(() -> new RestApiException(CustomErrorCode.HARUNI_NOT_FOUND));
 
         haruni.incrementExp(request.getExp());
 
+        log.info("incrementHaruniExp() - 하루니 레벨 조정 완료 {} -> {}", haruni.getLevel() - request.getExp(), haruni.getLevel());
+
         return haruni.getLevel();
+    }
+
+    private String getGreetingMessage(LocalDateTime now, String nickname){
+        int hour = now.getHour();
+
+        if (hour < 7) {
+            return nickname + "님, 좋은 새벽입니다!";
+        } else if (hour < 12) {
+            return nickname + "님, 좋은 아침입니다!";
+        } else if (hour < 19) {
+            return nickname + "님, 즐거운 하루 보내고 계신가요?";
+        } else {
+            return nickname + "님, 오늘 하루도 수고하셨습니다.";
+        }
     }
 }

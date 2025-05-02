@@ -28,28 +28,28 @@ public class HaruniController implements HaruniControllerSpecification {
     private final HaruniService haruniService;
 
     @GetMapping
-    public ResponseEntity<ResponseDto<MainPageResponseDto>> getHaruni(@AuthenticationPrincipal UserDetailsImpl user){
-        return ResponseEntity.status(HttpStatus.OK).body(ResponseDto.of(haruniService.getHaruni(user), "메인 패이지 조회 완료"));
+    public ResponseEntity<ResponseDto<MainPageResponseDto>> getHaruni(@AuthenticationPrincipal UserDetailsImpl authUser){
+        return ResponseEntity.status(HttpStatus.OK).body(ResponseDto.of(haruniService.getHaruni(authUser), "메인 패이지 조회 완료"));
     }
 
     @PostMapping("/chats")
-    public ResponseEntity<ResponseDto<ChatResponseDto>> sendChatToHaruni(@AuthenticationPrincipal UserDetailsImpl user,
+    public ResponseEntity<ResponseDto<ChatResponseDto>> sendChatToHaruni(@AuthenticationPrincipal UserDetailsImpl authUser,
                                                                          @Valid@RequestBody ChatRequestDto request){
-        return ResponseEntity.status(HttpStatus.OK).body(ResponseDto.of(haruniService.sendChatToHaruni(user, request), "채팅 송수신 처리 완료"));
+        return ResponseEntity.status(HttpStatus.OK).body(ResponseDto.of(haruniService.sendChatToHaruni(authUser, request), "채팅 송수신 처리 완료"));
     }
 
     @GetMapping("/chats")
-    public ResponseEntity<ResponseDto<List<ChatResponseDto>>> getChats(@AuthenticationPrincipal UserDetailsImpl user,
+    public ResponseEntity<ResponseDto<List<ChatResponseDto>>> getChats(@AuthenticationPrincipal UserDetailsImpl authUser,
                                                                        @RequestParam
                                                                        @Pattern(regexp = "^\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01])$",
                                                                                message = "날짜 형식은 YYYY-MM-DD 여야 합니다.")
                                                                        String date){
-        return ResponseEntity.status(HttpStatus.OK).body(ResponseDto.of(haruniService.getChats(user, date), "채팅 내역 조회 완료"));
+        return ResponseEntity.status(HttpStatus.OK).body(ResponseDto.of(haruniService.getChats(authUser, date), "채팅 내역 조회 완료"));
     }
 
     @PatchMapping("/exp")
-    public ResponseEntity<ResponseDto<Double>> incrementHaruniExp(@AuthenticationPrincipal UserDetailsImpl user,
+    public ResponseEntity<ResponseDto<Double>> incrementHaruniExp(@AuthenticationPrincipal UserDetailsImpl authUser,
                                                                   @Valid@RequestBody HaruniExpIncrementRequestDto request){
-        return ResponseEntity.status(HttpStatus.OK).body(ResponseDto.of(haruniService.incrementHaruniExp(user, request), "하루니 레벨 조정 완료"));
+        return ResponseEntity.status(HttpStatus.OK).body(ResponseDto.of(haruniService.incrementHaruniExp(authUser, request), "하루니 레벨 조정 완료"));
     }
 }

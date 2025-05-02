@@ -1,7 +1,7 @@
 package org.haruni.domain.chat.service;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.haruni.domain.chat.dto.req.ChatRequestDto;
 import org.haruni.domain.chat.dto.res.ChatResponseDto;
 import org.haruni.domain.chat.entity.Chat;
@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-@Slf4j
+@Log4j2
 @Service
 @RequiredArgsConstructor
 public class ChatService {

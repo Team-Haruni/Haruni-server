@@ -23,13 +23,13 @@ public class ItemController implements ItemControllerSpecification {
     private final ItemService itemService;
 
     @GetMapping
-    public ResponseEntity<ResponseDto<List<SelectedItemResponseDto>>> getSelectedItem(@AuthenticationPrincipal UserDetailsImpl user){
-        return ResponseEntity.status(HttpStatus.OK).body(ResponseDto.of(itemService.getSelectedItem(user), "선택된 아이탬 조회 완료"));
+    public ResponseEntity<ResponseDto<List<SelectedItemResponseDto>>> getSelectedItem(@AuthenticationPrincipal UserDetailsImpl authUser){
+        return ResponseEntity.status(HttpStatus.OK).body(ResponseDto.of(itemService.getSelectedItem(authUser), "선택된 아이탬 조회 완료"));
     }
 
     @PostMapping
-    public ResponseEntity<ResponseDto<Boolean>> saveItems(@AuthenticationPrincipal UserDetailsImpl user,
+    public ResponseEntity<ResponseDto<Boolean>> saveItems(@AuthenticationPrincipal UserDetailsImpl authUser,
                                                           @Valid@RequestBody ItemSaveRequestDto request){
-        return ResponseEntity.status(HttpStatus.CREATED).body(ResponseDto.of(itemService.saveItems(user, request), "아이탬 저장 완료"));
+        return ResponseEntity.status(HttpStatus.CREATED).body(ResponseDto.of(itemService.saveItems(authUser, request), "아이탬 저장 완료"));
     }
 }
