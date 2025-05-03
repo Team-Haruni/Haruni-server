@@ -52,6 +52,7 @@ public class ChatService {
 
     @Transactional(readOnly = true)
     public List<ChatResponseDto> getChats(Long userId, String date){
+        log.info("getChats() - {}의 채팅 조회 완료", date);
         return chatRepository.findByUserIdAndDate(userId, date);
     }
 }
