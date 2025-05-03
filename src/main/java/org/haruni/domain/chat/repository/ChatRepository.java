@@ -3,6 +3,7 @@ package org.haruni.domain.chat.repository;
 import org.haruni.domain.chat.dto.req.ChatDto;
 import org.haruni.domain.chat.dto.res.ChatResponseDto;
 import org.haruni.domain.chat.entity.Chat;
+import org.haruni.domain.chat.entity.ChatType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -29,7 +30,7 @@ public interface ChatRepository extends JpaRepository<Chat, Long> {
         AND c.sendingDate = :sendingDate
         AND c.userId = :userId
     """)
-    List<ChatDto> findAllByUserIdAndSendingDate(@Param("userId") Long userId, @Param("sendingDate") String sendingDate, @Param("chatType") String chatType);
+    List<ChatDto> findAllByUserIdAndSendingDate(@Param("userId") Long userId, @Param("sendingDate") String sendingDate, @Param("chatType") ChatType chatType);
 
     @Query("""
         SELECT new org.haruni.domain.chat.dto.res.ChatResponseDto(c.chatType, c.content, c.sendingTime)

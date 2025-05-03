@@ -101,7 +101,7 @@ public class DiaryService {
         List<UserSummaryDto> userSummaries = userRepository.findUserSummariesByUserIds(userIds);
 
         userSummaries.forEach(userSummary -> {
-            List<ChatDto> chats = chatRepository.findAllByUserIdAndSendingDate(userSummary.getUserId(), date, ChatType.USER.toString());
+            List<ChatDto> chats = chatRepository.findAllByUserIdAndSendingDate(userSummary.getUserId(), date, ChatType.USER);
 
             DayDiaryRequestDto request = DayDiaryRequestDto.builder()
                     .userSummary(userSummary)
