@@ -13,7 +13,7 @@ import java.util.List;
 public interface ItemRepository extends JpaRepository<Item, Long> {
 
     @Query("""
-        SELECT new org.haruni.domain.item.dto.res.SelectedItemResponseDto(i.itemIndex)
+        SELECT new org.haruni.domain.item.dto.res.SelectedItemResponseDto(i.itemType, i.itemIndex)
         FROM Item i
         WHERE i.userId = :userId
     """)

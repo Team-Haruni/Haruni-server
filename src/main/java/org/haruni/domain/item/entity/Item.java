@@ -20,11 +20,15 @@ public class Item {
     @Column(nullable = false, name = "user_id")
     private Long userId;
 
+    @Column(nullable = false, name = "item_type")
+    private String itemType;
+
     @Column(nullable = false, length = 100, name = "item_index")
     private Long itemIndex;
 
     @Builder
-    private Item(Long userId, Long itemIndex) {
+    private Item(Long userId, String itemType, Long itemIndex) {
+        this.itemType = itemType;
         this.userId = userId;
         this.itemIndex = itemIndex;
     }

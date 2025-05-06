@@ -29,7 +29,7 @@ public class ItemController implements ItemControllerSpecification {
 
     @PostMapping
     public ResponseEntity<ResponseDto<Boolean>> saveItems(@AuthenticationPrincipal UserDetailsImpl authUser,
-                                                          @Valid@RequestBody ItemSaveRequestDto request){
+                                                          @Valid @RequestBody ItemSaveRequestDto request){
         return ResponseEntity.status(HttpStatus.CREATED).body(ResponseDto.of(itemService.saveItems(authUser, request), "아이탬 저장 완료"));
     }
 }
