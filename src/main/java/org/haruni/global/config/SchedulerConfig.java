@@ -23,7 +23,7 @@ public class SchedulerConfig {
         alarmService.sendScheduledAlarm();
     }
 
-    @Scheduled(cron = "0 50 23 * * *", zone = "Asia/Seoul")
+    @Scheduled(cron = "0 0 15 * * *", zone = "Asia/Seoul")
     public void createDayDiary(){
         diaryService.createDayDiary();
     }
