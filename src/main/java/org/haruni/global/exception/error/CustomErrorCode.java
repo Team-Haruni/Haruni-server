@@ -37,6 +37,10 @@ public enum CustomErrorCode implements ErrorCode {
     // User
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, 404, "유저 조회에 실패하였습니다"),
 
+
+    // Item
+    TARGET_ITEMS_NOT_FOUND(HttpStatus.BAD_REQUEST, 404, "대상 아이탬이 비어있습니다."),
+
     // Request
     INVALID_PARAMS(HttpStatus.BAD_REQUEST, 400, "유효성 검사에 실패하였습니다"),
 

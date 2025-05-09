@@ -3,6 +3,7 @@ package org.haruni.domain.haruni.service;
 import lombok.extern.log4j.Log4j2;
 import org.haruni.domain.chat.dto.req.ChatRequestBody;
 import org.haruni.domain.chat.dto.req.ChatRequestDto;
+import org.haruni.domain.chat.dto.res.ChatResponseBody;
 import org.haruni.domain.chat.dto.res.ChatResponseDto;
 import org.haruni.domain.chat.service.ChatService;
 import org.haruni.domain.haruni.dto.req.HaruniExpIncrementRequestDto;
@@ -89,12 +90,12 @@ public class HaruniService {
                 .content(request.getContent())
                 .build();
 
-        String responseBody;
+        ChatResponseBody responseBody;
         try{
             responseBody = modelServerTemplate.postForObject(
                     "/api/v1/question",
                     requestBody,
-                    String.class
+                    ChatResponseBody.class
             );
             log.info("sendChatToHaruni() - 하루니 채팅 전송 성공");
 

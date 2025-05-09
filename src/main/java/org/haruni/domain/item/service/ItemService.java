@@ -43,6 +43,9 @@ public class ItemService {
 
         itemRepository.deleteAllByUserId(user.getId());
 
+        if(request.getItems().isEmpty())
+            throw new RestApiException(CustomErrorCode.TARGET_ITEMS_NOT_FOUND);
+
         request.getItems().forEach(item -> {
             Item newItem = Item.builder()
                     .userId(user.getId())

@@ -12,6 +12,7 @@ public class ChatRequestBody {
     private final String haruniPersonality;
     private final String mbti;
     private final String gender;
+    private final String nickname;
     private final String content;
     private final String sendingDate;
     private final String sendingTime;
@@ -22,6 +23,7 @@ public class ChatRequestBody {
         this.haruniPersonality = haruniPersonality;
         this.mbti = user.getMbti().name();
         this.gender = user.getGender().name();
+        this.nickname = user.getNickname();
         this.content = content;
         this.sendingDate = TimeUtils.getCurrentDate();
         this.sendingTime = TimeUtils.getCurrentTime();
