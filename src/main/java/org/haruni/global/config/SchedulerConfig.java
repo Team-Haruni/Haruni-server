@@ -26,6 +26,6 @@ public class SchedulerConfig {
     @Scheduled(cron = "0 50 23 * * *", zone = "Asia/Seoul")
     public void createDayDiary(){ diaryService.createDayDiary(); }
 
-    @Scheduled(cron = "0 0 20 * * SUN", zone = "Asia/Seoul")
+    @Scheduled(cron = "0 45 22 * * FRI", zone = "Asia/Seoul")
     public void createWeekEmotionSummary() { diaryService.createWeekEmotionSummary();}
 }

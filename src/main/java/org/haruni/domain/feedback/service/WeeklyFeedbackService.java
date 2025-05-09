@@ -12,7 +12,6 @@ import org.haruni.global.exception.entity.RestApiException;
 import org.haruni.global.exception.error.CustomErrorCode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestClient;
 
 import java.util.List;
 
@@ -24,7 +23,6 @@ public class WeeklyFeedbackService {
     private final DiaryService diaryService;
 
     private final WeeklyFeedbackRepository weeklyFeedbackRepository;
-    private final RestClient.Builder builder;
 
     @Transactional(readOnly = true)
     public WeeklyFeedbackResponseDto getFeedback(UserDetailsImpl authUser){

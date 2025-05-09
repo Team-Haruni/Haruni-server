@@ -148,12 +148,12 @@ public class DiaryService {
         List<Long> userIds = diaryRepository.findUserIdsByDateBetween(startDate, endDate);
 
         userIds.forEach(userId -> {
-            List<DiaryDto> diaries = diaryRepository.findDiariesByDateBetween(userId, startDate, endDate);
+            List<DiaryDto> request = diaryRepository.findDiariesByDateBetween(userId, startDate, endDate);
 
             try{
                 HaruniFeedbackResponseDto response = modelServerTemplate.postForObject(
                         "/api/v1/week-status",
-                        diaries,
+                        request,
                         HaruniFeedbackResponseDto.class
                 );
 

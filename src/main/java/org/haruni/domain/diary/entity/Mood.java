@@ -10,9 +10,9 @@ import java.util.Arrays;
 @Getter
 @AllArgsConstructor
 public enum Mood {
-    HAPPY("HAPPY"),
-    SAD("SAD"),
-    NORMAL("NORMAL");
+    HAPPY("happy"),
+    SAD("sad"),
+    NORMAL("normal");
 
     @JsonValue
     private final String emotion;

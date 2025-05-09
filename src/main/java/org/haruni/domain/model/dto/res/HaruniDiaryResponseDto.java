@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
 
-// [Model to Spring] 다이어리 생성 요청
+// [Model to Spring] 다이어리 생성 응답
 @Getter
 public class HaruniDiaryResponseDto {
 
