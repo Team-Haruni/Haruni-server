@@ -10,6 +10,7 @@ import org.haruni.domain.diary.dto.req.DayDiaryRequestDto;
 import org.haruni.domain.diary.dto.req.DiaryDto;
 import org.haruni.domain.diary.dto.res.DayDiaryResponseDto;
 import org.haruni.domain.diary.dto.res.DayDiarySummaryDto;
+import org.haruni.domain.diary.dto.res.DaySummaryResponseDto;
 import org.haruni.domain.diary.dto.res.MonthDiaryResponseDto;
 import org.haruni.domain.diary.entity.Diary;
 import org.haruni.domain.diary.entity.Mood;
@@ -109,10 +110,10 @@ public class DiaryService {
                     .build();
 
             try{
-                DayDiaryResponseDto response = modelServerTemplate.postForObject(
+                DaySummaryResponseDto response = modelServerTemplate.postForObject(
                         "/api/v1/day-diary",
                         request,
-                        DayDiaryResponseDto.class
+                        DaySummaryResponseDto.class
                 );
 
                 if(response == null){
