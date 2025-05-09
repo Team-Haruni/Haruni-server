@@ -1,9 +1,9 @@
 package org.haruni.domain.haruni.service;
 
 import lombok.extern.log4j.Log4j2;
-import org.haruni.domain.chat.dto.req.ChatRequestBody;
+import org.haruni.domain.model.dto.req.HaruniChatRequestDto;
 import org.haruni.domain.chat.dto.req.ChatRequestDto;
-import org.haruni.domain.chat.dto.res.ChatResponseBody;
+import org.haruni.domain.model.dto.res.HaruniChatResponseDto;
 import org.haruni.domain.chat.dto.res.ChatResponseDto;
 import org.haruni.domain.chat.service.ChatService;
 import org.haruni.domain.haruni.dto.req.HaruniExpIncrementRequestDto;
@@ -75,33 +75,35 @@ public class HaruniService {
         User user = userRepository.findByEmail(authUser.getUser().getEmail())
                         .orElseThrow(() -> new RestApiException(CustomErrorCode.USER_NOT_FOUND));
 
-        chatService.saveUserChat(user, request);
-
         Haruni haruni = haruniRepository.findByUserId(user.getId())
                         .orElseThrow(() -> new RestApiException(CustomErrorCode.HARUNI_NOT_FOUND));
 
         haruni.incrementExp(3.3);
 
-        log.info("sendChatToHaruni() - 사용자 채팅 저장 성공");
-
-        ChatRequestBody requestBody = ChatRequestBody.builder()
+        HaruniChatRequestDto requestBody = HaruniChatRequestDto.builder()
                 .user(user)
                 .haruniPersonality(haruni.getPersonality())
                 .content(request.getContent())
                 .build();
 
-        ChatResponseBody responseBody;
+        HaruniChatResponseDto responseBody;
         try{
             responseBody = modelServerTemplate.postForObject(
                     "/api/v1/question",
                     requestBody,
-                    ChatResponseBody.class
+                    HaruniChatResponseDto.class
             );
+
             log.info("sendChatToHaruni() - 하루니 채팅 전송 성공");
 
-            return ChatResponseDto.entityToDto(
-                    chatService.saveHaruniChat(user, responseBody)
-            );
+            if (responseBody == null)
+                throw new RestApiException(CustomErrorCode.CHAT_RESPONSE_NOT_AVAILABLE);
+
+            chatService.saveUserChat(user, request);
+
+            log.info("sendChatToHaruni() - 사용자 채팅 저장 성공");
+
+            return ChatResponseDto.entityToDto(chatService.saveHaruniChat(user, responseBody));
         }catch (HttpClientErrorException e){
             log.error("sendChatToHaruni() - 하루니 채팅 전송 실패 [{}] - {}", e.getStatusText(), e.getMessage());
             throw new RestApiException(CustomErrorCode.POST_MESSAGE_TO_MODEL_SERVER_FAILED);

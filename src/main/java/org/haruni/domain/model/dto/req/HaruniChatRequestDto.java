@@ -1,12 +1,13 @@
-package org.haruni.domain.chat.dto.req;
+package org.haruni.domain.model.dto.req;
 
 import lombok.Builder;
 import lombok.Getter;
 import org.haruni.domain.common.util.TimeUtils;
 import org.haruni.domain.user.entity.User;
 
+// [Spring to Model] 응답 생성 요청
 @Getter
-public class ChatRequestBody {
+public class HaruniChatRequestDto {
 
     private final Long userId;
     private final String haruniPersonality;
@@ -18,7 +19,7 @@ public class ChatRequestBody {
     private final String sendingTime;
 
     @Builder
-    private ChatRequestBody(User user, String haruniPersonality, String content) {
+    private HaruniChatRequestDto(User user, String haruniPersonality, String content) {
         this.userId = user.getId();
         this.haruniPersonality = haruniPersonality;
         this.mbti = user.getMbti().name();

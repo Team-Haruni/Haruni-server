@@ -23,12 +23,9 @@ public class SchedulerConfig {
         alarmService.sendScheduledAlarm();
     }
 
-    @Scheduled(cron = "0 30 18 * * *", zone = "Asia/Seoul")
-    public void createDayDiary(){
-        diaryService.createDayDiary();
-    }
+    @Scheduled(cron = "0 50 23 * * *", zone = "Asia/Seoul")
+    public void createDayDiary(){ diaryService.createDayDiary(); }
 
     @Scheduled(cron = "0 0 20 * * SUN", zone = "Asia/Seoul")
     public void createWeekEmotionSummary() { diaryService.createWeekEmotionSummary();}
-
 }

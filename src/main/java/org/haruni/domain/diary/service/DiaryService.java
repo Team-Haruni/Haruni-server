@@ -6,17 +6,17 @@ import org.haruni.domain.chat.dto.req.ChatDto;
 import org.haruni.domain.chat.entity.ChatType;
 import org.haruni.domain.chat.repository.ChatRepository;
 import org.haruni.domain.common.util.TimeUtils;
-import org.haruni.domain.diary.dto.req.DayDiaryRequestDto;
+import org.haruni.domain.model.dto.req.HaruniDiaryRequestDto;
 import org.haruni.domain.diary.dto.req.DiaryDto;
 import org.haruni.domain.diary.dto.res.DayDiaryResponseDto;
 import org.haruni.domain.diary.dto.res.DayDiarySummaryDto;
-import org.haruni.domain.diary.dto.res.DaySummaryResponseDto;
+import org.haruni.domain.model.dto.res.HaruniDiaryResponseDto;
 import org.haruni.domain.diary.dto.res.MonthDiaryResponseDto;
 import org.haruni.domain.diary.entity.Diary;
 import org.haruni.domain.diary.entity.Mood;
 import org.haruni.domain.diary.repository.DiaryRepository;
 import org.haruni.domain.feedback.dto.res.DayMood;
-import org.haruni.domain.feedback.dto.res.FeedbackResponseDto;
+import org.haruni.domain.model.dto.res.HaruniFeedbackResponseDto;
 import org.haruni.domain.feedback.entity.WeeklyFeedback;
 import org.haruni.domain.feedback.repository.WeeklyFeedbackRepository;
 import org.haruni.domain.user.dto.res.UserSummaryDto;
@@ -104,16 +104,16 @@ public class DiaryService {
         userSummaries.forEach(userSummary -> {
             List<ChatDto> chats = chatRepository.findAllByUserIdAndSendingDate(userSummary.getUserId(), date, ChatType.USER);
 
-            DayDiaryRequestDto request = DayDiaryRequestDto.builder()
+            HaruniDiaryRequestDto request = HaruniDiaryRequestDto.builder()
                     .userSummary(userSummary)
                     .chats(chats)
                     .build();
 
             try{
-                DaySummaryResponseDto response = modelServerTemplate.postForObject(
+                HaruniDiaryResponseDto response = modelServerTemplate.postForObject(
                         "/api/v1/day-diary",
                         request,
-                        DaySummaryResponseDto.class
+                        HaruniDiaryResponseDto.class
                 );
 
                 if(response == null){
@@ -151,10 +151,10 @@ public class DiaryService {
             List<DiaryDto> diaries = diaryRepository.findDiariesByDateBetween(userId, startDate, endDate);
 
             try{
-                FeedbackResponseDto response = modelServerTemplate.postForObject(
+                HaruniFeedbackResponseDto response = modelServerTemplate.postForObject(
                         "/api/v1/week-status",
                         diaries,
-                        FeedbackResponseDto.class
+                        HaruniFeedbackResponseDto.class
                 );
 
                 if(response == null)

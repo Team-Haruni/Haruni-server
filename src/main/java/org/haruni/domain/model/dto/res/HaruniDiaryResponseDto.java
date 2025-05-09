@@ -1,11 +1,12 @@
-package org.haruni.domain.diary.dto.res;
+package org.haruni.domain.model.dto.res;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
 
+// [Model to Spring] 다이어리 생성 요청
 @Getter
-public class DaySummaryResponseDto {
+public class HaruniDiaryResponseDto {
 
     @Schema(
             description = "하루 일기 요약",
@@ -32,7 +33,7 @@ public class DaySummaryResponseDto {
     private final String date;
 
     @Builder
-    private DaySummaryResponseDto(String daySummaryDescription, String daySummaryImage, String mood, String date) {
+    private HaruniDiaryResponseDto(String daySummaryDescription, String daySummaryImage, String mood, String date) {
         this.daySummaryDescription = daySummaryDescription;
         this.daySummaryImage = daySummaryImage;
         this.mood = mood;

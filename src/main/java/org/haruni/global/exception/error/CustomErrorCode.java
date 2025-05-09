@@ -27,6 +27,9 @@ public enum CustomErrorCode implements ErrorCode {
     OAUTH2_INVALID_PROVIDER(HttpStatus.BAD_REQUEST, 400, "유효하지 않은 소셜 로그인 제공자입니다."),
     OAUTH2_ACCESS_TOKEN_UNAVAILABLE(HttpStatus.UNAUTHORIZED, 401, "유효하지 않은 인증서버의 엑세스 토큰입니다"),
 
+    // Chat
+    CHAT_RESPONSE_NOT_AVAILABLE(HttpStatus.NOT_FOUND, 400, "유효하지 않은 채팅 응답입니다."),
+
     // Diary
     DIARY_NOT_FOUND(HttpStatus.NOT_FOUND, 404, "하루일기 조회에 실패하였습니다."),
     DIARY_RESPONSE_NOT_VALID(HttpStatus.BAD_REQUEST, 400, "하루일기 생성에 실패하였습니다"),
@@ -36,7 +39,6 @@ public enum CustomErrorCode implements ErrorCode {
 
     // User
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, 404, "유저 조회에 실패하였습니다"),
-
 
     // Item
     TARGET_ITEMS_NOT_FOUND(HttpStatus.BAD_REQUEST, 404, "대상 아이탬이 비어있습니다."),

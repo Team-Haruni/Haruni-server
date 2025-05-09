@@ -1,6 +1,5 @@
-package org.haruni.domain.diary.dto.req;
+package org.haruni.domain.model.dto.req;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
 import org.haruni.domain.chat.dto.req.ChatDto;
@@ -8,9 +7,9 @@ import org.haruni.domain.user.dto.res.UserSummaryDto;
 
 import java.util.List;
 
+// [Spring to Model] 다이어리 생성 요청
 @Getter
-@Schema(description = "[서비스 서버 to 하루니 서버] 하루 일기 생성 Request")
-public class DayDiaryRequestDto {
+public class HaruniDiaryRequestDto {
 
     private final Long userId;
     private final String gender;
@@ -18,7 +17,7 @@ public class DayDiaryRequestDto {
     private final List<ChatDto> chats;
 
     @Builder
-    private DayDiaryRequestDto(UserSummaryDto userSummary, List<ChatDto> chats) {
+    private HaruniDiaryRequestDto(UserSummaryDto userSummary, List<ChatDto> chats) {
         this.userId = userSummary.getUserId();
         this.gender = userSummary.getGender().toString();
         this.mbti = userSummary.getMbti().toString();

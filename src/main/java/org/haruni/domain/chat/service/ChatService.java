@@ -3,7 +3,7 @@ package org.haruni.domain.chat.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.haruni.domain.chat.dto.req.ChatRequestDto;
-import org.haruni.domain.chat.dto.res.ChatResponseBody;
+import org.haruni.domain.model.dto.res.HaruniChatResponseDto;
 import org.haruni.domain.chat.dto.res.ChatResponseDto;
 import org.haruni.domain.chat.entity.Chat;
 import org.haruni.domain.chat.entity.ChatType;
@@ -37,7 +37,7 @@ public class ChatService {
         log.info("saveUserChat() - 유저 채팅 저장 성공");
     }
 
-    public Chat saveHaruniChat(User user, ChatResponseBody response){
+    public Chat saveHaruniChat(User user, HaruniChatResponseDto response){
         Chat chat = Chat.builder()
                 .chatType(ChatType.HARUNI)
                 .userId(user.getId())
