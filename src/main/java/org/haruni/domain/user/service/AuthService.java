@@ -18,9 +18,13 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.keygen.KeyGenerators;
+import org.springframework.security.crypto.keygen.StringKeyGenerator;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Base64;
 
 @Log4j2
 @Service
@@ -48,7 +52,7 @@ public class AuthService {
 
         User user = User.builder()
                 .request(request)
-                .encodedPassword(passwordEncoder.encode(request.getPassword()))
+                .encodedPassword(request.getPassword() == null ? generateRandomString() : passwordEncoder.encode(request.getPassword()))
                 .build();
 
         userRepository.save(user);
@@ -79,5 +83,10 @@ public class AuthService {
         }catch(BadCredentialsException | UsernameNotFoundException e) {
             throw new RestApiException(CustomErrorCode.USER_NOT_FOUND);
         }
+    }
+
+    private String generateRandomString(){
+        StringKeyGenerator keyGenerator = KeyGenerators.string();
+        return Base64.getEncoder().encodeToString(keyGenerator.generateKey().getBytes()).substring(0,30);
     }
 }
