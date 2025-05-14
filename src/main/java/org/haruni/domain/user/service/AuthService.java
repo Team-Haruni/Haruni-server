@@ -87,6 +87,6 @@ public class AuthService {
 
     private String generateRandomString(){
         StringKeyGenerator keyGenerator = KeyGenerators.string();
-        return Base64.getEncoder().encodeToString(keyGenerator.generateKey().getBytes()).substring(0,30);
+        return Base64.getEncoder().encodeToString(keyGenerator.generateKey().getBytes()).substring(0,20);
     }
 }
