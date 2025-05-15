@@ -81,6 +81,7 @@ public class OAuth2UserService {
             );
 
             log.info("oauth2LoginProcess() : Spring Security 인증 및 JWT 발급 성공");
+            log.info("authentication.getName() = {}", authentication.getName());
 
             return OAuth2ResponseDto.login(jwtTokenProvider.generateToken(authentication));
         } else {

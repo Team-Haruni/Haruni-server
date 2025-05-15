@@ -55,14 +55,10 @@ public class JwtTokenProvider {
         String accessToken = Jwts.builder()
                 .setSubject(authentication.getName())
                 .claim("auth", authorities)
-                .setIssuedAt(now)
-                .setExpiration(new Date((now.getTime() + accessTokenExpiredTime)))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
 
         String refreshToken = Jwts.builder()
-                .setIssuedAt(now)
-                .setExpiration(new Date((now.getTime() + refreshTokenExpiredTime)))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
 
