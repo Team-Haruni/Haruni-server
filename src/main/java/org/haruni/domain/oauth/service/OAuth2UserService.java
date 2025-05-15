@@ -69,11 +69,12 @@ public class OAuth2UserService {
                 request.getAccessToken()
         );
 
-        log.info("oauth2LoginProcess() : [{}] 사용자 정보 불러오기 완료 - {}", oAuth2UserInfo.getProvider(), oAuth2UserInfo.getName());
+        log.info("oauth2LoginProcess() : [{}] 사용자 정보 불러오기 완료 - {}", oAuth2UserInfo.getProvider(), oAuth2UserInfo.getEmail());
 
         if (userRepository.existsByEmail(oAuth2UserInfo.getEmail())) {
 
             OAuth2UserDetailsImpl oAuth2UserDetails = new OAuth2UserDetailsImpl(oAuth2UserInfo);
+
             Authentication authentication = new OAuth2AuthenticationToken(
                     oAuth2UserDetails,
                     oAuth2UserDetails.getAuthorities(),
@@ -81,7 +82,7 @@ public class OAuth2UserService {
             );
 
             log.info("oauth2LoginProcess() : Spring Security 인증 및 JWT 발급 성공");
-            log.info("authentication.getName() = {}", authentication.getName());
+            log.info("authentication.getName() = {}, authentication.getAuthorities() = {}", authentication.getName(), authentication.getAuthorities());
 
             return OAuth2ResponseDto.login(jwtTokenProvider.generateToken(authentication));
         } else {
