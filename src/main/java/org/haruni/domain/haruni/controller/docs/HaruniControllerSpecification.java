@@ -13,6 +13,7 @@ import org.haruni.domain.chat.dto.req.ChatRequestDto;
 import org.haruni.domain.chat.dto.res.ChatResponseDto;
 import org.haruni.domain.common.dto.res.ResponseDto;
 import org.haruni.domain.haruni.dto.req.HaruniExpIncrementRequestDto;
+import org.haruni.domain.haruni.dto.res.HaruniExpIncrementResponseDto;
 import org.haruni.domain.haruni.dto.res.MainPageResponseDto;
 import org.haruni.domain.user.entity.UserDetailsImpl;
 import org.haruni.global.exception.error.ErrorResponse;
@@ -144,7 +145,7 @@ public interface HaruniControllerSpecification {
                             schema = @Schema(implementation = ErrorResponse.class)))
     })
     @PatchMapping("/exp")
-    public ResponseEntity<ResponseDto<Double>> incrementHaruniExp(@AuthenticationPrincipal UserDetailsImpl user,
-                                                                  @Valid@RequestBody HaruniExpIncrementRequestDto request);
+    public ResponseEntity<ResponseDto<HaruniExpIncrementResponseDto>> incrementHaruniExp(@AuthenticationPrincipal UserDetailsImpl user,
+                                                                                         @Valid@RequestBody HaruniExpIncrementRequestDto request);
 
 }

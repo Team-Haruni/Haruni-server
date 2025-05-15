@@ -1,6 +1,7 @@
 package org.haruni.domain.haruni.service;
 
 import lombok.extern.log4j.Log4j2;
+import org.haruni.domain.haruni.dto.res.HaruniExpIncrementResponseDto;
 import org.haruni.domain.model.dto.req.HaruniChatRequestDto;
 import org.haruni.domain.chat.dto.req.ChatRequestDto;
 import org.haruni.domain.model.dto.res.HaruniChatResponseDto;
@@ -115,7 +116,7 @@ public class HaruniService {
     }
 
     @Transactional
-    public Double incrementHaruniExp(UserDetailsImpl authUser, HaruniExpIncrementRequestDto request){
+    public HaruniExpIncrementResponseDto incrementHaruniExp(UserDetailsImpl authUser, HaruniExpIncrementRequestDto request){
         Haruni haruni = haruniRepository.findByUserId(authUser.getUser().getId())
                 .orElseThrow(() -> new RestApiException(CustomErrorCode.HARUNI_NOT_FOUND));
 
@@ -123,7 +124,10 @@ public class HaruniService {
 
         log.info("incrementHaruniExp() - 하루니 레벨 조정 완료 {} -> {}", haruni.getLevel() - request.getExp(), haruni.getLevel());
 
-        return haruni.getLevel();
+        return HaruniExpIncrementResponseDto.builder()
+                .haruniLevelInteger(haruni.getHaruniLevelInteger())
+                .haruniLevelDecimal(haruni.getHaruniLevelDecimal())
+                .build();
     }
 
     private String getGreetingMessage(LocalDateTime now, String nickname){

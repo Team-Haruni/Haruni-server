@@ -8,6 +8,7 @@ import org.haruni.domain.chat.dto.res.ChatResponseDto;
 import org.haruni.domain.common.dto.res.ResponseDto;
 import org.haruni.domain.haruni.controller.docs.HaruniControllerSpecification;
 import org.haruni.domain.haruni.dto.req.HaruniExpIncrementRequestDto;
+import org.haruni.domain.haruni.dto.res.HaruniExpIncrementResponseDto;
 import org.haruni.domain.haruni.dto.res.MainPageResponseDto;
 import org.haruni.domain.haruni.service.HaruniService;
 import org.haruni.domain.user.entity.UserDetailsImpl;
@@ -48,8 +49,8 @@ public class HaruniController implements HaruniControllerSpecification {
     }
 
     @PatchMapping("/exp")
-    public ResponseEntity<ResponseDto<Double>> incrementHaruniExp(@AuthenticationPrincipal UserDetailsImpl authUser,
-                                                                  @Valid@RequestBody HaruniExpIncrementRequestDto request){
+    public ResponseEntity<ResponseDto<HaruniExpIncrementResponseDto>> incrementHaruniExp(@AuthenticationPrincipal UserDetailsImpl authUser,
+                                                                                         @Valid@RequestBody HaruniExpIncrementRequestDto request){
         return ResponseEntity.status(HttpStatus.OK).body(ResponseDto.of(haruniService.incrementHaruniExp(authUser, request), "하루니 레벨 조정 완료"));
     }
 }
