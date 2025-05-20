@@ -12,6 +12,12 @@ import java.util.List;
 public class MainPageResponseDto {
 
     @Schema(
+            description = "하루니 닉네임",
+            example = "망고빙수"
+    )
+    private final String haruniNickname;
+
+    @Schema(
             description = "하루니 레벨(정수부)",
             example = "1"
     )
@@ -35,7 +41,8 @@ public class MainPageResponseDto {
     private final List<SelectedItemResponseDto> itemIndexes;
 
     @Builder
-    private MainPageResponseDto(Double haruniLevelInteger, Double haruniLevelDecimal, String greetingMessage, List<SelectedItemResponseDto> itemIndexes) {
+    private MainPageResponseDto(String haruniNickname, Double haruniLevelInteger, Double haruniLevelDecimal, String greetingMessage, List<SelectedItemResponseDto> itemIndexes) {
+        this.haruniNickname = haruniNickname;
         this.haruniLevelInteger = haruniLevelInteger;
         this.haruniLevelDecimal = haruniLevelDecimal;
         this.greetingMessage = greetingMessage;

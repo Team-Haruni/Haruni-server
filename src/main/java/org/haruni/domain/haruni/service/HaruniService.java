@@ -63,6 +63,7 @@ public class HaruniService {
         log.info("getHaruni() - 하루니 조회 성공");
 
         return MainPageResponseDto.builder()
+                .haruniNickname(haruni.getName())
                 .haruniLevelInteger(haruni.getHaruniLevelInteger())
                 .haruniLevelDecimal(haruni.getHaruniLevelDecimal())
                 .greetingMessage(greetingMessage)
