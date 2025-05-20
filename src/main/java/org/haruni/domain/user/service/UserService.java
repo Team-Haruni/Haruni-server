@@ -2,7 +2,6 @@ package org.haruni.domain.user.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import lombok.extern.slf4j.Slf4j;
 import org.haruni.domain.alarm.service.AlarmService;
 import org.haruni.domain.oauth.common.utils.OAuth2Provider;
 import org.haruni.domain.user.dto.req.AlarmActiveTimeUpdateRequestDto;
@@ -49,6 +48,7 @@ public class UserService {
         alarmService.updateAlarmSchedule(user.getFcmToken(), request.getAlarmActiveTime());
 
         log.info("updateAlarmActiveTime() : 유저 알람 활성화 시간 수정 성공");
+
         return request.getAlarmActiveTime();
     }
 
