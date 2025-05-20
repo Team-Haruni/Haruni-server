@@ -22,6 +22,8 @@ import org.springframework.stereotype.Component;
 import java.security.Key;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -47,12 +49,23 @@ public class JwtTokenProvider {
         log.info("generateToken() - {}", authentication.getName());
         log.info("generateToken() - {}", authentication.getAuthorities());
 
+        String authorities = authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining());
+
+        Date now = new Date();
+
         String accessToken = Jwts.builder()
                 .setSubject(authentication.getName())
+                .claim("auth", authorities)
+                .setIssuedAt(now)
+                .setExpiration(new Date((now.getTime() + accessTokenExpiredTime)))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
 
         String refreshToken = Jwts.builder()
+                .setIssuedAt(now)
+                .setExpiration(new Date((now.getTime() + refreshTokenExpiredTime)))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
 
