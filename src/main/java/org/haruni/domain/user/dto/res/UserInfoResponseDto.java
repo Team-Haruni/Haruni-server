@@ -12,7 +12,13 @@ public class UserInfoResponseDto {
             description = "유저 닉네임",
             example = "삼준서"
     )
-    private final String nickname;
+    private final String userNickname;
+
+    @Schema(
+            description = "하루니 닉네임",
+            example = "설빙"
+    )
+    private final String haruniNickname;
 
     @Schema(
             description = "유저 이메일",
@@ -27,8 +33,9 @@ public class UserInfoResponseDto {
     private final Boolean emailUpdateAvailable;
 
     @Builder
-    private UserInfoResponseDto(String nickname, String email, Boolean emailUpdateAvailable){
-        this.nickname = nickname;
+    private UserInfoResponseDto(String userNickname, String haruniNickname, String email, Boolean emailUpdateAvailable){
+        this.userNickname = userNickname;
+        this.haruniNickname = haruniNickname;
         this.email = email;
         this.emailUpdateAvailable = emailUpdateAvailable;
     }
