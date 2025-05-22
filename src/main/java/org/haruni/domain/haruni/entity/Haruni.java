@@ -43,6 +43,10 @@ public class Haruni {
             return 2.0;
         } else if (level <= 1000.0) {
             return 3.0;
+        } else if (level <= 2000.0) {
+            return 4.0;
+        } else if (level <= 4000.0) {
+            return 5.0;
         } else {
             return Math.floor((level - 1) / 500.0) + 1;
         }
@@ -50,7 +54,7 @@ public class Haruni {
 
     @Transient
     public Double getHaruniLevelDecimal() {
-        double[] thresholds = {0.0, 100.0, 500.0, 1000.0};
+        double[] thresholds = {0.0, 100.0, 500.0, 1000.0, 2000.0, 4000.0};
         int lvl = getHaruniLevelInteger().intValue();
         int idx = Math.min(lvl, thresholds.length - 1);
 
