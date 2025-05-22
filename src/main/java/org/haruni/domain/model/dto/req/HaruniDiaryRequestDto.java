@@ -14,13 +14,13 @@ public class HaruniDiaryRequestDto {
     private final Long userId;
     private final String gender;
     private final String mbti;
-    private final List<ChatDto> chats;
+    private final List<ChatDto> conversation;
 
     @Builder
-    private HaruniDiaryRequestDto(UserSummaryDto userSummary, List<ChatDto> chats) {
+    private HaruniDiaryRequestDto(UserSummaryDto userSummary, List<ChatDto> conversation) {
         this.userId = userSummary.getUserId();
         this.gender = userSummary.getGender().toString();
         this.mbti = userSummary.getMbti().toString();
-        this.chats = chats;
+        this.conversation = conversation;
     }
 }

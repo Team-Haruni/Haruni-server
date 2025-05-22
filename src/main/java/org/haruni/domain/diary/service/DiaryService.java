@@ -106,7 +106,7 @@ public class DiaryService {
 
             HaruniDiaryRequestDto request = HaruniDiaryRequestDto.builder()
                     .userSummary(userSummary)
-                    .chats(chats)
+                    .conversation(chats)
                     .build();
 
             try{
