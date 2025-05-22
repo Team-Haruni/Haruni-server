@@ -112,6 +112,7 @@ public class HaruniService {
         }
     }
 
+    @Transactional
     public List<ChatResponseDto> getChats(UserDetailsImpl authUser, String request){
         return chatService.getChats(authUser.getUser().getId(), request);
     }
