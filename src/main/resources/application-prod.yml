@@ -86,6 +86,8 @@ server:
       charset: UTF-8
       force: true
   port: 8443
+  tomcat:
+    keep-alive-timeout: 180s
 
 model-server:
   url: ${MODEL_SERVER_URL}
